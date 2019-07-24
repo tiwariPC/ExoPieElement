@@ -1,0 +1,1 @@
+MET-Run2015D-PromptReco-V42015112_1p5fb_METTextFile Cert_246908-259891_13TeV_PromptReco_Collisions15_25ns_JSON.txt /MET/Run2015D-PromptReco-v4/MINIAOD 25 
