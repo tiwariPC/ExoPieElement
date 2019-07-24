@@ -26,7 +26,7 @@ ncuslimmedMuon.cut = cms.string("pt > 10. & abs(eta) < 2.5")
 
 import PhysicsTools.PatAlgos.selectionLayer1.tauSelector_cfi as tauSelector_cfi
 ncuslimmedTau     = tauSelector_cfi.selectedPatTaus.clone()
-ncuslimmedTau.src = cms.InputTag("slimmedTaus")
+ncuslimmedTau.src = cms.InputTag("NewTauIDsEmbedded")
 ncuslimmedTau.cut = cms.string("pt > 10. & abs(eta) < 2.5")
 
 ncuslimmer = cms.Sequence(ncuslimmedAK4Jet+

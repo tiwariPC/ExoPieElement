@@ -57,6 +57,10 @@ class photonTree : public baseTree{
   //variables which would become branches
   int nPho_;
   TClonesArray *photonP4_;
+  std::vector<float> phoPx_;
+  std::vector<float> phoPy_;
+  std::vector<float> phoPz_;
+  std::vector<float> phoE_;
 
   std::vector<bool> isPassLoose;
   std::vector<bool> isPassMedium;

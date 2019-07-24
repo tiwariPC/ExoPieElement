@@ -104,6 +104,12 @@ class patElecTree : public baseTree {
 
   TClonesArray *patElecP4_;
 
+  std::vector<float> patElecPx_;
+  std::vector<float> patElecPy_;
+  std::vector<float> patElecPz_;
+  std::vector<float> patElecE_;
+
+
   std::vector<bool> patElecInBarrel_;
   std::vector<bool> patElecInEndcap_;
 

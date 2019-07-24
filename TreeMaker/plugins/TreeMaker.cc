@@ -29,10 +29,9 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   fillElecInfo_    =false;
   fillMuonInfo_    =false;
   fillTauInfo_     =false;
-  fillPhotInfo_    =false; 
+  fillPhotInfo_    =false;
   fillJetInfo_     =false;
   fillFATJetInfo_  =false;
-  fillAddJetInfo_  =false;
   fillAK4PuppiJetInfo_ = false;
   fillAK8PuppiJetInfo_ = false;
   fillCA15PuppiJetInfo_ = false;
@@ -48,26 +47,25 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   fillTauInfo_      = iConfig.getParameter<bool>("fillTauInfo");
   fillPhotInfo_     = iConfig.getParameter<bool>("fillPhotInfo");
   fillJetInfo_      = iConfig.getParameter<bool>("fillJetInfo");
-  fillFATJetInfo_   = iConfig.getParameter<bool>("fillFATJetInfo"); 
-  fillAddJetInfo_   = iConfig.getParameter<bool>("fillAddJetInfo");
+  fillFATJetInfo_   = iConfig.getParameter<bool>("fillFATJetInfo");
   fillAK4PuppiJetInfo_   = iConfig.getParameter<bool>("fillAK4PuppiJetInfo");
   fillAK8PuppiJetInfo_   = iConfig.getParameter<bool>("fillAK8PuppiJetInfo");
   fillCA15PuppiJetInfo_   = iConfig.getParameter<bool>("fillCA15PuppiJetInfo");
-   
-  
+
+
   edm::Service<TFileService> fs;
 
 
   tree_ = fs->make<TTree>("treeMaker","tree");
-  if( fillPUweightInfo_) 
+  if( fillPUweightInfo_)
     {
       puweight_                   = new puweight("pu_",tree_);
       puweight_->puInfoToken      = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("slimmedAddPileupInfo"));
     }
 
-  if( fillEventInfo_ ) 
+  if( fillEventInfo_ )
     {
-      eventInfo_                  = new eventInfo("",tree_); 
+      eventInfo_                  = new eventInfo("",tree_);
       eventInfo_->vertexToken     = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("pvSrc"));
     }
 
@@ -78,20 +76,21 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       patMetTree_->pfMETRawToken  = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("pfMetRaw"));
       patMetTree_->pfMETToken     = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("pfType1Met"));
       patMetTree_->puppimetToken  = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("puppiMET"));
-      // patMetTree_->pfMVAMETToken  = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("pfMVAMET"));                                                        
+      // patMetTree_->pfMVAMETToken  = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("pfMVAMET"));
     }
 
 
   if( fillTrigInfo_ )
     {
-      patHltTree_                             = new patHltTree("hlt_",tree_,iConfig); 
+      patHltTree_                             = new patHltTree("hlt_",tree_,iConfig);
       patHltTree_->trigResultsToken           = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerLabel"));
       patHltTree_->triggerPrescalesToken      = consumes<pat::PackedTriggerPrescales>(edm::InputTag("patTrigger"));
-	
+      patHltTree_->triggerObjectsToken         = consumes<pat::TriggerObjectStandAloneCollection>(edm::InputTag("slimmedPatTrigger"));
+
     }
-  if( fillFilterInfo_ ) 
+  if( fillFilterInfo_ )
     {
-      patFilterTree_                          = new patFilters("hlt_",tree_); 
+      patFilterTree_                          = new patFilters("hlt_",tree_);
       patFilterTree_->HBHETToken              = consumes<bool>(edm::InputTag("HBHENoiseFilterResultProducer","HBHENoiseFilterResultRun2Tight","MVAMET"));
       patFilterTree_->HBHELToken              = consumes<bool>(edm::InputTag("HBHENoiseFilterResultProducer","HBHENoiseFilterResultRun2Loose","MVAMET"));
       patFilterTree_->HBHEIsoToken            = consumes<bool>(edm::InputTag("HBHENoiseFilterResultProducer","HBHEIsoNoiseFilterResult","MVAMET"));
@@ -100,24 +99,24 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       patFilterTree_->BadGlobalMuonFilterToken_     = consumes<bool>(edm::InputTag("badGlobalMuonTaggerMAOD"));
       patFilterTree_->CloneGlobalMuonFilterToken_   = consumes<bool>(edm::InputTag("cloneGlobalMuonTaggerMAOD"));
 
-      
+
       patFilterTree_->filterTrigResultsToken  = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("filterLabel"));
     }
 
-  if( fillGenInfo_ ) 
+  if( fillGenInfo_ )
     {
       genInfoTree_                           = new genInfoTree("",tree_,iConfig);
       genInfoTree_->genParticleToken         = consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genPartLabel"));
       genInfoTree_->genEventToken            = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
       genInfoTree_->lheRunToken              = consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"));
       genInfoTree_->lheEventToken            = consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer"));
-      genInfoTree_->genMETToken_true         = consumes<reco::GenMETCollection>(edm::InputTag("genMetTrue"));
+      genInfoTree_->genMETToken_true         = consumes<pat::PackedGenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"));
       genInfoTree_->genMETToken_calo         = consumes<reco::GenMETCollection>(edm::InputTag("genMetCalo"));
       genInfoTree_->genMETToken_caloNonPrompt = consumes<reco::GenMETCollection>(edm::InputTag("genMetCaloAndNonPrompt"));
-      genInfoTree_->ak4genJetsToken           = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("ak4GenJetLabel"));
-      genInfoTree_->ak8genJetsToken           = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("ak8GenJetLabel"));
+      genInfoTree_->ak4genJetsToken           = consumes<reco::GenJetCollection>(edm::InputTag("ak4GenJets"));
+      genInfoTree_->ak8genJetsToken           = consumes<reco::GenJetCollection>(edm::InputTag("ak8GenJets"));
   }
-  
+
   if( fillElecInfo_ )
     {
       patElecTree_                              = new patElecTree("",tree_,iConfig);
@@ -137,7 +136,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       patElecTree_->eleMediumIdCFToken          = consumes<edm::ValueMap<vid::CutFlowResult>>(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
       patElecTree_->eleTightIdCFToken           = consumes<edm::ValueMap<vid::CutFlowResult>>(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
       patElecTree_->eleHEEPIdCFToken            = consumes<edm::ValueMap<vid::CutFlowResult>>(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap"));
-      
+
       patElecTree_->eleMVAMediumIdMapToken      = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("eleMVAMediumIdMap"));
       patElecTree_->eleMVATightIdMapToken       = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("eleMVATightIdMap"));
       patElecTree_->mvaValuesMapToken           = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("mvaValuesMap"));
@@ -145,7 +144,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
 
     }
 
-  if( fillMuonInfo_ ) 
+  if( fillMuonInfo_ )
     {
       patMuTree_                             = new patMuonTree("",tree_,iConfig);
       patMuTree_->vertexToken                = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("pvSrc"));
@@ -154,7 +153,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       patMuTree_->pfCandToken                = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfForMiniIso"));
     }
 
-  if( fillTauInfo_ ) 
+  if( fillTauInfo_ )
     {
       tauTree_                               = new hpstauInfo("",tree_, false);
       tauTree_->tauToken                     = consumes<pat::TauCollection>(iConfig.getUntrackedParameter<edm::InputTag> ("tauLabel"));
@@ -163,7 +162,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
 
   if( fillPhotInfo_)
     {
-      photonTree_                                 = new photonTree("", tree_); 
+      photonTree_                                 = new photonTree("", tree_);
       photonTree_->photonToken                    = consumes<edm::View<pat::Photon>>(iConfig.getParameter<edm::InputTag> ("photonLabel"));
       photonTree_->phoLooseIdMapToken             = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
       photonTree_->phoMediumIdMapToken            = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
@@ -193,16 +192,6 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       FATjetTree_->prunedMToken   = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>(Form("%sJetsForPrunedMass",desc.data())));
     }
 
-  if( fillAddJetInfo_)
-    {
-      std::string desc            = "ADD";
-      ADDjetTree_                 = new jetTree(desc,tree_,iConfig);
-      ADDjetTree_->jetToken       = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>(Form("%sJets",desc.data())));
-      ADDjetTree_->vertexToken    = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("pvSrc"));
-      ADDjetTree_->rhoForJetToken = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
-
-    }
-
   if( fillAK4PuppiJetInfo_)
     {
       std::string desc            = "AK4Puppi";
@@ -230,8 +219,8 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       CA15PuppijetTree_->rhoForJetToken = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
     }
 
-  
-  
+
+
 }
 
 
@@ -258,17 +247,16 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
   if( fillFATJetInfo_ )   FATjetTree_    ->Fill(iEvent, iSetup);
   if( fillJetInfo_ )      THINjetTree_   ->Fill(iEvent, iSetup);
-  if( fillAddJetInfo_ )   ADDjetTree_    ->Fill(iEvent, iSetup);  
-  if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup); 
-  if( fillAK8PuppiJetInfo_ ) AK8PuppijetTree_->Fill(iEvent, iSetup); 
-  if( fillCA15PuppiJetInfo_ ) CA15PuppijetTree_->Fill(iEvent, iSetup); 
+  if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);
+  if( fillAK8PuppiJetInfo_ ) AK8PuppijetTree_->Fill(iEvent, iSetup);
+  if( fillCA15PuppiJetInfo_ ) CA15PuppijetTree_->Fill(iEvent, iSetup);
   tree_->Fill();
 }
 
 
 void
 TreeMaker::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) {
-  
+
 }
 
 void

@@ -18,32 +18,32 @@ void photonTree::Fill(const edm::Event& iEvent){
   //
   edm::Handle<edm::View<pat::Photon> > photonHandle;
   if(not iEvent.getByToken(photonToken,photonHandle)){
-    std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: photon" <<std::endl; 
+    std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: photon" <<std::endl;
     exit(0);
-  }  
+  }
   //pat::PhotonCollection phColl(*(photonHandle.product()));
 
  //sort the objects by transverse momentum
   //std::sort(phColl.begin(),phColl.end(),PtGreater());
 
-  // IDs 
+  // IDs
   edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  tight_id_decisions;
 
   edm::Handle<edm::ValueMap<float> > mvaValues;
-  
+
   edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap;
   edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap;
   edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap;
 
-  
+
   iEvent.getByToken(phoLooseIdMapToken,  loose_id_decisions);
   iEvent.getByToken(phoMediumIdMapToken,  medium_id_decisions);
   iEvent.getByToken(phoTightIdMapToken,  tight_id_decisions);
   iEvent.getByToken(phoMVAValuesMapToken, mvaValues);
-  
-  
+
+
   iEvent.getByToken(phoChargedIsolationToken,       phoChargedIsolationMap);
   iEvent.getByToken(phoNeutralHadronIsolationToken, phoNeutralHadronIsolationMap);
   iEvent.getByToken(phoPhotonIsolationToken,        phoPhotonIsolationMap);
@@ -61,6 +61,12 @@ void photonTree::Fill(const edm::Event& iEvent){
 					       ph->p4().pz(),
 					       ph->p4().energy()
 					       );
+// px,py,pz,E
+    phoPx_.push_back(ph->p4().px());
+    phoPy_.push_back(ph->p4().py());
+    phoPz_.push_back(ph->p4().pz());
+    phoE_.push_back(ph->p4().energy());
+
     //Ids
     const auto pho = photonHandle->ptrAt(nPho_-1);
     // std::cout<<" loose id = "<<(*loose_id_decisions)[pho]<<std::endl;
@@ -76,9 +82,9 @@ void photonTree::Fill(const edm::Event& iEvent){
     phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
 
     // --------
-    // Photon ID variables used to make photon ID booleans. 
+    // Photon ID variables used to make photon ID booleans.
     // --------
-    
+
     phoSCE_           .push_back((*ph).superCluster()->energy());
     phoSCRawE_        .push_back((*ph).superCluster()->rawEnergy());
     phoSCEta_         .push_back((*ph).superCluster()->eta());
@@ -95,47 +101,60 @@ void photonTree::Fill(const edm::Event& iEvent){
     phoSigmaIPhiIPhi_ .push_back(ph->spp());
     phoSigmaIEtaIEtaFull5x5_ .push_back(ph->full5x5_sigmaIetaIeta());
     phoR9Full5x5_            .push_back(ph->full5x5_r9());
-    
 
 
 
-  }  
+
+  }
 
 }
-
+bool pho_extra = false;
 void photonTree::SetBranches(){
   AddBranch(&nPho_  ,"nPho");
-  AddBranch(&photonP4_, "phoP4");
+  //AddBranch(&photonP4_, "phoP4");
+
+  AddBranch(&phoPx_, "phoPx");
+  AddBranch(&phoPy_, "phoPy");
+  AddBranch(&phoPz_, "phoPz");
+  AddBranch(&phoE_, "phoEnergy");
+
   AddBranch(&isPassTight,"phoIsPassTight");
   AddBranch(&isPassLoose,"phoIsPassLoose");
   AddBranch(&isPassMedium,"phoIsPassMedium");
-  AddBranch(&phoIDMVA_,"phoIDMVA");
-  
-  AddBranch(&phoSCE_,"phoSCE");
-  AddBranch(&phoSCRawE_,"phoSCRawE");
-  AddBranch(&phoSCEta_,"phoSCEta");
-  AddBranch(&phoSCPhi_,"phoSCPhi");
-  AddBranch(&phoSCEtaWidth_,"phoSCEtaWidth");
-  AddBranch(&phoSCPhiWidth_,"phoSCPhiWidth");
-  AddBranch(&phoSCBrem_,"phoSCBrem");
-  AddBranch(&phohasPixelSeed_,"phohasPixelSeed");
-  AddBranch(&phoEleVeto_,"phoEleVeto");
-  AddBranch(&phoR9_,"phoR9");
-  AddBranch(&phoHoverE_,"phoHoverE");
-  AddBranch(&phoSigmaIEtaIEta_,"phoSigmaIEtaIEta");
-  AddBranch(&phoSigmaIEtaIPhi_,"phoSigmaIEtaIPhi");
-  AddBranch(&phoSigmaIPhiIPhi_,"phoSigmaIPhiIPhi");
-  AddBranch(&phoSigmaIEtaIEtaFull5x5_,"phoSigmaIEtaIEtaFull5x5");
-  AddBranch(&phoR9Full5x5_,"phoR9Full5x5");
-  AddBranch(&phoPFChIso_,"phoPFChIso");
-  AddBranch(&phoPFPhoIso_,"phoPFPhoIso");
-  AddBranch(&phoPFNeuIso_,"phoPFNeuIso");
 
+  if (pho_extra){
+    AddBranch(&photonP4_, "phoP4");
+    AddBranch(&phoIDMVA_,"phoIDMVA");
+    AddBranch(&phoSCE_,"phoSCE");
+    AddBranch(&phoSCRawE_,"phoSCRawE");
+    AddBranch(&phoSCEta_,"phoSCEta");
+    AddBranch(&phoSCPhi_,"phoSCPhi");
+    AddBranch(&phoSCEtaWidth_,"phoSCEtaWidth");
+    AddBranch(&phoSCPhiWidth_,"phoSCPhiWidth");
+    AddBranch(&phoSCBrem_,"phoSCBrem");
+    AddBranch(&phohasPixelSeed_,"phohasPixelSeed");
+    AddBranch(&phoEleVeto_,"phoEleVeto");
+    AddBranch(&phoR9_,"phoR9");
+    AddBranch(&phoHoverE_,"phoHoverE");
+    AddBranch(&phoSigmaIEtaIEta_,"phoSigmaIEtaIEta");
+    AddBranch(&phoSigmaIEtaIPhi_,"phoSigmaIEtaIPhi");
+    AddBranch(&phoSigmaIPhiIPhi_,"phoSigmaIPhiIPhi");
+    AddBranch(&phoSigmaIEtaIEtaFull5x5_,"phoSigmaIEtaIEtaFull5x5");
+    AddBranch(&phoR9Full5x5_,"phoR9Full5x5");
+    AddBranch(&phoPFChIso_,"phoPFChIso");
+    AddBranch(&phoPFPhoIso_,"phoPFPhoIso");
+    AddBranch(&phoPFNeuIso_,"phoPFNeuIso");
+  }
 }
 
 void photonTree::Clear(){
-  nPho_ = 0; 
+  nPho_ = 0;
   photonP4_->Clear();
+  phoPx_.clear();
+  phoPy_.clear();
+  phoPz_.clear();
+  phoE_.clear();
+
   isPassLoose.clear();
   isPassMedium.clear();
   isPassTight.clear();
@@ -148,7 +167,7 @@ void photonTree::Clear(){
   phoSCPhiWidth_.clear();
   phoSCBrem_.clear();
   phohasPixelSeed_.clear();
-  
+
   phoEleVeto_.clear();
   phoR9_.clear();
   phoHoverE_.clear();

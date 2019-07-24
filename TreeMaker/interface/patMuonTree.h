@@ -60,6 +60,12 @@ class patMuonTree : public baseTree {
   int nMu;
   TClonesArray *patMuonP4;
 
+  std::vector<float> patMuonPx_;
+  std::vector<float> patMuonPy_;
+  std::vector<float> patMuonPz_;
+  std::vector<float> patMuonE_;
+
+
   std::vector<int> patMuonType;
   std::vector<int> patMuonCharge;
 

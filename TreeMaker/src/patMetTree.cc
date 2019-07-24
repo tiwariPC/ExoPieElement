@@ -7,19 +7,19 @@ patMetTree::patMetTree(std::string name, TTree* tree):
 
 
 patMetTree::~patMetTree(){
-} 
+}
 
 
 void
 patMetTree::Fill(const edm::Event& iEvent){
   Clear();
-  
+
   // adding Raw PF MET to the tree
   edm::Handle<reco::PFMETCollection> patMetRawHandle;
   if(not iEvent.getByToken(pfMETRawToken,patMetRawHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
 	     <<"pfMetRaw" <<std::endl; exit(0);}
-  
+
   // adding Type-1 MET to the tree
   edm::Handle<pat::METCollection> patMetHandle;
   if(not iEvent.getByToken(pfMETToken,patMetHandle)){
@@ -48,7 +48,7 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetCorrSumEt_ = met->sumEt();
   patMetCorrSig_   = met->significance() < 1.e10 ? met->significance() : 0;
 
-  
+
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUp));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResDown));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetEnUp));
@@ -69,7 +69,7 @@ patMetTree::Fill(const edm::Event& iEvent){
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResDownSmear));
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::METFullUncertaintySize));
 
-  
+
   auto metpuppi = puppiMetHandle.product()->begin();
   puppiMETPt_         = metpuppi->et();
   puppiMETPhi_        = metpuppi->phi();
@@ -101,37 +101,38 @@ patMetTree::Fill(const edm::Event& iEvent){
   //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetResUpSmear));
   //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetResDownSmear));
   //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::METFullUncertaintySize));
-  
-} 
 
-void 
+}
+bool met_extra = false;
+void
 patMetTree::SetBranches(){
 
   AddBranch(&patMetCorrPt_, "MetCorrPt");
-  AddBranch(&patMetCorrPhi_, "MetCorrPhi"); 
-  AddBranch(&patMetCorrSumEt_, "MetCorrSumEt");
-  AddBranch(&patMetCorrSig_, "MetCorrSig");
+  AddBranch(&patMetCorrPhi_, "MetCorrPhi");
   AddBranch(&patMetCorrUnc_, "MetCorrUnc");
-  
-  
-  AddBranch(&patMetRawPt_, "MetRawPt");
-  AddBranch(&patMetRawPhi_, "MetRawPhi");
-  AddBranch(&patMetRawSumEt_, "MetRawSumEt");
-  AddBranch(&patMetRawCov00_, "MetRawCov00");
-  AddBranch(&patMetRawCov01_, "MetRawCov01");
-  AddBranch(&patMetRawCov10_, "MetRawCov10");
-  AddBranch(&patMetRawCov11_, "MetRawCov11");
+  if (met_extra){
+    AddBranch(&patMetCorrSumEt_, "MetCorrSumEt");
+    AddBranch(&patMetCorrSig_, "MetCorrSig");
 
-  AddBranch(&mvaMetPt_,     "mvaMetPt");
-  AddBranch(&mvaMetPhi_,    "mvaMetPhi");
-  AddBranch(&mvaMetSumEt_,  "mvaMetSumEt");
-  AddBranch(&mvaMetSig_,    "mvaMetSig");
+    AddBranch(&patMetRawPt_, "MetRawPt");
+    AddBranch(&patMetRawPhi_, "MetRawPhi");
+    AddBranch(&patMetRawSumEt_, "MetRawSumEt");
+    AddBranch(&patMetRawCov00_, "MetRawCov00");
+    AddBranch(&patMetRawCov01_, "MetRawCov01");
+    AddBranch(&patMetRawCov10_, "MetRawCov10");
+    AddBranch(&patMetRawCov11_, "MetRawCov11");
 
-  AddBranch(&puppiMETPt_,     "puppiMETPt");
-  AddBranch(&puppiMETPhi_,    "puppiMETPhi");
-  AddBranch(&puppiMETSumEt_,  "puppiMETSumEt");
-  AddBranch(&puppiMETSig_,    "puppiMETSig");
-  AddBranch(&puppiMETUnc_,    "puppiMETUnc");
+    AddBranch(&mvaMetPt_,     "mvaMetPt");
+    AddBranch(&mvaMetPhi_,    "mvaMetPhi");
+    AddBranch(&mvaMetSumEt_,  "mvaMetSumEt");
+    AddBranch(&mvaMetSig_,    "mvaMetSig");
+
+    AddBranch(&puppiMETPt_,     "puppiMETPt");
+    AddBranch(&puppiMETPhi_,    "puppiMETPhi");
+    AddBranch(&puppiMETSumEt_,  "puppiMETSumEt");
+    AddBranch(&puppiMETSig_,    "puppiMETSig");
+    AddBranch(&puppiMETUnc_,    "puppiMETUnc");
+  }
 }
 
 
@@ -139,12 +140,12 @@ void
 patMetTree::Clear(){
 
   float dummy = -99999;
-  patMetCorrPt_= dummy;  
-  patMetCorrPhi_= dummy; 
+  patMetCorrPt_= dummy;
+  patMetCorrPhi_= dummy;
   patMetCorrSumEt_= dummy;
   patMetCorrSig_= dummy;
   patMetCorrUnc_.clear();
-  
+
   patMetRawPt_= dummy;
   patMetRawPhi_= dummy;
   patMetRawSumEt_= dummy;
@@ -158,7 +159,7 @@ patMetTree::Clear(){
   mvaMetSumEt_  = dummy ;
   mvaMetSig_    = dummy ;
 
-  
+
   puppiMETPt_     = dummy ;
   puppiMETPhi_    = dummy ;
   puppiMETSumEt_  = dummy ;

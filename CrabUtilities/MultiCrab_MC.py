@@ -6,12 +6,13 @@ import os
 ## taskname   cfg.py  datasetname  numberofdiles
 ## cfg.py is configurable because data and MC will have different configurations.
 ## And number of files canbe used as number of lumis in that case. 
-postfix="_MC25ns_ReMiniAOD_20151026"
+postfix="_MC25ns_LegacyMC_20170328"
 
 ##var='/ZJetsToNuNu_HT-100To200_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
 
-outfile = open('datasetdetails_Spring15.txt','w')
-datasetfile = open('datasetdetails_Summer16.txt','r')
+outfile = open('allmonoHsamples.txt','w')
+datasetfile = open('allMCMonoHbb2016Legacy.txt','r')
+#datasetfile = open('datsetsMonoHbb.txt','r')
 for dataset in datasetfile:
     a=dataset.split('/')
     b=a[1]
@@ -27,7 +28,7 @@ outfile.close()
 
 def submit():
     print "submitting"
-    f = open('datasetdetails_Spring15.txt','r')
+    f = open('allmonoHsamples.txt','r')
     for line in f:
         print line
         a=[]
@@ -37,9 +38,8 @@ def submit():
         a,b,c,d = line.split()
         datasetdetail=[a,b,c,d]
         print datasetdetail
+        os.system('cp -p crabConfig_MC.py crabConfig.py')
         os.system('crab submit General.requestName='+datasetdetail[0]+' JobType.psetName='+datasetdetail[1]+' Data.inputDataset='+datasetdetail[2]+' Data.unitsPerJob='+datasetdetail[3])
-    #name =  'crab submit General.requestName='+datasetdetail[0]+' JobType.psetName='+datasetdetail[1]+' Data.inputDataset='+datasetdetail[2]+' Data.unitsPerJob='+datasetdetail[3]
-    #print name 
         
         
 
