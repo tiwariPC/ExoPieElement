@@ -406,7 +406,7 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
         fjet.addUserFloat("bRegNNCorr", bRegNN[0]*y_std_+y_mean_);
         fjet.addUserFloat("bRegNNResolution",0.5*(bRegNN[2]-bRegNN[1])*y_std_);
         //std::cout << "bRegNNCorr" << bRegNN[0]*y_std_+y_mean_  << std::endl;
-        std::cout << "checking userfloat" << fjet.userFloat("bRegNNCorr")  << std::endl;
+        //std::cout << "checking userfloat" << fjet.userFloat("bRegNNCorr")  << std::endl;
 
 
         jetColl->push_back( fjet );

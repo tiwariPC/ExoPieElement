@@ -120,7 +120,8 @@ process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(Fa
 
 # Input source
 if options.runOnMC:
-	testFile='/store/mc/RunIIFall17MiniAOD/GluGluHToBB_M125_13TeV_powheg_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/20000/C8932584-5006-E811-9840-141877410512.root'#'/store/mc/RunIIFall17MiniAOD/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/16E915A2-E60E-E811-AD53-001E67A3EF70.root'
+	#testFile='/store/mc/RunIIFall17MiniAOD/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/16E915A2-E60E-E811-AD53-001E67A3EF70.root'
+        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
 else:
 	testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
 
@@ -446,13 +447,50 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 for idmod in my_phoid_modules:
 	setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+## Jet Energy Resolution
+process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("appliedRegJets"),
 
+    enabled = cms.bool(True),  # If False, no smearing is performed
 
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+
+    # Resolution and scale factors source.
+    # Can be either from GT or text files
+    # For GT: only 'algo' must be set
+    # For text files: both 'resolutionFile' and 'scaleFactorFile' must point to valid files
+
+    # Read from GT
+    algopt = cms.string('AK4PFchs_pt'),
+    algo = cms.string('AK4PFchs'),
+
+    # Or from text files
+    #resolutionFile = cms.FileInPath('path/to/resolution_file.txt'),
+    #scaleFactorFile = cms.FileInPath('path/to/scale_factor_file.txt'),
+
+    # Gen jet matching
+    genJets = cms.InputTag("slimmedGenJets"),
+    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+
+    # Systematic variation
+    # 0: Nominal
+    # -1: -1 sigma (down variation)
+    # 1: +1 sigma (up variation)
+    variation = cms.int32(0),  # If not specified, default to 0
+
+    seed = cms.uint32(37428479),  # If not specified, default to 37428479
+    useDeterministicSeed = cms.bool(True),
+
+    debug = cms.untracked.bool(False)
+)
 
 #process.egmPhotonIDs.physicsObjectSrc = cms.InputTag("ncuslimmedPhoton")
 #process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag("ncuslimmedElectron")
 
-from DelPanj.TreeMaker.runTauIdMVA import *
+from ExoPieElement.TreeMaker.runTauIdMVA import *
 na = TauIDEmbedder(process, cms,
     debug=True,
     toKeep = ["2017v1", "2017v2", "newDM2017v2", "dR0p32017v2", "2016v1", "newDM2016v1"]
@@ -471,13 +509,13 @@ byVVTightIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byVVTightIsolationMVA
 ## For normal AK4 jets jet energy correction on top of miniAOD
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors
 process.patJetCorrFactorsReapplyJECAK4 = updatedPatJetCorrFactors.clone(
-	src = cms.InputTag("appliedRegJets"),
+	src = cms.InputTag("patSmearedJets"),
 	levels = jetCorrectionLevelsFullCHS,
 	payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
 
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJets
 process.patJetsReapplyJECAK4 = updatedPatJets.clone(
-	jetSource = cms.InputTag("appliedRegJets"),
+	jetSource = cms.InputTag("patSmearedJets"),
 	jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJECAK4"))
   )
 
@@ -534,7 +572,7 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 
 
-process.load('DelPanj.TreeMaker.TreeMaker_cfi')
+process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
 process.tree.THINjecNames          = cms.vstring(AK4JECTextFiles)
 process.tree.THINjecUncName        = cms.string(AK4JECUncTextFile)
@@ -551,7 +589,7 @@ process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
 
 
 if options.useJECText:
-	process.tree.THINJets      = cms.InputTag("appliedRegJets")
+	process.tree.THINJets      = cms.InputTag("patSmearedJets")
 	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
 	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
 	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
@@ -607,6 +645,7 @@ if not options.useJECText:
 		process.rerunMvaIsolationSequence
 		*process.NewTauIDsEmbedded+
 		process.fullPatMetSequenceModifiedMET+
+		process.patSmearedJets+
 		process.pfMet+
 		process.jetCorrSequenceAK4+
 		process.jetCorrSequenceAK8+
@@ -629,6 +668,7 @@ else:
 		process.rerunMvaIsolationSequence*
 		process.NewTauIDsEmbedded+
 		process.fullPatMetSequenceModifiedMET+
+		process.patSmearedJets+
 		process.pfMet+
 		process.BadPFMuonFilter+
 		process.BadChargedCandidateFilter+

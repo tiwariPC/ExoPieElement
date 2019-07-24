@@ -1,167 +1,90 @@
+# Installation of ExoPieElement and dependencies
 
-# DMAnaRun2
-
-## New Installation file
-### To install the new reduced Framework: 
-
-```
-wget https://raw.githubusercontent.com/deepakcern/DMAnaRun2/94x_2017_reduced/New_install_DM_in_cmssw9413.sh
-. New_install_DM_in_cmssw9413.sh
-```
+## This setup has been tested only for slc6 for centos7 please contact, work is in progress. 
 
 
+## setup CMSSW
 
+One need to update the SCRAM_ARCH at two places. 
 
-# Old Instructions
-
-
-# For CMSSW_9_2_7
-```
-setenv SCRAM_ARCH slc6_amd64_gcc530
-cmsrel CMSSW_9_2_7
-cd CMSSW_9_2_7/src
+export SCRAM_ARCH=slc6_amd64_gcc630
+cmsrel CMSSW_9_4_13
+cd CMSSW_9_4_13/src
 cmsenv
-```
 
-## For BadMuon Filters (default code is reversed logic)
+## checkout dependencies 
 
-```
+git cms-init
+
+git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
+
+git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3
+
+git cms-merge-topic cms-met:METFixEE2017_949_v2
+
+#For BadMuon Filters (default code is reversed logic)
 git cms-addpkg RecoMET/METFilters
-```
 
-## For ExoPieElement
+## checkout the ExoPieElement package. we need branch for 2017 analysis. 
+** update branch name here ** 
 
-```
-git clone git@github.com:tiwariPC/DMAnaRun2.git ExoPieElement
+git clone git@github.com:ExoPie/ExoPieElement.git
 
-cd ExoPieElement
 
-git checkout 92X_2017data_deepCSV_genMet
-
-cd -
-
+## checkout remaining dependencies
 cp -p ExoPieElement/tempfix/BadGlobalMuonTagger.cc RecoMET/METFilters/plugins/BadGlobalMuonTagger.cc
-```
 
-## For jetToolBox
-```
+
+## One need to check if the following two are still needed 
+
+##For jetToolBox
 git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox
 cd JMEAnalysis/JetToolbox
-git checkout jetToolbox_91X_v1
+git checkout jetToolbox_94X_v3
 cd -
-```
+
+##For DeepDoubleX
+git cms-merge-topic 25371
+git cms-addpkg RecoBTag/Combined
+cd RecoBTag/Combined/
+git clone -b V01-01-01 --depth 1 --no-checkout https://github.com/cms-data/RecoBTag-Combined.git data
+cd data
+git config core.sparseCheckout true
+echo 'DeepDoubleX/94X/V01/' > .git/info/sparse-checkout
+git checkout --
+cd $CMSSW_BASE/src
 
 
 ## Compile (due to the external packages, will take about 15-20 mins)
-```
 scramv1 b clean
-
-scramv1 b -j 2
-```
-
-## To test the job locally
-
-```
-cp -p ExoPieElement/miniIso_effectiveArea/*txt .
-
-mkdir jec
-cd jec
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016V3_MC.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016BCDV3_DATA.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016EFV3_DATA.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016GV3_DATA.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016HV3_DATA.tar.gz
-
-tar xvzf Summer16_23Sep2016V3_MC.tar.gz
-tar xvzf Summer16_23Sep2016BCDV3_DATA.tar.gz
-tar xvzf Summer16_23Sep2016EFV3_DATA.tar.gz
-tar xvzf Summer16_23Sep2016GV3_DATA.tar.gz
-tar xvzf Summer16_23Sep2016HV3_DATA.tar.gz
-
-cd -
-mv jec/*PFchs.txt .
-mv jec/*PFPuppi.txt .
-rm -rf jec
-
-voms-proxy-init --voms cms
-cmsRun ExoPieElement/TreeMaker/test/RunCongigTest/treeMaker_Summer17_cfg.py runOnMC=True
-cmsRun ExoPieElement/TreeMaker/test/RunCongigTest/treeMaker_Summer17_cfg.py runOnMC=False period=G
-
-```
-
-Note, you need to add these text files as extra input files when submitting CRAB jobs.
-
-# The instruction below needs to be updated for 2017 data when more information is available
-
-## To submit MC crab jobs
-modify directories in crabConfig.py and dataset in MultiCrab_dihiggs.py according to your need
-```
-cd ExoPieElement/CrabUtilities
-cp -p ../TreeMaker/test/RunCongigTest/treeMaker_Summer16_cfg.py .
-cp -p ../miniIso_effectiveArea/*txt .
-
-mkdir jec
-cd jec
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016V3_MC.tar.gz
-tar xvzf Summer16_23Sep2016V3_MC.tar.gz
-
-cd -
-mv jec/*PFchs.txt .
-mv jec/*PFPuppi.txt .
-rm -rf jec
+scramv1 b -j 10
 
 
-cp -p crabConfig_MC.py crabConfig.py
+## Add the area containing the MVA weights (from cms-data, to appear in "external").  Note: the "external" area appears after "scram build" is run at least once, as above 
+cd $CMSSW_BASE/external
 
-source /cvmfs/cms.cern.ch/crab3/crab.csh or source /cvmfs/cms.cern.ch/crab3/crab.sh
-voms-proxy-init --voms cms
-python MultiCrab_dihiggs.py submit
-```
+## below, you may have a different architecture, this is just one example from lxplus
+## always update this when changing the CMSSW 
+cd slc6_amd64_gcc630/
+git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data
+cd data/RecoEgamma/PhotonIdentification/data
+git checkout CMSSW_9_4_0_pre3_TnP
+cd $CMSSW_BASE/external
+cd slc6_amd64_gcc630/
+git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
+cd data/RecoEgamma/ElectronIdentification/data
+git checkout CMSSW_9_4_0_pre3_TnP
 
-## To submit data crab jobs (Remember to update your JSON file)
-modify directories in crabConfig_data.py and dataset in MultiCrab_2016data.py according to your need
+## Go back to the src/
+cd $CMSSW_BASE/src
+scram b -j 10
 
-Check this hypernews for the latest JSON file name:
-https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation.html
+## cleanup
+cd $CMSSW_BASE/external/slc6_amd64_gcc630/data/RecoEgamma/PhotonIdentification/data/
+rm -rf Spring15/ Spring16/
 
-If you are adding data, you do not need to re-run the full dataset, you could just add data by comparing the difference between the updated JSON and the old JSON files
-https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGoodLumiSectionsJSONFile#How_to_compare_Good_Luminosity_f
+cd $CMSSW_BASE/external/slc6_amd64_gcc630/data/RecoEgamma/ElectronIdentification/data/
+rm -rf Spring15/ Spring16_GeneralPurpose_V1/ Spring16_HZZ_V1/
 
-```
-cd ExoPieElement/CrabUtilities
-cp -p ../TreeMaker/test/RunCongigTest/treeMaker_Summer16_cfg.py .
-cp -p ../miniIso_effectiveArea/*txt .
+cd $CMSSW_BASE/src
 
-mkdir jec
-cd jec
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016BCDV3_DATA.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016EFV3_DATA.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016GV3_DATA.tar.gz
-wget https://github.com/cms-jet/JECDatabase/raw/master/tarballs/Summer16_23Sep2016HV3_DATA.tar.gz
-
-tar xvzf Summer16_23Sep2016BCDV3_DATA.tar.gz
-tar xvzf Summer16_23Sep2016EFV3_DATA.tar.gz
-tar xvzf Summer16_23Sep2016GV3_DATA.tar.gz
-tar xvzf Summer16_23Sep2016HV3_DATA.tar.gz
-
-cd -
-mv jec/*PFchs.txt .
-mv jec/*PFPuppi.txt .
-rm -rf jec
-```
-### Modify crabConfig_data.py and MultiCrab_2016data.py
-
-Change workdirectory and dataset names
-
-#### Remember to update your JSON file
-```
-wget https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
-
-or
-
-cp -p /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt .
-
-source /cvmfs/cms.cern.ch/crab3/crab.csh or source /cvmfs/cms.cern.ch/crab3/crab.sh
-voms-proxy-init --voms cms
-python MultiCrab_2016data.py submit
-```
