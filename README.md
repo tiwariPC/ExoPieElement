@@ -1,4 +1,15 @@
 New README
+## setup CMSSW
+
+One need to update the SCRAM_ARCH at two places. 
+
+export SCRAM_ARCH=slc6_amd64_gcc630
+
+cmsrel CMSSW_9_4_13
+
+cd CMSSW_9_4_13/src
+
+cmsenv
 
 git cms-init
 
@@ -7,6 +18,18 @@ git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file t
 
 git cms-merge-topic cms-met:METFixEE2017_949_v2
 
+
+git clone git@github.com:ExoPie/ExoPieElement.git
+
+scram b -j 4 
+
+cd ExoPieElement/TreeMaker
+
+config file to run is in test dir: named treeMaker_Summer17_cfg.py 
+
+cmsRun treeMaker_Summer17_cfg.py ### login to lxplus602. 
+
+If the file doesn't work, instead of /tmp/khurana.... use filename, it will take some time to run via xrootd. 
 
 ----------------------------------------------------------------------------------------------------------------------------
 Following is old instructions, will be removed in next version.
