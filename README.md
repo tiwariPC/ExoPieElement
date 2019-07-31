@@ -1,3 +1,21 @@
+New README
+git cms-init
+git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier
+
+git cms-merge-topic cms-met:METFixEE2017_949_v2
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Installation of ExoPieElement and dependencies
 
 ## This setup has been tested only for slc6 for centos7 please contact, work is in progress. 

@@ -35,7 +35,9 @@ patElecTree::Fill(const edm::Event& iEvent){
 
   edm::Handle<edm::View<pat::Electron> > electronHandle;
   iEvent.getByToken(eleToken,electronHandle);
-  //id boolean
+
+  /*  //id boolean
+  
 
   edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
@@ -52,17 +54,26 @@ patElecTree::Fill(const edm::Event& iEvent){
   edm::Handle<edm::ValueMap<bool> > medium_MVAid_decisions;
   edm::Handle<edm::ValueMap<bool> > tight_MVAid_decisions;
 
+  std::cout<< "just before ele id decision "<<std::endl;
+  
   iEvent.getByToken(eleVetoIdMapToken,   veto_id_decisions);
   iEvent.getByToken(eleVetoIdCFToken,    veto_id_cutflow);
+
+
+  std::cout<<" just before loose "<<std::endl;
 
   iEvent.getByToken(eleLooseIdMapToken,  loose_id_decisions);
   iEvent.getByToken(eleLooseIdCFToken,   loose_id_cutflow);
 
+  std::cout<<" just before medium"<<std::endl;
+    
   iEvent.getByToken(eleMediumIdMapToken, medium_id_decisions);
   iEvent.getByToken(eleMediumIdCFToken,  medium_id_cutflow);
 
   iEvent.getByToken(eleTightIdMapToken,  tight_id_decisions);
   iEvent.getByToken(eleTightIdCFToken,   tight_id_cutflow);
+
+  std::cout<<" just before heep"<<std::endl;
 
   iEvent.getByToken(eleHEEPIdMapToken,   heep_id_decisions);
   iEvent.getByToken(eleHEEPIdCFToken,    heep_id_cutflow);
@@ -82,12 +93,16 @@ patElecTree::Fill(const edm::Event& iEvent){
   iEvent.getByToken(mvaValuesMapToken,      mvaValues);
   iEvent.getByToken(mvaCategoriesMapToken,  mvaCategories);
 
+  */
+
   edm::Handle<reco::VertexCollection> recVtxs;
   if(not iEvent.getByToken(vertexToken, recVtxs))return;
 
   if (recVtxs->empty()) return; // skip the event if no PV found
   vector<reco::Vertex>::const_iterator firstGoodVertex = recVtxs->end();
   //VertexCollection::const_iterator firstGoodVertex = recVtxs->end();
+
+  std::cout<<" just before vertex loop"<<std::endl;
   int firstGoodVertexIdx = 0;
   //  for (VertexCollection::const_iterator vtx = recVtxs->begin(); vtx != recVtxs->end(); ++vtx, ++firstGoodVertexIdx) {
   for (vector<reco::Vertex>::const_iterator vtx = recVtxs->begin(); vtx != recVtxs->end(); ++vtx, ++firstGoodVertexIdx) {
@@ -122,7 +137,8 @@ patElecTree::Fill(const edm::Event& iEvent){
     if(ele->pt() < 10.) continue;
     if(TMath::Abs(ele->eta()) > 2.5) continue;
     nEle_++;
-
+    
+    std::cout<<" just before ele p4"<<std::endl;
     new( (*patElecP4_)[nEle_-1]) TLorentzVector(
 						ele->p4().px(),
 						ele->p4().py(),
@@ -141,7 +157,7 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecCharge_.push_back(ele->charge());
     patElecChargeConsistent_.push_back(ele->isGsfCtfScPixChargeConsistent());
 
-
+    std::cout<<" just before caloenergy"<<std::endl;
     patElecaloEnergy_.push_back(ele->caloEnergy());
 
     double R = sqrt(ele->superCluster()->x()*ele->superCluster()->x() + ele->superCluster()->y()*ele->superCluster()->y() +ele->superCluster()->z()*ele->superCluster()->z());
@@ -171,6 +187,8 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecSigmaIPhiIPhi_.push_back(ele->sigmaIphiIphi());
 
 
+    std::cout<<" just before ele conv veto"<<std::endl;
+    
     patElecConvVeto_.push_back(ele->passConversionVeto()); // ConvVtxFit || missHit == 0
     patElecMissHits_.push_back(ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS));
     if (ele->ecalEnergy() == 0) {
@@ -196,8 +214,9 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecE2x5Full5x5_.push_back(ele->full5x5_e2x5Max());
     patElecE5x5Full5x5_.push_back(ele->full5x5_e5x5());
     patElecR9Full5x5_.push_back(ele->full5x5_r9());
+    
 
-
+    std::cout<<" just before isolation vars"<<std::endl;
     //To include in anlyzer code
     /*    edm::FileInPath eaConstantsFile("EgammaAnalysis/ElectronTools/data/PHYS14/effAreaElectrons_cone03_pfNeuHadronsAndPhotons.txt");
 	  EffectiveAreas effectiveAreas(eaConstantsFile.fullPath());
@@ -224,6 +243,7 @@ patElecTree::Fill(const edm::Event& iEvent){
 		   eAreasElectrons, ele->superCluster()->eta(),
 		   *rhoH, r_iso_min_, r_iso_max_, kt_scale_, charged_only_);
 
+    std::cout<<" just before miniIso"<<std::endl;
     patElecMiniIso_ch_.push_back(miniIso[0]);
     patElecMiniIso_nh_.push_back(miniIso[1]);
     patElecMiniIso_ph_.push_back(miniIso[2]);
@@ -256,37 +276,18 @@ patElecTree::Fill(const edm::Event& iEvent){
        }
        }*/
 
+    std::cout<<" just before saving id decision"<<std::endl;
     const auto el = electronHandle->ptrAt(nEle_-1);
 
 
-    isPassVeto_.push_back( (*veto_id_decisions)[el]);
-    isPassLoose_.push_back( (*loose_id_decisions)[el]);
-    isPassMedium_.push_back( (*medium_id_decisions)[el]);
-    isPassTight_.push_back( (*tight_id_decisions)[el]);
-    isPassHEEP_.push_back( (*heep_id_decisions)[el]);
+    std::cout<<" just before saving veto id decision"<<std::endl;
+    isPassVeto_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-veto"));
+    isPassLoose_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
+    isPassMedium_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-medium"));
+    isPassTight_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-tight"));
+    isPassHEEP_.push_back(ele->electronID("heepElectronID-HEEPV70"));
 
-
-    vid::CutFlowResult veto_noiso = (*veto_id_cutflow)[el].getCutFlowResultMasking(maskCutBasedCuts);
-    isPassVetoNoIso_.push_back(veto_noiso.cutFlowPassed());
-
-    vid::CutFlowResult loose_noiso = (*loose_id_cutflow)[el].getCutFlowResultMasking(maskCutBasedCuts);
-    isPassLooseNoIso_.push_back(loose_noiso.cutFlowPassed());
-
-    vid::CutFlowResult medium_noiso = (*medium_id_cutflow)[el].getCutFlowResultMasking(maskCutBasedCuts);
-    isPassMediumNoIso_.push_back(medium_noiso.cutFlowPassed());
-
-    vid::CutFlowResult tight_noiso = (*tight_id_cutflow)[el].getCutFlowResultMasking(maskCutBasedCuts);
-    isPassTightNoIso_.push_back(tight_noiso.cutFlowPassed());
-
-    vid::CutFlowResult heep_noiso = (*heep_id_cutflow)[el].getCutFlowResultMasking(maskHEEPCuts);
-    isPassHEEPNoIso_.push_back(heep_noiso.cutFlowPassed());
-
-    isPassMVAMedium_.push_back( (*medium_MVAid_decisions)[el]);
-    isPassMVATight_.push_back( (*tight_MVAid_decisions)[el]);
-
-    mvaValue_.push_back( (*mvaValues)[el] );
-    mvaCategory_.push_back( (*mvaCategories)[el] );
-
+    
   }
 }
 bool ele_extra = false;
@@ -296,7 +297,6 @@ patElecTree::SetBranches(){
 
   AddBranch(&patElecRho_, "eleRho");
   AddBranch(&nEle_, "nEle");
-  //AddBranch(&patElecP4_,"eleP4");
 
 
   AddBranch(&patElecPx_, "elePx");
@@ -309,7 +309,8 @@ patElecTree::SetBranches(){
   AddBranch(&isPassLoose_,"eleIsPassLoose");
   AddBranch(&isPassMedium_,"eleIsPassMedium");
   AddBranch(&isPassTight_,"eleIsPassTight");
-  AddBranch(&isPassHEEP_,"eleIsPassHEEP");
+  
+  //AddBranch(&isPassHEEP_,"eleIsPassHEEP");
 
   if (ele_extra){
     AddBranch(&patElecP4_,"eleP4");

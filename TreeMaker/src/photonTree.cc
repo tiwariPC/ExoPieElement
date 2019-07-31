@@ -26,6 +26,7 @@ void photonTree::Fill(const edm::Event& iEvent){
  //sort the objects by transverse momentum
   //std::sort(phColl.begin(),phColl.end(),PtGreater());
 
+  /*
   // IDs
   edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
@@ -47,7 +48,7 @@ void photonTree::Fill(const edm::Event& iEvent){
   iEvent.getByToken(phoChargedIsolationToken,       phoChargedIsolationMap);
   iEvent.getByToken(phoNeutralHadronIsolationToken, phoNeutralHadronIsolationMap);
   iEvent.getByToken(phoPhotonIsolationToken,        phoPhotonIsolationMap);
-
+  */
 
   edm::View<pat::Photon>::const_iterator ph;
   //pat::PhotonCollection::const_iterator ph;
@@ -71,16 +72,17 @@ void photonTree::Fill(const edm::Event& iEvent){
     const auto pho = photonHandle->ptrAt(nPho_-1);
     // std::cout<<" loose id = "<<(*loose_id_decisions)[pho]<<std::endl;
 
-    isPassLoose.push_back((*loose_id_decisions)[pho]);
-    isPassMedium.push_back((*medium_id_decisions)[pho]);
-    isPassTight.push_back((*tight_id_decisions)[pho]);
-    phoIDMVA_.push_back((*mvaValues)[pho]);
+    isPassLoose.push_back(ph->photonID("cutBasedPhotonID-Fall17-94X-V2-loose"));
+    isPassMedium.push_back(ph->photonID("cutBasedPhotonID-Fall17-94X-V2-medium"));
+    isPassTight.push_back(ph->photonID("cutBasedPhotonID-Fall17-94X-V2-tight"));
+    
+    //phoIDMVA_.push_back(ph->photonID(""));
 
-
+    /*
     phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
     phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho]);
     phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
-
+    */
     // --------
     // Photon ID variables used to make photon ID booleans.
     // --------
@@ -108,6 +110,8 @@ void photonTree::Fill(const edm::Event& iEvent){
   }
 
 }
+
+
 bool pho_extra = false;
 void photonTree::SetBranches(){
   AddBranch(&nPho_  ,"nPho");

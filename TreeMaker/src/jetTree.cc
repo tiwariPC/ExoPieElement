@@ -39,6 +39,8 @@ const math::XYZPoint & position(const reco::Vertex & sv) {return sv.position();}
 const math::XYZPoint & position(const reco::VertexCompositePtrCandidate & sv) {return sv.vertex();}
 
 jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig):
+
+  
   baseTree(desc, tree),
   isTHINJet_(false),
   isFATJet_(false),
@@ -64,9 +66,9 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   if (desc.find("CA15Puppi")!=std::string::npos)
     isCA15PuppiJet_=true;
 
-  std::cout << desc << std::endl;
+  std::cout << " inside jet tree "<< desc << std::endl;
 
-
+  
   genjetP4_    = new TClonesArray("TLorentzVector");
   jetP4_       = new TClonesArray("TLorentzVector");
   unCorrJetP4_ = new TClonesArray("TLorentzVector");
@@ -101,6 +103,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
 
     } // if it's FATjet
 
+  std::cout<<" before ca15 "<<std::endl;
   if(isCA15PuppiJet_){
     /* ECF: Starts here */
     jetDefCA = new fastjet::JetDefinition(fastjet::cambridge_algorithm, radius);
@@ -120,12 +123,15 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
     ecfnmanager = new ECFNManager();
 
     /* ECF: Ends here */
-
+    
+    
+    
     std::string cmssw_base = getenv("CMSSW_BASE");
     std::string fweight = cmssw_base+"/src/ExoPieElement/TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml";
     mJetBoostedBtaggingMVACalc.initialize("BDT",fweight);
   } // if it's CA15Puppijet
 
+  std::cout<<" after ca15 dbt "<<std::endl;
   if(useJECText_)
     {
 
@@ -144,7 +150,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
       jecUncText_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecUncName_) );
     }
 
-
+  std::cout<<" after jec "<<std::endl;
 
 
 }

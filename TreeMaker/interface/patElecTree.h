@@ -62,6 +62,7 @@ class patElecTree : public baseTree {
   edm::EDGetTokenT<edm::View<pat::Electron>>        eleToken;
   edm::EDGetTokenT<pat::PackedCandidateCollection>  pfCandToken;
 
+  /*
   // cut-based
   edm::EDGetTokenT<edm::ValueMap<bool>> eleVetoIdMapToken;
   edm::EDGetTokenT<edm::ValueMap<bool>> eleLooseIdMapToken;
@@ -83,7 +84,7 @@ class patElecTree : public baseTree {
   // MVA values and categories (optional)
   edm::EDGetTokenT<edm::ValueMap<float>> mvaValuesMapToken;
   edm::EDGetTokenT<edm::ValueMap<int>> mvaCategoriesMapToken;
-
+  */
 
  private:
 

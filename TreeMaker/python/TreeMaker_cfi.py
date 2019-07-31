@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 tree = cms.EDAnalyzer(
-    'TreeMaker',
+    'ExoPieElement',
     fillPUweightInfo = cms.bool(True),
     fillEventInfo    = cms.bool(True),
     fillMetInfo      = cms.bool(True),
@@ -22,18 +22,15 @@ tree = cms.EDAnalyzer(
 
     pvSrc            = cms.InputTag('offlineSlimmedPrimaryVertices'),
 
-    patMetRaw        = cms.InputTag("pfMet"),
     patMet           = cms.InputTag("slimmedMETs"),
-    pfMetRaw         = cms.InputTag("pfMet"),
     pfType1Met       = cms.InputTag("slimmedMETsModifiedMET"),
-    pfMVAMET         = cms.InputTag("slimmedMETs"),
     puppiMET         = cms.InputTag("slimmedMETsPuppi"),
 
     ## filter
 
     triggerLabel     = cms.InputTag("TriggerResults::HLT"),
     saveAllTrigPaths = cms.bool(False),
-    filterLabel      = cms.InputTag("TriggerResults::RECO"),
+    filterLabel      = cms.InputTag("TriggerResults::PAT"),
 
     genPartLabel         = cms.InputTag("prunedGenParticles"),
     genParticles       = cms.InputTag("packedGenParticles"),
@@ -55,10 +52,10 @@ tree = cms.EDAnalyzer(
 
     ### Electrons
     eleLabel       = cms.InputTag("slimmedElectrons"),
-    eleVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
-    eleLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
-    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
-    eleTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
+    eleVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto"),
+    eleLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose"),
+    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium"),
+    eleTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight"),
     eleHEEPIdMap   = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV70"),
     #
     # ID decisions (common to all formats)
