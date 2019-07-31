@@ -74,12 +74,25 @@ class patMuonTree : public baseTree {
   std::vector<bool> isTrackerMuon;
   std::vector<bool> isPFMuon;
   
-  std::vector<bool> isTightMuon;
+  std::vector<bool> isSoftMuon;
+  
   std::vector<bool> isLooseMuon;
   std::vector<bool> isMediumMuon;
-  std::vector<bool> isSoftMuon;
+  std::vector<bool> isMediumPromptMuon; // adding new id var
+  std::vector<bool> isTightMuon;
+  
   std::vector<bool> isHighPtMuon;
   std::vector<bool> isCustomTrackerMuon;
+  
+  // adding new id and iso vars 
+  
+  std::vector<bool> PFIsoVeryLoose;
+  std::vector<bool> PFIsoLoose;
+  std::vector<bool> PFIsoMedium;
+  std::vector<bool> PFIsoTight;
+  std::vector<bool> PFIsoVeryTight;
+
+
   
   std::vector<int>   patMuonITrkIndex;
   std::vector<int>   patMuonSegIndex;
@@ -114,7 +127,8 @@ class patMuonTree : public baseTree {
   std::vector<float> patMuonGamIso;
   std::vector<float> patMuonPUPt;
   std::vector<float> patMuonInnerTrkPt;
-
+  
+  /*
   // miniIso input
   std::vector<float> patMuonMiniIso_ch;
   std::vector<float> patMuonMiniIso_nh;
@@ -123,7 +137,7 @@ class patMuonTree : public baseTree {
   std::vector<float> patMuonMiniIso_r;
   std::vector<float> patMuonMiniIsoBeta; // subtracting pu via beta
   std::vector<float> patMuonMiniIsoEA; // subtracting pu via rho/EA
-
+  */
  
   
 };

@@ -96,20 +96,36 @@ patMuonTree::Fill(const edm::Event& iEvent){
     isGlobalMuon.push_back(mu->isGlobalMuon());
     isTrackerMuon.push_back(mu->isTrackerMuon());
     isPFMuon.push_back(mu->isPFMuon());
+    isSoftMuon.push_back(mu->passed(reco::Muon::SoftCutBasedId));
+    isLooseMuon.push_back(mu->passed(reco::Muon::CutBasedIdLoose));
+    isMediumMuon.push_back(mu->passed(reco::Muon::CutBasedIdMedium));
+    isMediumPromptMuon.push_back(mu->passed(reco::Muon::CutBasedIdMediumPrompt));
+    isTightMuon.push_back(mu->passed(reco::Muon::CutBasedIdTight));
+    isHighPtMuon.push_back(mu->passed(reco::Muon::CutBasedIdGlobalHighPt));
+    isCustomTrackerMuon.push_back(mu->passed(reco::Muon::CutBasedIdTrkHighPt));
+    
+    PFIsoVeryLoose.push_back(mu->passed(reco::Muon::PFIsoVeryLoose));
+    PFIsoLoose.push_back(mu->passed(reco::Muon::PFIsoLoose));
+    PFIsoMedium.push_back(mu->passed(reco::Muon::PFIsoMedium));
+    PFIsoTight.push_back(mu->passed(reco::Muon::PFIsoTight));
+    PFIsoVeryTight.push_back(mu->passed(reco::Muon::PFIsoVeryTight));
+    
+    //if(FilteredVertexCollection.size()>0) isTightMuon.push_back(mu->isTightMuon(vertex));
+    //else isTightMuon.push_back(false);
 
-    if(FilteredVertexCollection.size()>0) isTightMuon.push_back(mu->isTightMuon(vertex));
-    else isTightMuon.push_back(false);
+    
+    //isLooseMuon.push_back(mu->isLooseMuon());
+    //isMediumMuon.push_back(mu->isMediumMuon());
+    //if(FilteredVertexCollection.size()>0) isSoftMuon.push_back(mu->isSoftMuon(vertex));
+    //else isSoftMuon.push_back(false);
 
-    isLooseMuon.push_back(mu->isLooseMuon());
-    isMediumMuon.push_back(mu->isMediumMuon());
-    if(FilteredVertexCollection.size()>0) isSoftMuon.push_back(mu->isSoftMuon(vertex));
-    else isSoftMuon.push_back(false);
+    //if(FilteredVertexCollection.size()>0) isHighPtMuon.push_back(mu->isHighPtMuon(vertex));
+    //else isHighPtMuon.push_back(false);
 
-    if(FilteredVertexCollection.size()>0) isHighPtMuon.push_back(mu->isHighPtMuon(vertex));
-    else isHighPtMuon.push_back(false);
-
-    if(FilteredVertexCollection.size()>0) isCustomTrackerMuon.push_back(CustisTrackerMuon(&(*mu),vertex));
-    else isCustomTrackerMuon.push_back(false);
+    //if(FilteredVertexCollection.size()>0) isCustomTrackerMuon.push_back(CustisTrackerMuon(&(*mu),vertex));
+    //else isCustomTrackerMuon.push_back(false);
+    
+    
     // for finding shared segments reason not known
     int muonIndex=-1;
     int tempTrackIndex=-1;
@@ -194,6 +210,7 @@ patMuonTree::Fill(const edm::Event& iEvent){
 
     patMuonInnerTrkPt.push_back((mu->innerTrack().isNonnull() ? mu->innerTrack()->pt() : 0));
 
+    /*
     double miniIso[7]={0};
     getPFIsolation(miniIso, pfcands, dynamic_cast<const reco::Candidate *>(&(*mu)),
 		   eAreasMuons, -999.,
@@ -206,7 +223,7 @@ patMuonTree::Fill(const edm::Event& iEvent){
     patMuonMiniIso_r.push_back(miniIso[4]);
     patMuonMiniIsoBeta.push_back(miniIso[5]);
     patMuonMiniIsoEA.push_back(miniIso[6]);
-
+    */
 
   }
 }
@@ -232,6 +249,15 @@ patMuonTree::SetBranches(){
   AddBranch(&isTightMuon,"isTightMuon");
   AddBranch(&isLooseMuon,"isLooseMuon");
   AddBranch(&isMediumMuon,"isMediumMuon");
+  AddBranch(&isMediumPromptMuon,"isMediumPromptMuon");
+  AddBranch(&isSoftMuon,"isSoftMuon");
+
+  AddBranch(&PFIsoVeryLoose,"PFIsoVeryLoose");
+  AddBranch(&PFIsoLoose,"PFIsoLoose");
+  AddBranch(&PFIsoMedium,"PFIsoMedium");
+  AddBranch(&PFIsoTight,"PFIsoTight");
+  AddBranch(&PFIsoVeryTight,"PFIsoVeryTight");
+
 
   AddBranch(&patMuonChHadIso, "muChHadIso");
   AddBranch(&patMuonNeHadIso, "muNeHadIso");
@@ -240,7 +266,6 @@ patMuonTree::SetBranches(){
 
   if (mu_extra){
     AddBranch(&patMuonP4,"muP4");
-    AddBranch(&isSoftMuon,"isSoftMuon");
     AddBranch(&isHighPtMuon,"isHighPtMuon");
     AddBranch(&isCustomTrackerMuon,"isCustomTrackerMuon");
     AddBranch(&patMuonITrkIndex, "muITrkID");
@@ -274,6 +299,7 @@ patMuonTree::SetBranches(){
 
     AddBranch(&patMuonInnerTrkPt, "muInnerTrkPt");
 
+    /*
     AddBranch(&patMuonMiniIso_ch,"muMiniIso_ch");
     AddBranch(&patMuonMiniIso_nh,"muMiniIso_nh");
     AddBranch(&patMuonMiniIso_ph,"muMiniIso_ph");
@@ -281,6 +307,7 @@ patMuonTree::SetBranches(){
     AddBranch(&patMuonMiniIso_r,"muMiniIso_r");
     AddBranch(&patMuonMiniIsoBeta,"muMiniIsoBeta");
     AddBranch(&patMuonMiniIsoEA,"muMiniIsoEA");
+    */
   }
 }
 void
@@ -295,6 +322,7 @@ patMuonTree::Clear(){
   patMuonE_.clear();
 
 
+  
   patMuonType.clear();
   patMuonCharge.clear();
 
@@ -304,10 +332,18 @@ patMuonTree::Clear(){
   isTightMuon.clear();
   isLooseMuon.clear();
   isMediumMuon.clear();
+  isMediumPromptMuon.clear();
   isSoftMuon.clear();
   isHighPtMuon.clear();
   isCustomTrackerMuon.clear();
   patMuonITrkIndex.clear();
+
+  PFIsoVeryLoose.clear();
+  PFIsoLoose.clear();
+  PFIsoMedium.clear();
+  PFIsoTight.clear();
+  PFIsoVeryTight.clear();
+
   patMuonSegIndex.clear();
   patMuonNSeg.clear();
   patMuonGood.clear();
@@ -343,7 +379,7 @@ patMuonTree::Clear(){
   patMuonPUPt.clear();
   patMuonInnerTrkPt.clear();
 
-
+  /*
   patMuonMiniIso_ch.clear();
   patMuonMiniIso_nh.clear();
   patMuonMiniIso_ph.clear();
@@ -351,6 +387,6 @@ patMuonTree::Clear(){
   patMuonMiniIso_r.clear();
   patMuonMiniIsoBeta.clear();
   patMuonMiniIsoEA.clear();
-
+  */
 
 }
