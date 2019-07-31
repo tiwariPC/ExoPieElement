@@ -254,8 +254,8 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
   if( fillElecInfo_ )     patElecTree_   ->Fill(iEvent);
   if( fillPhotInfo_ )     photonTree_    ->Fill(iEvent);
-  if( fillMuonInfo_ )     patMuTree_     ->Fill(iEvent);
-    /*
+     if( fillMuonInfo_ )     patMuTree_     ->Fill(iEvent);
+     /*
       
       if( fillTauInfo_ )      tauTree_       ->Fill(iEvent, iSetup);
 

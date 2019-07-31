@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 tree = cms.EDAnalyzer(
-    'ExoPieElement',
+    'TreeMaker',
     fillPUweightInfo = cms.bool(True),
     fillEventInfo    = cms.bool(True),
     fillMetInfo      = cms.bool(True),
