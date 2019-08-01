@@ -2,11 +2,10 @@
 //
 // Package:    TreeMaker
 // Class:      TreeMaker
-// Original Author:  Anil Singh, Ashok Kumar, Shin-Shan Yu, Raman Khurana, Yun-Ju Lu
-//                   Panjab University, Delhi University
+// Original Author:  Shin-Shan Yu, Raman Khurana, Yun-Ju Lu
 //                   National Central University
 //         Created:  Tue Jul  6 21:04:59 CEST 2010
-//
+//Updated on: July 31 2019, Raman KHURANA
 
 
 // system include files
@@ -255,10 +254,10 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillElecInfo_ )     patElecTree_   ->Fill(iEvent);
   if( fillPhotInfo_ )     photonTree_    ->Fill(iEvent);
   if( fillMuonInfo_ )     patMuTree_     ->Fill(iEvent);
+  if( fillTauInfo_ )      tauTree_       ->Fill(iEvent, iSetup);
+
      /*
       
-      if( fillTauInfo_ )      tauTree_       ->Fill(iEvent, iSetup);
-
   if( fillFATJetInfo_ )   FATjetTree_    ->Fill(iEvent, iSetup);
   if( fillJetInfo_ )      THINjetTree_   ->Fill(iEvent, iSetup);
   if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);

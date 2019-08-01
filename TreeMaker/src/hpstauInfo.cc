@@ -47,41 +47,13 @@ void hpstauInfo::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
     TauPz_.push_back(tau->pz());
     TauE_.push_back(tau->energy());
 
-    //new disc for CSA14
-    //disc_againstElectronLoose.push_back(tau->tauID("againstElectronLoose"));
-    //disc_againstElectronMedium.push_back(tau->tauID("againstElectronMedium"));
-    //disc_againstElectronTight.push_back(tau->tauID("againstElectronTight"));
-    disc_againstElectronLooseMVA6.push_back(tau->tauID("againstElectronLooseMVA6"));
-    disc_againstElectronMediumMVA6.push_back(tau->tauID("againstElectronMediumMVA6"));
-    disc_againstElectronTightMVA6.push_back(tau->tauID("againstElectronTightMVA6"));
-    disc_againstElectronVLooseMVA6.push_back(tau->tauID("againstElectronVLooseMVA6"));
-    disc_againstElectronVTightMVA6.push_back(tau->tauID("againstElectronVTightMVA6"));
-    //disc_againstMuonLoose.push_back(tau->tauID("againstMuonLoose"));
-    //disc_againstMuonMedium.push_back(tau->tauID("againstMuonMedium"));
-    //disc_againstMuonTight.push_back(tau->tauID("againstMuonTight"));
-    //disc_againstMuonLoose2.push_back(tau->tauID("againstMuonLoose3"));
-    //disc_againstMuonMedium2.push_back(tau->tauID("againstMuonMedium3"));
-    //disc_againstMuonTight2.push_back(tau->tauID("againstMuonTight3"));
-    //disc_againstMuonLooseMVA.push_back(tau->tauID("againstMuonLooseMVA"));
-    //disc_againstMuonMediumMVA.push_back(tau->tauID("againstMuonMediumMVA"));
-    //disc_againstMuonTightMVA.push_back(tau->tauID("againstMuonTightMVA"));
-    disc_againstMuonLoose3.push_back(tau->tauID("againstMuonLoose3"));
-    disc_againstMuonTight3.push_back(tau->tauID("againstMuonTight3"));
-
-    //disc_byVLooseCombinedIsolationDeltaBetaCorr.push_back(tau->tauID("byVLooseCombinedIsolationDeltaBetaCorr"));
-    //disc_byLooseCombinedIsolationDeltaBetaCorr.push_back(tau->tauID("byLooseCombinedIsolationDeltaBetaCorr"));
-    //disc_byMediumCombinedIsolationDeltaBetaCorr.push_back(tau->tauID("byMediumCombinedIsolationDeltaBetaCorr"));
-    //disc_byTightCombinedIsolationDeltaBetaCorr.push_back(tau->tauID("byTightCombinedIsolationDeltaBetaCorr"));
-
-    //disc_byLooseIsolation.push_back(tau->tauID("byLooseIsolation"));
-
-    //disc_byVLooseIsolationMVArun2v1DBoldDMwLT.push_back(tau->tauID("byVLooseIsolationMVArun2v1DBoldDMwLT"));
-    //disc_byLooseIsolationMVArun2v1DBoldDMwLT.push_back(tau->tauID("byLooseIsolationMVArun2v1DBoldDMwLT"));
-    //disc_byMediumIsolationMVArun2v1DBoldDMwLT.push_back(tau->tauID("byMediumIsolationMVArun2v1DBoldDMwLT"));
-    //disc_byTightIsolationMVArun2v1DBoldDMwLT.push_back(tau->tauID("byTightIsolationMVArun2v1DBoldDMwLT"));
-    //disc_byVTightIsolationMVArun2v1DBoldDMwLT.push_back(tau->tauID("byVTightIsolationMVArun2v1DBoldDMwLT"));
-    //disc_byVVTightIsolationMVArun2v1DBoldDMwLT.push_back(tau->tauID("byVVTightIsolationMVArun2v1DBoldDMwLT"));
-
+    // New Tau Disc for Fall17 V2 
+    
+    // -- decay mode finding 
+    disc_decayModeFinding.push_back(tau->tauID("decayModeFinding"));
+    disc_decayModeFindingNewDMs.push_back(tau->tauID("decayModeFindingNewDMs"));
+    
+    // -- isolation 
     disc_byIsolationMVArun2017v2DBoldDMwLTraw2017.push_back(tau->tauID("byIsolationMVArun2017v2DBoldDMwLTraw2017"));
     disc_byVVLooseIsolationMVArun2017v2DBoldDMwLT2017.push_back(tau->tauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
     disc_byVLooseIsolationMVArun2017v2DBoldDMwLT2017.push_back(tau->tauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
@@ -90,30 +62,26 @@ void hpstauInfo::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
     disc_byTightIsolationMVArun2017v2DBoldDMwLT2017.push_back(tau->tauID("byTightIsolationMVArun2017v2DBoldDMwLT2017"));
     disc_byVTightIsolationMVArun2017v2DBoldDMwLT2017.push_back(tau->tauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017"));
     disc_byVVTightIsolationMVArun2017v2DBoldDMwLT2017.push_back(tau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
-    // // 2017 v2 new DM
-    // disc_byIsolationMVArun2017v2DBnewDMwLTraw2017.push_back(tau->tauID("byIsolationMVArun2017v2DBnewDMwLTraw2017"));
-    // disc_byVVLooseIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byVVLooseIsolationMVArun2017v2DBnewDMwLT2017"));
-    // disc_byVLooseIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byVLooseIsolationMVArun2017v2DBnewDMwLT2017"));
-    // disc_byLooseIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017"));
-    // disc_byMediumIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byMediumIsolationMVArun2017v2DBnewDMwLT2017"));
-    // disc_byTightIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byTightIsolationMVArun2017v2DBnewDMwLT2017"));
-    // disc_byVTightIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byVTightIsolationMVArun2017v2DBnewDMwLT2017"));
-    // disc_byVVTightIsolationMVArun2017v2DBnewDMwLT2017.push_back(tau->tauID("byVVTightIsolationMVArun2017v2DBnewDMwLT2017"));
+    
+    // -- against electron 
+    
+    disc_againstElectronLooseMVA6.push_back(tau->tauID("againstElectronLooseMVA6"));
+    disc_againstElectronMediumMVA6.push_back(tau->tauID("againstElectronMediumMVA6"));
+    disc_againstElectronTightMVA6.push_back(tau->tauID("againstElectronTightMVA6"));
+    disc_againstElectronVLooseMVA6.push_back(tau->tauID("againstElectronVLooseMVA6"));
+    disc_againstElectronVTightMVA6.push_back(tau->tauID("againstElectronVTightMVA6"));
+    
+    // -- against muons
 
-    // disc_byVLooseIsolationMVArun2v1DBnewDMwLT.push_back(tau->tauID("byVLooseIsolationMVArun2v1DBnewDMwLT"));
-    // disc_byLooseIsolationMVArun2v1DBnewDMwLT.push_back(tau->tauID("byLooseIsolationMVArun2v1DBnewDMwLT"));
-    // disc_byMediumIsolationMVArun2v1DBnewDMwLT.push_back(tau->tauID("byMediumIsolationMVArun2v1DBnewDMwLT"));
-    // disc_byTightIsolationMVArun2v1DBnewDMwLT.push_back(tau->tauID("byTightIsolationMVArun2v1DBnewDMwLT"));
-    // disc_byVTightIsolationMVArun2v1DBnewDMwLT.push_back(tau->tauID("byVTightIsolationMVArun2v1DBnewDMwLT"));
-    // disc_byVVTightIsolationMVArun2v1DBnewDMwLT.push_back(tau->tauID("byVVTightIsolationMVArun2v1DBnewDMwLT"));
+    disc_againstMuonLoose3.push_back(tau->tauID("againstMuonLoose3"));
+    disc_againstMuonTight3.push_back(tau->tauID("againstMuonTight3"));
 
+    // -- cut based isolation   
     disc_byLooseCombinedIsolationDeltaBetaCorr3Hits.push_back(tau->tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits"));
     disc_byMediumCombinedIsolationDeltaBetaCorr3Hits.push_back(tau->tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits"));
     disc_byTightCombinedIsolationDeltaBetaCorr3Hits.push_back(tau->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits"));
 
-    disc_decayModeFinding.push_back(tau->tauID("decayModeFinding"));
-    disc_decayModeFindingNewDMs.push_back(tau->tauID("decayModeFindingNewDMs"));
-
+    // -- pt sum for optimisation, going to switch off them, 
     disc_chargedIsoPtSum.push_back(tau->tauID("chargedIsoPtSum"));
     disc_neutralIsoPtSum.push_back(tau->tauID("neutralIsoPtSum"));
     disc_puCorrPtSum.push_back(tau->tauID("puCorrPtSum"));
@@ -179,36 +147,58 @@ void hpstauInfo::SetBranches(){
   AddBranch(&TauPz_, "HPSTau_Pz");
   AddBranch(&TauE_, "HPSTau_Energy");
 
-  AddBranch(&HPSTau_leadPFChargedHadrCand,"HPSTau_leadPFChargedHadrCand");
-  AddBranch(&HPSTau_leadPFChargedHadrCand_trackRef,"HPSTau_leadPFChargedHadrCand_trackRef");
+  if (false){ 
+    // these are all old, just keeping them for now ,will be killed in future, 
+    AddBranch(&HPSTau_leadPFChargedHadrCand,"HPSTau_leadPFChargedHadrCand");
+    AddBranch(&HPSTau_leadPFChargedHadrCand_trackRef,"HPSTau_leadPFChargedHadrCand_trackRef");
+    
+    
+    AddBranch(&disc_againstElectronLoose ,"disc_againstElectronLoose");
+    AddBranch(&disc_againstElectronMedium ,"disc_againstElectronMedium");
+    AddBranch(&disc_againstElectronTight ,"disc_againstElectronTight");
+    
+    AddBranch(&disc_againstMuonLoose ,"disc_againstMuonLoose");
+    AddBranch(&disc_againstMuonMedium ,"disc_againstMuonMedium");
+    AddBranch(&disc_againstMuonTight ,"disc_againstMuonTight");
+    AddBranch(&disc_againstMuonLoose2 ,"disc_againstMuonLoose2");
+    AddBranch(&disc_againstMuonMedium2 ,"disc_againstMuonMedium2");
+    AddBranch(&disc_againstMuonTight2 ,"disc_againstMuonTight2");
+    AddBranch(&disc_againstMuonLooseMVA ,"disc_againstMuonLooseMVA");
+    AddBranch(&disc_againstMuonMediumMVA ,"disc_againstMuonMediumMVA");
+    AddBranch(&disc_againstMuonTightMVA ,"disc_againstMuonTightMVA");
+    AddBranch(&disc_byVLooseCombinedIsolationDeltaBetaCorr ,"disc_byVLooseCombinedIsolationDeltaBetaCorr");
+    AddBranch(&disc_byLooseIsolation ,"disc_byLooseIsolation");
+    // 2017 v2 new DM
+    AddBranch(&disc_byIsolationMVArun2017v2DBnewDMwLTraw2017,"disc_byIsolationMVArun2017v2DBnewDMwLTraw2017");
+    AddBranch(&disc_byVVLooseIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVVLooseIsolationMVArun2017v2DBnewDMwLT2017");
+    AddBranch(&disc_byVLooseIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
+    AddBranch(&disc_byLooseIsolationMVArun2017v2DBnewDMwLT2017,"disc_byLooseIsolationMVArun2017v2DBnewDMwLT2017");
+    AddBranch(&disc_byMediumIsolationMVArun2017v2DBnewDMwLT2017,"disc_byMediumIsolationMVArun2017v2DBnewDMwLT2017");
+    AddBranch(&disc_byTightIsolationMVArun2017v2DBnewDMwLT2017,"disc_byTightIsolationMVArun2017v2DBnewDMwLT2017");
+    AddBranch(&disc_byVTightIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVTightIsolationMVArun2017v2DBnewDMwLT2017");
+    AddBranch(&disc_byVVTightIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVVTightIsolationMVArun2017v2DBnewDMwLT2017");
 
-  AddBranch(&disc_againstElectronLoose ,"disc_againstElectronLoose");
-  AddBranch(&disc_againstElectronMedium ,"disc_againstElectronMedium");
-  AddBranch(&disc_againstElectronTight ,"disc_againstElectronTight");
-  AddBranch(&disc_againstElectronLooseMVA6 ,"disc_againstElectronLooseMVA6");
+    AddBranch(&disc_chargedIsoPtSum ,"disc_chargedIsoPtSum");
+    AddBranch(&disc_neutralIsoPtSum ,"disc_neutralIsoPtSum");
+    AddBranch(&disc_puCorrPtSum ,"disc_puCorrPtSum");
+
+  }
+  
+  AddBranch(&disc_againstElectronLooseMVA6 ,"disc_againstElectronLooseMVA6");  
   AddBranch(&disc_againstElectronMediumMVA6 ,"disc_againstElectronMediumMVA6");
   AddBranch(&disc_againstElectronTightMVA6 ,"disc_againstElectronTightMVA6");
   AddBranch(&disc_againstElectronVLooseMVA6 ,"disc_againstElectronVLooseMVA6");
   AddBranch(&disc_againstElectronVTightMVA6 ,"disc_againstElectronVTightMVA6");
-  AddBranch(&disc_againstMuonLoose ,"disc_againstMuonLoose");
-  AddBranch(&disc_againstMuonMedium ,"disc_againstMuonMedium");
-  AddBranch(&disc_againstMuonTight ,"disc_againstMuonTight");
-  AddBranch(&disc_againstMuonLoose2 ,"disc_againstMuonLoose2");
-  AddBranch(&disc_againstMuonMedium2 ,"disc_againstMuonMedium2");
-  AddBranch(&disc_againstMuonTight2 ,"disc_againstMuonTight2");
-  AddBranch(&disc_againstMuonLooseMVA ,"disc_againstMuonLooseMVA");
-  AddBranch(&disc_againstMuonMediumMVA ,"disc_againstMuonMediumMVA");
-  AddBranch(&disc_againstMuonTightMVA ,"disc_againstMuonTightMVA");
+    
+  
   AddBranch(&disc_againstMuonLoose3 ,"disc_againstMuonLoose3");
   AddBranch(&disc_againstMuonTight3 ,"disc_againstMuonTight3");
 
-  AddBranch(&disc_byVLooseCombinedIsolationDeltaBetaCorr ,"disc_byVLooseCombinedIsolationDeltaBetaCorr");
   AddBranch(&disc_byLooseCombinedIsolationDeltaBetaCorr ,"disc_byLooseCombinedIsolationDeltaBetaCorr");
   AddBranch(&disc_byMediumCombinedIsolationDeltaBetaCorr ,"disc_byMediumCombinedIsolationDeltaBetaCorr");
   AddBranch(&disc_byTightCombinedIsolationDeltaBetaCorr ,"disc_byTightCombinedIsolationDeltaBetaCorr");
 
-  AddBranch(&disc_byLooseIsolation ,"disc_byLooseIsolation");
-
+  
 
   AddBranch(&disc_byIsolationMVArun2017v2DBoldDMwLTraw2017,"disc_byIsolationMVArun2017v2DBoldDMwLTraw2017");
   AddBranch(&disc_byVVLooseIsolationMVArun2017v2DBoldDMwLT2017,"disc_byVVLooseIsolationMVArun2017v2DBoldDMwLT2017");
@@ -218,17 +208,8 @@ void hpstauInfo::SetBranches(){
   AddBranch(&disc_byTightIsolationMVArun2017v2DBoldDMwLT2017,"disc_byTightIsolationMVArun2017v2DBoldDMwLT2017");
   AddBranch(& disc_byVTightIsolationMVArun2017v2DBoldDMwLT2017,"disc_byVTightIsolationMVArun2017v2DBoldDMwLT2017");
   AddBranch(& disc_byVVTightIsolationMVArun2017v2DBoldDMwLT2017,"disc_byVVTightIsolationMVArun2017v2DBoldDMwLT2017");
-  // 2017 v2 new DM
-  AddBranch(&disc_byIsolationMVArun2017v2DBnewDMwLTraw2017,"disc_byIsolationMVArun2017v2DBnewDMwLTraw2017");
-  AddBranch(&disc_byVVLooseIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVVLooseIsolationMVArun2017v2DBnewDMwLT2017");
-  AddBranch(&disc_byVLooseIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
-  AddBranch(&disc_byLooseIsolationMVArun2017v2DBnewDMwLT2017,"disc_byLooseIsolationMVArun2017v2DBnewDMwLT2017");
-  AddBranch(&disc_byMediumIsolationMVArun2017v2DBnewDMwLT2017,"disc_byMediumIsolationMVArun2017v2DBnewDMwLT2017");
-  AddBranch(&disc_byTightIsolationMVArun2017v2DBnewDMwLT2017,"disc_byTightIsolationMVArun2017v2DBnewDMwLT2017");
-  AddBranch(&disc_byVTightIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVTightIsolationMVArun2017v2DBnewDMwLT2017");
-  AddBranch(&disc_byVVTightIsolationMVArun2017v2DBnewDMwLT2017,"disc_byVVTightIsolationMVArun2017v2DBnewDMwLT2017");
-
-
+  
+  
 
   AddBranch(&disc_byLooseCombinedIsolationDeltaBetaCorr3Hits ,"disc_byLooseCombinedIsolationDeltaBetaCorr3Hits");
   AddBranch(&disc_byMediumCombinedIsolationDeltaBetaCorr3Hits ,"disc_byMediumCombinedIsolationDeltaBetaCorr3Hits");
@@ -236,10 +217,6 @@ void hpstauInfo::SetBranches(){
 
   AddBranch(&disc_decayModeFinding ,"disc_decayModeFinding");
   AddBranch(&disc_decayModeFindingNewDMs ,"disc_decayModeFindingNewDMs");
-
-  AddBranch(&disc_chargedIsoPtSum ,"disc_chargedIsoPtSum");
-  AddBranch(&disc_neutralIsoPtSum ,"disc_neutralIsoPtSum");
-  AddBranch(&disc_puCorrPtSum ,"disc_puCorrPtSum");
 
 
 
