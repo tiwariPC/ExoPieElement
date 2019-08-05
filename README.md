@@ -25,6 +25,7 @@ scram b -j 4
 
 
 ##For jetToolBox
+
 git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox
 
 cd JMEAnalysis/JetToolbox
@@ -33,10 +34,16 @@ git checkout jetToolbox_94X_v3
 
 cd -
 
+scram b -j 4
+
 
 cd ExoPieElement/TreeMaker
 
 config file to run is in test dir: named treeMaker_Summer17_cfg.py 
+
+cd test 
+
+cp ../../CrabUtilities/eff*.txt .  # this will copy text file which are no longer needed and will be cleaned in next iteration
 
 cmsRun treeMaker_Summer17_cfg.py ### login to lxplus602. 
 
