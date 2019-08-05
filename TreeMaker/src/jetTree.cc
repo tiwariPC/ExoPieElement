@@ -73,7 +73,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   //jetP4_       = new TClonesArray("TLorentzVector");
   //unCorrJetP4_ = new TClonesArray("TLorentzVector");
   //jetCHSP4_    = new TClonesArray("TLorentzVector");
-  //jetSDRawP4_  = new TClonesArray("TLorentzVector");
+  jetSDRawP4_  = new TClonesArray("TLorentzVector");
 
   SetBranches();
 
@@ -162,7 +162,7 @@ jetTree::~jetTree(){
   //delete jetP4_;
   //delete unCorrJetP4_;
   //delete jetCHSP4_;
-  //delete jetSDRawP4_;
+  delete jetSDRawP4_;
 
   /* EFC: starts here */
   delete areaDef;
