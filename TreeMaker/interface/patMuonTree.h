@@ -19,7 +19,7 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+//#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 
 
 #include "ExoPieElement/TreeMaker/interface/baseTree.h"
@@ -50,11 +50,11 @@ class patMuonTree : public baseTree {
   patMuonTree();
   void SetBranches();
 
-  double r_iso_min_;
-  double r_iso_max_;
-  double kt_scale_;
-  bool charged_only_;
-  EffectiveAreas eAreasMuons;
+  //double r_iso_min_;
+  //double r_iso_max_;
+  //double kt_scale_;
+  //bool charged_only_;
+  //  EffectiveAreas eAreasMuons;
 
   // ntuple variabes
   int nMu;

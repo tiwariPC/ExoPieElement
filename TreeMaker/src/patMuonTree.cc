@@ -13,12 +13,12 @@
 
 patMuonTree::patMuonTree(std::string name, TTree* tree,
 			 const edm::ParameterSet& iConfig):
-  baseTree(name,tree),
-  r_iso_min_(iConfig.getParameter<double>("r_iso_min")),
-  r_iso_max_(iConfig.getParameter<double>("r_iso_max")),
-  kt_scale_(iConfig.getParameter<double>("kt_scale")),
-  charged_only_(iConfig.getParameter<bool>("charged_only")),
-  eAreasMuons("effAreasMuons_cone03_Spring15_25ns.txt")
+  baseTree(name,tree)
+  //r_iso_min_(iConfig.getParameter<double>("r_iso_min")),
+  //r_iso_max_(iConfig.getParameter<double>("r_iso_max")),
+  //kt_scale_(iConfig.getParameter<double>("kt_scale")),
+  //charged_only_(iConfig.getParameter<bool>("charged_only"))
+  //eAreasMuons("effAreasMuons_cone03_Spring15_25ns.txt")
 {
   patMuonP4 =   new TClonesArray("TLorentzVector");
   SetBranches();

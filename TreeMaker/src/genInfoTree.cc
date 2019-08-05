@@ -11,9 +11,9 @@ genInfoTree::genInfoTree(std::string name, TTree* tree, const edm::ParameterSet&
   saveLHEWeights_(iConfig.getParameter<bool>("saveLHEWeights")),
   saveGenJets_(iConfig.getParameter<bool>("saveGenJets"))
 {
-  genParP4_ =   new TClonesArray("TLorentzVector");
-  ak4GenJetP4_ =   new TClonesArray("TLorentzVector");
-  ak8GenJetP4_ =   new TClonesArray("TLorentzVector");
+  //genParP4_ =   new TClonesArray("TLorentzVector");
+  //ak4GenJetP4_ =   new TClonesArray("TLorentzVector");
+  //ak8GenJetP4_ =   new TClonesArray("TLorentzVector");
 
   SetBranches();
 }
@@ -21,9 +21,9 @@ genInfoTree::genInfoTree(std::string name, TTree* tree, const edm::ParameterSet&
 
 genInfoTree::~genInfoTree()
 {
-  delete genParP4_;
-  delete ak4GenJetP4_;
-  delete ak8GenJetP4_;
+  //delete genParP4_;
+  //delete ak4GenJetP4_;
+  //delete ak8GenJetP4_;
 
 }
 
@@ -181,9 +181,14 @@ genInfoTree::Fill(const edm::Event& iEvent)
     std::vector<reco::GenParticle>::const_iterator geni = myParticles[genIndex];
     nGenPar_++;
 
-   TLorentzVector p4(geni->px(),geni->py(),geni->pz(),geni->energy());
-    new( (*genParP4_)[nGenPar_-1]) TLorentzVector(p4);
+    //TLorentzVector p4(geni->px(),geni->py(),geni->pz(),geni->energy());
+    //new( (*genParP4_)[nGenPar_-1]) TLorentzVector(p4);
 
+    genParPx_.push_back(geni->px());
+    genParPy_.push_back(geni->py());
+    genParPz_.push_back(geni->pz());
+    genParE_.push_back(geni->energy());
+    
     genParQ_.push_back(geni->charge());
     genParId_.push_back(geni->pdgId());
     genParSt_.push_back(geni->status());
@@ -279,8 +284,14 @@ genInfoTree::Fill(const edm::Event& iEvent)
 	reco::GenJet gjet = *gjeti;
 	if(gjet.pt()<=15)continue;
 	if(fabs(gjet.eta())>3.0)continue;
-	TLorentzVector thisGJet_l4(gjet.px(),gjet.py(),gjet.pz(),gjet.energy());
-	new( (*ak4GenJetP4_)[ak4nGenJet_]) TLorentzVector(thisGJet_l4);
+	
+	//TLorentzVector thisGJet_l4(gjet.px(),gjet.py(),gjet.pz(),gjet.energy());
+	//new( (*ak4GenJetP4_)[ak4nGenJet_]) TLorentzVector(thisGJet_l4);
+	ak4GenJetPx_.push_back(gjet.px());
+	ak4GenJetPy_.push_back(gjet.py());
+	ak4GenJetPz_.push_back(gjet.pz());
+	ak4GenJetE_.push_back(gjet.energy());
+	
 	ak4nGenJet_++;
     }
 
@@ -297,8 +308,12 @@ genInfoTree::Fill(const edm::Event& iEvent)
 	reco::GenJet gjet = *gjeti;
 	if(gjet.pt()<=100)continue;
 	if(fabs(gjet.eta())>3.0)continue;
-	TLorentzVector thisGJet_l4(gjet.px(),gjet.py(),gjet.pz(),gjet.energy());
-	new( (*ak8GenJetP4_)[ak8nGenJet_]) TLorentzVector(thisGJet_l4);
+	//TLorentzVector thisGJet_l4(gjet.px(),gjet.py(),gjet.pz(),gjet.energy());
+	//new( (*ak8GenJetP4_)[ak8nGenJet_]) TLorentzVector(thisGJet_l4);
+	ak8GenJetPx_.push_back(gjet.px());
+	ak8GenJetPy_.push_back(gjet.py());
+	ak8GenJetPz_.push_back(gjet.pz());
+	ak8GenJetE_.push_back(gjet.energy());
 	ak8nGenJet_++;
     }
   } // end of ak8jet block
@@ -309,7 +324,11 @@ void
 genInfoTree::SetBranches(){
 
   AddBranch(&nGenPar_, "nGenPar");
-  AddBranch(&genParP4_, "genParP4");
+  //AddBranch(&genParP4_, "genParP4");
+  AddBranch(&genParPx_, "genParPx");
+  AddBranch(&genParPy_, "genParPy");
+  AddBranch(&genParPz_, "genParPz");
+  AddBranch(&genParE_, "genParE");
   AddBranch(&genParId_,"genParId");
   AddBranch(&genParSt_,"genParSt");
   AddBranch(&genMomParId_,"genMomParId");
@@ -336,10 +355,18 @@ genInfoTree::SetBranches(){
     AddBranch(&genStFlag_,"genStFlag");
 
     AddBranch(&ak4nGenJet_,  "ak4nGenJet");
-    AddBranch(&ak4GenJetP4_, "ak4GenJetP4");
+    //AddBranch(&ak4GenJetP4_, "ak4GenJetP4");
+    AddBranch(&ak4GenJetPx_, "ak4GenJetPx");
+    AddBranch(&ak4GenJetPy_, "ak4GenJetPy");
+    AddBranch(&ak4GenJetPz_, "ak4GenJetPz");
+    AddBranch(&ak4GenJetE_, "ak4GenJetE");
 
     AddBranch(&ak8nGenJet_,  "ak8nGenJet");
-    AddBranch(&ak8GenJetP4_, "ak8GenJetP4");
+    //AddBranch(&ak8GenJetP4_, "ak8GenJetP4");
+    AddBranch(&ak8GenJetPx_, "ak8GenJetPx");
+    AddBranch(&ak8GenJetPy_, "ak8GenJetPy");
+    AddBranch(&ak8GenJetPz_, "ak8GenJetPz");
+    AddBranch(&ak8GenJetE_, "ak8GenJetE");
   }
 }
 
@@ -358,7 +385,11 @@ genInfoTree::Clear(){
   originalLHEweight_ = 1;
   pdfscaleSysWeights_.clear();
   nGenPar_ =0;
-  genParP4_->Clear();
+  //genParP4_->Clear();
+  genParPx_.clear();
+  genParPy_.clear();
+  genParPz_.clear();
+  genParE_.clear();
 
   genParQ_.clear();
   genParId_.clear();
@@ -374,10 +405,19 @@ genInfoTree::Clear(){
   genStFlag_.clear();
 
   ak4nGenJet_=0;
-  ak4GenJetP4_->Clear();
+  //ak4GenJetP4_->Clear();
+  ak4GenJetPx_.clear();
+  ak4GenJetPy_.clear();
+  ak4GenJetPz_.clear();
+  ak4GenJetE_.clear();
 
   ak8nGenJet_=0;
-  ak8GenJetP4_->Clear();
+  //ak8GenJetP4_->Clear();
+  ak8GenJetPx_.clear();
+  ak8GenJetPy_.clear();
+  ak8GenJetPz_.clear();
+  ak8GenJetE_.clear();
+
 
 
 }

@@ -36,7 +36,7 @@
 
 
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+//#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 
 
 #include "ExoPieElement/TreeMaker/interface/baseTree.h"
@@ -93,11 +93,11 @@ class patElecTree : public baseTree {
   patElecTree();
   void SetBranches();
 
-  double r_iso_min_;
-  double r_iso_max_;
-  double kt_scale_;
-  bool charged_only_;
-  EffectiveAreas eAreasElectrons;
+  //double r_iso_min_;
+  //double r_iso_max_;
+  //double kt_scale_;
+  //bool charged_only_;
+  //EffectiveAreas eAreasElectrons;
 
   // ntuple variables 
   float patElecRho_;

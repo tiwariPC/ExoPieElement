@@ -5,6 +5,10 @@
   Updated by: Shin-Shan Yu
   Date      : 20 March 2016
   Replace getByLabel with getByToken
+
+  Updated by: Raman Khurana
+  Date: 4 August 20189
+  Replaced TLorentxVector by px, py, pz, E. This is needed for root_pandas to work efficiently without any issue and additional work in the next steps. 
 */
 
 #include <memory>
@@ -82,7 +86,14 @@ class genInfoTree : public baseTree{
   std::vector<float>       pdfscaleSysWeights_;
 
   int nGenPar_;
-  TClonesArray       *genParP4_;
+  //TClonesArray       *genParP4_;
+  
+  std::vector<float> genParPx_;
+  std::vector<float> genParPy_;
+  std::vector<float> genParPz_;
+  std::vector<float> genParE_;
+  
+  
   std::vector<int>   genParQ_;
   std::vector<int>   genParId_;
   std::vector<int>   genParSt_;
@@ -99,11 +110,20 @@ class genInfoTree : public baseTree{
   // save this informatio if saveGenJets is true
 
   int ak4nGenJet_;
-  TClonesArray       *ak4GenJetP4_;
-
+  //TClonesArray       *ak4GenJetP4_;
+  std::vector<float> ak4GenJetPx_;
+  std::vector<float> ak4GenJetPy_;
+  std::vector<float> ak4GenJetPz_;
+  std::vector<float> ak4GenJetE_;
+  
   int ak8nGenJet_;
-  TClonesArray       *ak8GenJetP4_;
-
+  //TClonesArray       *ak8GenJetP4_;
+  std::vector<float>     ak8GenJetPx_;
+  std::vector<float>     ak8GenJetPy_;
+  std::vector<float>     ak8GenJetPz_;
+  std::vector<float>     ak8GenJetE_;
+  
+  
 
 };
 
