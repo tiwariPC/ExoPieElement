@@ -179,8 +179,9 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
     }
 
   if( fillJetInfo_ )
-    if (debug__) std::cout<< "fillJetInfo_ "<<std::endl;
     {
+      if (debug__) std::cout<< "fillJetInfo_ "<<std::endl;
+      
       std::string desc             = "THIN";
       THINjetTree_                 = new jetTree(desc,tree_,iConfig);
       THINjetTree_->jetToken       = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>(Form("%sJets",desc.data())));

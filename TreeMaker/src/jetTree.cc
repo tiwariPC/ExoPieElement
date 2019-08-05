@@ -69,8 +69,8 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   std::cout << " inside jet tree "<< desc << std::endl;
 
   
-  genjetP4_    = new TClonesArray("TLorentzVector");
-  jetP4_       = new TClonesArray("TLorentzVector");
+  //genjetP4_    = new TClonesArray("TLorentzVector");
+  //jetP4_       = new TClonesArray("TLorentzVector");
   unCorrJetP4_ = new TClonesArray("TLorentzVector");
   jetCHSP4_    = new TClonesArray("TLorentzVector");
   jetSDRawP4_  = new TClonesArray("TLorentzVector");
@@ -158,8 +158,8 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
 
 jetTree::~jetTree(){
 
-  delete genjetP4_;
-  delete jetP4_;
+  //delete genjetP4_;
+  //delete jetP4_;
   delete unCorrJetP4_;
   delete jetCHSP4_;
   delete jetSDRawP4_;
@@ -266,14 +266,20 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       double a = ( jet->p4().eta() - jet->genJet()->p4().eta()) * ( jet->p4().eta() - jet->genJet()->p4().eta());
       double b = ( jet->p4().phi() - jet->genJet()->p4().phi()) * ( jet->p4().phi() - jet->genJet()->p4().phi());
       DR = sqrt(a+b);
-
+      
+      /*
       new( (*genjetP4_)[nJet_-1]) TLorentzVector(
    						 jet->genJet()->p4().px(),
    						 jet->genJet()->p4().py(),
    						 jet->genJet()->p4().pz(),
    						 jet->genJet()->p4().energy()
    						 );
-
+      */
+      genjetpx_.push_back(jet->genJet()->p4().px());
+      genjetpy_.push_back(jet->genJet()->p4().py());
+      genjetpz_.push_back(jet->genJet()->p4().pz());
+      genjetE_.push_back(jet->genJet()->p4().energy());
+      
       genjetEM_.push_back(jet->genJet()->emEnergy());
       genjetHAD_.push_back(jet->genJet()->hadEnergy());
       genjetINV_.push_back(jet->genJet()->invisibleEnergy());
@@ -296,7 +302,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       genjetINV_.push_back(DUMMY);
       genjetAUX_.push_back(DUMMY);
       matchedDR_.push_back(DUMMY);
-      new( (*genjetP4_)[nJet_-1]) TLorentzVector(DUMMY,DUMMY,DUMMY,DUMMY);
+      //new( (*genjetP4_)[nJet_-1]) TLorentzVector(DUMMY,DUMMY,DUMMY,DUMMY);
     }
 
     jetRawFactor_.push_back(jet->jecFactor("Uncorrected"));
@@ -326,6 +332,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 					      uncorrJet.py()*corr_jet,
 					      uncorrJet.pz()*corr_jet,
 					      uncorrJet.energy()*corr_jet);
+      
+      jetPx_.push_back(uncorrJet.px()*corr_jet);
+      jetPy_.push_back(uncorrJet.py()*corr_jet);
+      jetPz_.push_back(uncorrJet.pz()*corr_jet);
+      jetE_.push_back(uncorrJet.energy()*corr_jet);
+      
       jecUncText_->setJetEta( uncorrJet.eta() );
       jecUncText_->setJetPt( corr_jet * uncorrJet.pt() );
       jetCorrUncUp_.push_back(jecUncText_->getUncertainty(true));
@@ -870,7 +882,12 @@ jetTree::SetBranches(){
 
   if(jet_extra){
     AddBranch(&jetP4_,       "jetP4");
-    AddBranch(&genjetP4_,   "genjetP4");
+    //AddBranch(&genjetP4_,   "genjetP4"); // this is no longer needed as individual component is already there, 
+    AddBranch(&genjetpx_,"genjetpx");
+    AddBranch(&genjetpy_,"genjetpy");
+    AddBranch(&genjetpz_,"genjetpz");
+    AddBranch(&genjetE_,"genjetE");
+    
     AddBranch(&genjetEM_ ,  "genjetEM");
     AddBranch(&genjetHAD_ , "genjetHAD");
     AddBranch(&genjetINV_ , "genjetINV");
@@ -1000,7 +1017,11 @@ jetTree::Clear(){
   jetRho_=0;
   jetNPV_=0;
 
-  genjetP4_->Clear();
+  //genjetP4_->Clear();
+  genjetpx_.clear();
+  genjetpy_.clear();
+  genjetpz_.clear();
+  genjetE_.clear();
   genjetEM_.clear();
   genjetHAD_.clear();
   genjetINV_.clear();

@@ -130,6 +130,11 @@ class jetTree  : public baseTree{
   int jetNPV_;
 
   TClonesArray*      genjetP4_;
+  std::vector<float> genjetpx_;
+  std::vector<float> genjetpy_;
+  std::vector<float> genjetpz_;
+  std::vector<float> genjetE_;
+  
   std::vector<float> genjetEM_;
   std::vector<float> genjetHAD_;
   std::vector<float> genjetINV_;
