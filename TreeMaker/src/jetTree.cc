@@ -71,9 +71,9 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   
   //genjetP4_    = new TClonesArray("TLorentzVector");
   //jetP4_       = new TClonesArray("TLorentzVector");
-  unCorrJetP4_ = new TClonesArray("TLorentzVector");
-  jetCHSP4_    = new TClonesArray("TLorentzVector");
-  jetSDRawP4_  = new TClonesArray("TLorentzVector");
+  //unCorrJetP4_ = new TClonesArray("TLorentzVector");
+  //jetCHSP4_    = new TClonesArray("TLorentzVector");
+  //jetSDRawP4_  = new TClonesArray("TLorentzVector");
 
   SetBranches();
 
@@ -160,9 +160,9 @@ jetTree::~jetTree(){
 
   //delete genjetP4_;
   //delete jetP4_;
-  delete unCorrJetP4_;
-  delete jetCHSP4_;
-  delete jetSDRawP4_;
+  //delete unCorrJetP4_;
+  //delete jetCHSP4_;
+  //delete jetSDRawP4_;
 
   /* EFC: starts here */
   delete areaDef;
@@ -308,17 +308,28 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetRawFactor_.push_back(jet->jecFactor("Uncorrected"));
     reco::Candidate::LorentzVector uncorrJet;
     uncorrJet = jet->correctedP4(0);
+    /*
     new( (*unCorrJetP4_)[nJet_-1]) TLorentzVector(
 						  uncorrJet.px(),
 						  uncorrJet.py(),
 						  uncorrJet.pz(),
 						  uncorrJet.energy()
    							);
+    */
+    
 
+
+    unCorrJetPx_.push_back(uncorrJet.px());
+    unCorrJetPy_.push_back(uncorrJet.py());
+    unCorrJetPz_.push_back(uncorrJet.pz());
+    unCorrJetE_.push_back(uncorrJet.energy());
+    
     jetArea_.push_back(jet->jetArea());
 
+    
     // if reading text files, set jet 4-momentum
     // make correction using jecText files
+    
     if(useJECText_){
       jecText_->setJetEta( uncorrJet.eta() );
       jecText_->setJetPt ( uncorrJet.pt() );
@@ -327,12 +338,13 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jecText_->setRho   ( *(h_rho.product()) );
       jecText_->setNPV   ( h_pv->size() );
       Float_t corr_jet = jecText_->getCorrection();
-
+      
+      /*
       new( (*jetP4_)[nJet_-1]) TLorentzVector(uncorrJet.px()*corr_jet,
 					      uncorrJet.py()*corr_jet,
 					      uncorrJet.pz()*corr_jet,
 					      uncorrJet.energy()*corr_jet);
-      
+      */
       jetPx_.push_back(uncorrJet.px()*corr_jet);
       jetPy_.push_back(uncorrJet.py()*corr_jet);
       jetPz_.push_back(uncorrJet.pz()*corr_jet);
@@ -346,7 +358,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jecUncText_->setJetPt( corr_jet * uncorrJet.pt() );
       jetCorrUncDown_.push_back(jecUncText_->getUncertainty(false));
 
-// add px, py, pz , energy
+      // add px, py, pz , energy
       jetPx_.push_back(uncorrJet.px()*corr_jet);
       jetPy_.push_back(uncorrJet.py()*corr_jet);
       jetPz_.push_back(uncorrJet.pz()*corr_jet);
@@ -355,11 +367,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
     }
     else
+      /*
       new( (*jetP4_)[nJet_-1]) TLorentzVector(jet->p4().px(),
 					      jet->p4().py(),
 					      jet->p4().pz(),
 					      jet->p4().energy());
-
+      */
       jetPx_.push_back(jet->p4().px());
       jetPy_.push_back(jet->p4().py());
       jetPz_.push_back(jet->p4().pz());
@@ -632,13 +645,19 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jetCHSTau2_.push_back(jet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2"));
       jetCHSTau3_.push_back(jet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3"));
       
-	
+      
       TLorentzVector temp_CHS;
       temp_CHS.SetPtEtaPhiM(jet->userFloat("ak8PFJetsCHSValueMap:pt"),
 			    jet->userFloat("ak8PFJetsCHSValueMap:eta"),
 			    jet->userFloat("ak8PFJetsCHSValueMap:phi"),
 			    jet->userFloat("ak8PFJetsCHSValueMap:mass"));
-      new( (*jetCHSP4_)[nJet_-1]) TLorentzVector(temp_CHS);
+      //new( (*jetCHSP4_)[nJet_-1]) TLorentzVector(temp_CHS);
+      
+      
+      jetCHSPx_.push_back(temp_CHS.Px());
+      jetCHSPy_.push_back(temp_CHS.Py());
+      jetCHSPz_.push_back(temp_CHS.Pz());
+      jetCHSE_.push_back(temp_CHS.E());
       
       //Puppi subjettiness
       jetTau1_.push_back(jet->userFloat("NjettinessAK8Puppi:tau1"));
@@ -881,7 +900,7 @@ jetTree::SetBranches(){
   AddBranch(&jetNPV_, "jetNPV");
 
   if(jet_extra){
-    AddBranch(&jetP4_,       "jetP4");
+    //AddBranch(&jetP4_,       "jetP4");
     //AddBranch(&genjetP4_,   "genjetP4"); // this is no longer needed as individual component is already there, 
     AddBranch(&genjetpx_,"genjetpx");
     AddBranch(&genjetpy_,"genjetpy");
@@ -895,8 +914,12 @@ jetTree::SetBranches(){
     AddBranch(&matchedDR_ , "matchedDR");
 
     AddBranch(&jetRawFactor_, "jetRawFactor");
-    AddBranch(&unCorrJetP4_, "unCorrJetP4");
-
+    //AddBranch(&unCorrJetP4_, "unCorrJetP4");
+    AddBranch(&unCorrJetPx_, "unCorrJetPx");
+    AddBranch(&unCorrJetPy_, "unCorrJetPy");
+    AddBranch(&unCorrJetPz_, "unCorrJetPz");
+    AddBranch(&unCorrJetE_, "unCorrJetE");
+    
     AddBranch(&jetArea_,        "jetArea");
     AddBranch(&jetCharge_,       "jetCharge");
     AddBranch(&jetPartonFlavor_, "jetPartonFlavor");
@@ -991,7 +1014,12 @@ jetTree::SetBranches(){
     AddBranch(&jetCHSTau1_,   "jetCHSTau1");
     AddBranch(&jetCHSTau2_,   "jetCHSTau2");
     AddBranch(&jetCHSTau3_,   "jetCHSTau3");
-    AddBranch(&jetCHSP4_, "jetCHSP4");
+    //AddBranch(&jetCHSP4_, "jetCHSP4");
+    AddBranch(&jetCHSPx_, "jetCHSPx");
+    AddBranch(&jetCHSPy_, "jetCHSPy");
+    AddBranch(&jetCHSPz_, "jetCHSPz");
+    AddBranch(&jetCHSE_, "jetCHSE");
+    
     AddBranch(&jetTau1_,  "jetTau1");
     AddBranch(&jetTau2_,  "jetTau2");
     AddBranch(&jetTau3_,  "jetTau3");
@@ -1030,8 +1058,8 @@ jetTree::Clear(){
 
   jetRawFactor_.clear();
 
-  jetP4_->Clear();
-  unCorrJetP4_->Clear();
+  //jetP4_->Clear();
+  //unCorrJetP4_->Clear();
 
   jetPx_.clear();
   jetPy_.clear();
@@ -1120,7 +1148,7 @@ jetTree::Clear(){
   jetCHSTau1_.clear();
   jetCHSTau2_.clear();
   jetCHSTau3_.clear();
-  jetCHSP4_->Clear();
+  //jetCHSP4_->Clear();
 
   // CA15 and ECFs
   ca15_doublebtag.clear();

@@ -149,11 +149,16 @@ class jetTree  : public baseTree{
 
   TClonesArray *jetP4_;
   TClonesArray *unCorrJetP4_;
+  std::vector<float> unCorrJetPx_;
+  std::vector<float> unCorrJetPy_;
+  std::vector<float> unCorrJetPz_;
+  std::vector<float> unCorrJetE_;
+
   std::vector<float>  jetPx_;
   std::vector<float>  jetPy_;
   std::vector<float>  jetPz_;
   std::vector<float>  jetE_;
-
+  
 
 
   std::vector<float> jetArea_;
@@ -241,15 +246,11 @@ class jetTree  : public baseTree{
   std::vector<float> N3_Beta2_;
   
   TClonesArray *jetCHSP4_;
+  std::vector<float> jetCHSPx_;
+  std::vector<float> jetCHSPy_;
+  std::vector<float> jetCHSPz_;
+  std::vector<float> jetCHSE_;
 
-
-  // For CA15 double b-tagger and ECFs: start here
-  /*
-    betas = {0.5,1.,2.,4.};
-    Ns = {1,2,3,4};
-    orders = {1,2,3};
-    ECF( O, N, beta)
-  */
   std::vector<float> ca15_doublebtag;
   std::vector<float> ECF_2_3_10;
   std::vector<float> ECF_1_2_10;
