@@ -102,7 +102,6 @@ patElecTree::Fill(const edm::Event& iEvent){
   vector<reco::Vertex>::const_iterator firstGoodVertex = recVtxs->end();
   //VertexCollection::const_iterator firstGoodVertex = recVtxs->end();
 
-  std::cout<<" just before vertex loop"<<std::endl;
   int firstGoodVertexIdx = 0;
   //  for (VertexCollection::const_iterator vtx = recVtxs->begin(); vtx != recVtxs->end(); ++vtx, ++firstGoodVertexIdx) {
   for (vector<reco::Vertex>::const_iterator vtx = recVtxs->begin(); vtx != recVtxs->end(); ++vtx, ++firstGoodVertexIdx) {
@@ -138,7 +137,6 @@ patElecTree::Fill(const edm::Event& iEvent){
     if(TMath::Abs(ele->eta()) > 2.5) continue;
     nEle_++;
     
-    std::cout<<" just before ele p4"<<std::endl;
     new( (*patElecP4_)[nEle_-1]) TLorentzVector(
 						ele->p4().px(),
 						ele->p4().py(),
@@ -157,7 +155,6 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecCharge_.push_back(ele->charge());
     patElecChargeConsistent_.push_back(ele->isGsfCtfScPixChargeConsistent());
 
-    std::cout<<" just before caloenergy"<<std::endl;
     patElecaloEnergy_.push_back(ele->caloEnergy());
 
     double R = sqrt(ele->superCluster()->x()*ele->superCluster()->x() + ele->superCluster()->y()*ele->superCluster()->y() +ele->superCluster()->z()*ele->superCluster()->z());
@@ -187,7 +184,6 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecSigmaIPhiIPhi_.push_back(ele->sigmaIphiIphi());
 
 
-    std::cout<<" just before ele conv veto"<<std::endl;
     
     patElecConvVeto_.push_back(ele->passConversionVeto()); // ConvVtxFit || missHit == 0
     patElecMissHits_.push_back(ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS));
@@ -216,7 +212,6 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecR9Full5x5_.push_back(ele->full5x5_r9());
     
 
-    std::cout<<" just before isolation vars"<<std::endl;
     //To include in anlyzer code
     /*    edm::FileInPath eaConstantsFile("EgammaAnalysis/ElectronTools/data/PHYS14/effAreaElectrons_cone03_pfNeuHadronsAndPhotons.txt");
 	  EffectiveAreas effectiveAreas(eaConstantsFile.fullPath());
@@ -277,11 +272,9 @@ patElecTree::Fill(const edm::Event& iEvent){
        }
        }*/
 
-    std::cout<<" just before saving id decision"<<std::endl;
     const auto el = electronHandle->ptrAt(nEle_-1);
 
 
-    std::cout<<" just before saving veto id decision"<<std::endl;
     isPassVeto_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-veto"));
     isPassLoose_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
     isPassMedium_.push_back(ele->electronID("cutBasedElectronID-Fall17-94X-V2-medium"));

@@ -35,7 +35,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   
   
   
-  std::cout<<" Type 1 corrected MET default in miniaod"<<std::endl;
   
   pat::METCollection::const_iterator met=patMetHandle.product()->begin();
   // Type 1 corrected MET default in miniaod 
@@ -77,7 +76,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::PhotonEnDown));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::NoShift));
 
-  std::cout<<" after t1 met unc "<<std::endl;
   
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::MuonEnUp));
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::MuonEnDown));
@@ -101,7 +99,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetCorrSumEt_ = metmodified->sumEt();
   */
   
-  std::cout<< "Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc"<<std::endl;
 // puppi met,  present in miniaod 
 
   auto metpuppi = puppiMetHandle.product()->begin();
@@ -111,7 +108,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   puppiMETSig_        = metpuppi->significance() < 1.e10 ? met->significance() : 0 ;
   
   
-  std::cout<<" puppi met,  present in miniaod "<<std::endl;
   
   /*  JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
      
