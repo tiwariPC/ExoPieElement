@@ -32,7 +32,7 @@ patFilters::Fill(const edm::Event& iEvent)
   
   const edm::TriggerNames & trigNames = iEvent.triggerNames(*trigResults);
   //const std::vector<std::string> & triggerNames_ = trigNames.triggerNames();
-  std::cout <<" filter size = "<<trigResults->size()<<std::endl;
+  //std::cout <<" filter size = "<<trigResults->size()<<std::endl;
   for (unsigned int i=0; i<trigResults->size(); i++)
     {
       std::string trigName = trigNames.triggerName(i);
@@ -40,14 +40,13 @@ patFilters::Fill(const edm::Event& iEvent)
       size_t foundallFlag=trigName.find("Flag_");
             
 
-      if(true) std::cout<<" trigName = "<<trigName
+      if(false) std::cout<<" trigName = "<<trigName
 			<<" : "<<trigResults->accept(i)
 			<<std::endl;
       
       if ( foundallFlag==std::string::npos  )     	continue;
       
-      std::cout<<" found relevant "<<std::endl;
-      
+            
       filterName_.push_back(trigName);
       bool trigResult = trigResults->accept(i); //bool not to use
       filterResult_.push_back(trigResult);

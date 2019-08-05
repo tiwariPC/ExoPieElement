@@ -256,14 +256,14 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillMuonInfo_ )     patMuTree_     ->Fill(iEvent);
   if( fillTauInfo_ )      tauTree_       ->Fill(iEvent, iSetup);
 
-     /*
+
       
   if( fillFATJetInfo_ )   FATjetTree_    ->Fill(iEvent, iSetup);
   if( fillJetInfo_ )      THINjetTree_   ->Fill(iEvent, iSetup);
   if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);
   if( fillAK8PuppiJetInfo_ ) AK8PuppijetTree_->Fill(iEvent, iSetup);
   if( fillCA15PuppiJetInfo_ ) CA15PuppijetTree_->Fill(iEvent, iSetup);
-  */
+
   tree_->Fill();
 }
 

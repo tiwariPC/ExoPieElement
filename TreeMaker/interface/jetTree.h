@@ -210,7 +210,7 @@ class jetTree  : public baseTree{
   std::vector<float> jetTau1_;
   std::vector<float> jetTau2_;
   std::vector<float> jetTau3_;
-  std::vector<float> jetTau21_;
+  std::vector<float> jetTau4_;
 
 
   //ak8jet mass // now default is Puppi
@@ -225,9 +225,16 @@ class jetTree  : public baseTree{
   std::vector<float> jetCHSTau1_;
   std::vector<float> jetCHSTau2_;
   std::vector<float> jetCHSTau3_;
-  std::vector<float>  jetCHSSDmass_;
+  std::vector<float>  jetCHSSDmass_; // from miniAOD
   std::vector<float>  jetCHSPRmass_; // from miniAOD
-  std::vector<float>  jetCHSPRmassL2L3Corr_;
+  std::vector<float>  jetCHSSDmassL2L3Corr_; // corrected 
+  std::vector<float>  jetCHSPRmassL2L3Corr_; // corrected 
+  
+  std::vector<float> N2_Beta1_;
+  std::vector<float> N3_Beta1_;
+  std::vector<float> N2_Beta2_;
+  std::vector<float> N3_Beta2_;
+  
   TClonesArray *jetCHSP4_;
 
 
@@ -248,7 +255,14 @@ class jetTree  : public baseTree{
   //jet  Hbb tagger for fat and add jet
 
   
-  std::vector<float> jetDeepDoubleB_;
+  std::vector<float> jet_probQCDb_;
+  std::vector<float> jet_probHbb_;
+  std::vector<float> jet_probQCDc_;
+  std::vector<float> jet_probHcc_;
+  std::vector<float> jet_probHbbc_;
+  std::vector<float> jet_probHccb_;
+  //std::vector<float> ;
+  //std::vector<float> ;
   std::vector<float> jet_DoubleSV_;
 
   //jet secondary vtx

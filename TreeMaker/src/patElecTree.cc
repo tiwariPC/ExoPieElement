@@ -237,7 +237,8 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecGamIso_.push_back(iso3);
     patElecPUPt_.push_back(isoPU);
 
-
+    
+    /*
     double miniIso[7]={0};
     getPFIsolation(miniIso, pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)),
 		   eAreasElectrons, ele->superCluster()->eta(),
@@ -266,7 +267,7 @@ patElecTree::Fill(const edm::Event& iEvent){
     patElecEcalPFClusterIso_.push_back(ele->ecalPFClusterIso());
     patElecHcalPFClusterIso_.push_back(ele->hcalPFClusterIso());
 
-
+    */
     // reco::GsfTrackRef trackref = ele->gsfTrack();
     // Fix this impact parameter
     /* if (ele->gsfTrack().isNonnull()) {
