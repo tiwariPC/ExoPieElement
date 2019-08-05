@@ -1060,6 +1060,10 @@ jetTree::Clear(){
 
   //jetP4_->Clear();
   //unCorrJetP4_->Clear();
+  unCorrJetPx_.clear();
+  unCorrJetPy_.clear();
+  unCorrJetPz_.clear();
+  unCorrJetE_.clear();
 
   jetPx_.clear();
   jetPy_.clear();
@@ -1149,7 +1153,11 @@ jetTree::Clear(){
   jetCHSTau2_.clear();
   jetCHSTau3_.clear();
   //jetCHSP4_->Clear();
-
+  jetCHSPx_.clear();
+  jetCHSPy_.clear();
+  jetCHSPz_.clear();
+  jetCHSE_.clear();
+  
   // CA15 and ECFs
   ca15_doublebtag.clear();
   ECF_2_3_10.clear();
