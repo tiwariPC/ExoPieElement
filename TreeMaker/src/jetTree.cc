@@ -366,7 +366,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
 
     }
-    else
+    else{
       /*
       new( (*jetP4_)[nJet_-1]) TLorentzVector(jet->p4().px(),
 					      jet->p4().py(),
@@ -377,7 +377,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jetPy_.push_back(jet->p4().py());
       jetPz_.push_back(jet->p4().pz());
       jetE_.push_back(jet->p4().energy());
-
+    }
     // get jet energy scale uncertainty and related input variables
     // fat jet uncertainty does not exist yet, if using database
     if(!useJECText_){
