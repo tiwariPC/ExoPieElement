@@ -1,4 +1,5 @@
 New README
+## Right now the setup works only in SLC6, You can login using USERNAME@lxplus6.cern.ch
 ## setup CMSSW
 
 One need to update the SCRAM_ARCH at two places. 
@@ -43,7 +44,7 @@ config file to run is in test dir: named treeMaker_Summer17_cfg.py
 
 cd test 
 
-cp ../../CrabUtilities/eff*.txt .  # this will copy text file which are no longer needed and will be cleaned in next iteration
+## before cmsRun do set the proxy. 
 
 cmsRun treeMaker_Summer17_cfg.py ### login to lxplus602. 
 
