@@ -82,6 +82,11 @@ tree = cms.EDAnalyzer(
     phoChargedIsolationToken       = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
     phoNeutralHadronIsolationToken = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     phoPhotonIsolationToken        = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
+    
+    ####################################################################################################################################################################################
+    ### This part still need some cleaning, this is very confusing, and not readable, but seems correct for the moment for 2016 and 2017 miniaod V2
+    ####################################################################################################################################################################################
+
     ## AllJet
     useJECText = cms.bool(False),
 

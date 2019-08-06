@@ -267,6 +267,13 @@ class jetTree  : public baseTree{
   std::vector<float> jet_probHcc_;
   std::vector<float> jet_probHbbc_;
   std::vector<float> jet_probHccb_;
+
+  std::vector<float> jet_prob_bbvsLight_;
+  std::vector<float> jet_prob_ccvsLight_;
+  std::vector<float> jet_prob_TvsQCD_;
+  std::vector<float> jet_prob_ZHccvsQCD_;
+  std::vector<float> jet_prob_WvsQCD_;
+  std::vector<float> jet_prob_ZHbbvsQCD_;
   //std::vector<float> ;
   //std::vector<float> ;
   std::vector<float> jet_DoubleSV_;

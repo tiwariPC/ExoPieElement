@@ -196,7 +196,10 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
   jetRho_ = *(h_rho.product());
 
-  // // Get the primary vertex collection
+
+
+  
+  // Get the primary vertex collection
   edm::Handle<reco::VertexCollection>  h_pv;
   if(not iEvent.getByToken(vertexToken,h_pv))
     {
@@ -210,7 +213,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
   jetNPV_=  h_pv->size();
 
 
-
+  // Get the Handle for Jet Collection 
   edm::Handle<pat::JetCollection> JetHandle;
   if(not iEvent.getByToken(jetToken,JetHandle))
     {
@@ -220,7 +223,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     }
 
 
-  // for getting the L2+L3 correction factor of pruned jet mass
+  // for getting the L2+L3 correction factor of pruned jet mass 
   edm::Handle<pat::JetCollection> JetHandleForPrunedMass;
   pat::JetCollection jetsForPrunedMass;
 
@@ -230,6 +233,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     	       <<"PrunedMassJet"<<std::endl;
       exit(0);
     }
+  
   else if(isFATJet_ && iEvent.getByToken(prunedMToken,JetHandleForPrunedMass))
     jetsForPrunedMass       = *(JetHandleForPrunedMass.product());
 
@@ -245,7 +249,9 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jecUnc_ = new JetCorrectionUncertainty(JetCorPar);
   }
 
-  // now start looping over jets
+  
+
+  // Loop over jet collection based on the jet type flag 
   pat::JetCollection jets(*(JetHandle.product()));
   std::sort(jets.begin(),jets.end(),PtGreater());
   std::vector<pat::Jet>::const_iterator jet =jets.begin();
@@ -674,6 +680,14 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jet_probHbbc_.push_back(jet->bDiscriminator("pfMassIndependentDeepDoubleCvBJetTags:probHbb"));
       jet_probHccb_.push_back(jet->bDiscriminator("pfMassIndependentDeepDoubleCvBJetTags:probHcc"));
 
+      jet_prob_bbvsLight_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:bbvsLight"));
+      jet_prob_ccvsLight_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ccvsLight"));
+      jet_prob_TvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD"));
+      jet_prob_ZHccvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHccvsQCD"));
+      jet_prob_WvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
+      jet_prob_ZHbbvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD"));
+      
+      
       //jet__.push_back(jet->bDiscriminator(""));
 // 
       N2_Beta1_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2"));
@@ -982,13 +996,24 @@ jetTree::SetBranches(){
       AddBranch(&subjetSDRawFactor_,    "subjetSDRawFactor");
       AddBranch(&subjetSDPartonFlavor_, "subjetSDPartonFlavor");
     }
-    AddBranch(&jet_DoubleSV_,"jet_DoubleSV");
-    AddBranch(&jet_probQCDb_,"jet_probQCDb");
-    AddBranch(&jet_probHbb_,"jet_probHbb");
-    AddBranch(&jet_probQCDc_,"jet_probQCDc");
-    AddBranch(&jet_probHcc_,"jet_probHcc");
-    AddBranch(&jet_probHbbc_,"jet_probHbbc");
-    AddBranch(&jet_probHccb_,"jet_probHccb");
+    
+    if (isFATJet_){
+      AddBranch(&jet_DoubleSV_,"jet_DoubleSV");
+      AddBranch(&jet_probQCDb_,"jet_probQCDb");
+      AddBranch(&jet_probHbb_,"jet_probHbb");
+      AddBranch(&jet_probQCDc_,"jet_probQCDc");
+      AddBranch(&jet_probHcc_,"jet_probHcc");
+      AddBranch(&jet_probHbbc_,"jet_probHbbc");
+      AddBranch(&jet_probHccb_,"jet_probHccb");
+      
+      
+      AddBranch(&jet_prob_bbvsLight_, "jet_prob_bbvsLight");
+      AddBranch(&jet_prob_ccvsLight_, "jet_prob_ccvsLight");
+      AddBranch(&jet_prob_TvsQCD_, "jet_prob_TvsQCD");
+      AddBranch(&jet_prob_ZHccvsQCD_, "jet_prob_ZHccvsQCD");
+      AddBranch(&jet_prob_WvsQCD_, "jet_prob_WvsQCD");
+      AddBranch(&jet_prob_ZHbbvsQCD_, "jet_prob_ZHbbvsQCD");
+    }
     
     AddBranch(&jetSDRawP4_, "jetSDRawP4");
     AddBranch(&jetSDmass_, "jetSDmass");
@@ -1171,6 +1196,14 @@ jetTree::Clear(){
   jet_probHcc_.clear();
   jet_probHbbc_.clear();
   jet_probHccb_.clear();
+  
+  jet_prob_bbvsLight_.clear();
+  jet_prob_ccvsLight_.clear();
+  jet_prob_TvsQCD_.clear();
+  jet_prob_ZHccvsQCD_.clear();
+  jet_prob_WvsQCD_.clear();
+  jet_prob_ZHbbvsQCD_.clear();
+
   
   jet_DoubleSV_.clear();
 

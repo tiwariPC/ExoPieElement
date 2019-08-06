@@ -103,11 +103,12 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 updateJetCollection(
    process,
-   jetSource = cms.InputTag('slimmedJetsAK8'),
+   jetSource = cms.InputTag('slimmedJetsAK8'), ## output will be selectedUpdatedPatJets
    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
    svSource = cms.InputTag('slimmedSecondaryVertices'),
    rParam = 0.8,
    jetCorrections = ('AK8PFchs', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
+   #jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
    btagDiscriminators = [
       'pfBoostedDoubleSecondaryVertexAK8BJetTags',
       'pfDeepDoubleBJetTags:probQ',
@@ -123,12 +124,16 @@ updateJetCollection(
       'pfMassIndependentDeepDoubleCvLJetTags:probQCD',
       'pfMassIndependentDeepDoubleCvLJetTags:probHcc',
       'pfMassIndependentDeepDoubleCvBJetTags:probHbb',
-      'pfMassIndependentDeepDoubleCvBJetTags:probHcc',
+      
+      ## for DeepAK8
+      'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:bbvsLight',
+      'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ccvsLight',
+      'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD',
+      'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHccvsQCD',
+      'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD',
+      'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD',
       ]
         )
-
-
-
 ## This is for modified MET, needed only for 2017 data
 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
