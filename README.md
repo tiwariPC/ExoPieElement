@@ -1,10 +1,29 @@
 New README
 ## Right now the setup works only in SLC6, You can login using USERNAME@lxplus6.cern.ch
+
+## The code is now tested for centos 7. 
+
+## it is recomended to use centos 7 
+
 ## setup CMSSW
 
 One need to update the SCRAM_ARCH at two places. 
 
+## If you want to install the code with SLC6 then do: 
+
 export SCRAM_ARCH=slc6_amd64_gcc630
+
+cmsrel CMSSW_9_4_13
+
+cd CMSSW_9_4_13/src
+
+cmsenv
+
+
+
+## if you want to install code with centos 7 then do: 
+
+export SCRAM_ARCH=slc7_amd64_gcc630
 
 cmsrel CMSSW_9_4_13
 

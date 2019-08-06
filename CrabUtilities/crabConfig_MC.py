@@ -39,14 +39,14 @@ config.Data.inputDataset = '/DYJetsToLL_M-50_HT-100to200_Tune4C_13TeV-madgraph-t
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 5
-##config.Data.outLFNDirBase = '/store/user/khurana/MonoH2016/V3/'
+config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMET/ExoPieElementTuples/'
 
 
 config.JobType.allowUndistributedCMSSW=True
 
 
 config.section_("Site")
-config.Site.storageSite = "T3_TW_NCU"
-#config.Site.storageSite = "T2_CH_CERN"
+#config.Site.storageSite = "T3_TW_NCU"
+config.Site.storageSite = "T2_CH_CERN"
 ##config.Site.storageSite = "T2_US_Wisconsin"
 #config.Site.storageSite = "T2_TW_NCHC"
