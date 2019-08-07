@@ -6,7 +6,8 @@ def submit(datasetdetail):
     print "submitting"
     
     print datasetdetail
-    os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
+    #os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
+    print ('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
     
 
 
@@ -50,7 +51,7 @@ if len(sys.argv) == 3 :
 
 
 
-f = open('miniList_backgroundList_2017_miniaodV2.txt','r')
+f = open('backgroundList_2017_miniaodV2.txt','r')
 for line in f:
     print line
     a,b,c = line.split()

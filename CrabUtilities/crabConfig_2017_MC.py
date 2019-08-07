@@ -33,9 +33,9 @@ config.Data.inputDBS = 'global'
 config.Data.outputDatasetTag = reqname
 
 #config.Data.splitting = 'LumiBased'
-#config.Data.splitting = 'Automatic'
-config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = number_of_units
+config.Data.splitting = 'Automatic'
+#config.Data.splitting = 'FileBased'
+#config.Data.unitsPerJob = number_of_units
 
 #config.Data.ignoreLocality = True
 
