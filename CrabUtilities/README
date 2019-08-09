@@ -1,0 +1,12 @@
+## run setup 
+
+source setup.sh 
+
+
+crab config for MC: crabConfig_2017_MC.py
+
+crab config for data: 
+
+Multicrab config for MC: crabConfig_2017_MC.py
+
+Multicrab config for data: crabConfig_2017_data.py
