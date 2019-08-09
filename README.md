@@ -1,7 +1,9 @@
+# Installation of ExoPieElement and dependencies
 New README
-## Right now the setup works only in SLC6, You can login using USERNAME@lxplus6.cern.ch
 
-## The code is now tested for centos 7. 
+## now the setup works both in SLC6 and centos 7, You can login to slc6 using USERNAME@lxplus6.cern.ch   and slc7 using USERNAME@lxplus.cern.ch
+
+## The code is already tested for centos 7. 
 
 ## it is recomended to use centos 7 
 
@@ -81,7 +83,9 @@ Following is old instructions, will be removed in next version.
 
 
 
-# Installation of ExoPieElement and dependencies
+# These are old instructions, please don't follow this step onwards. 
+
+#Installation of ExoPieElement and dependencies
 
 ## This setup has been tested only for slc6 for centos7 please contact, work is in progress. 
 
