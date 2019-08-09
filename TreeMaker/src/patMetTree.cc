@@ -1,4 +1,5 @@
 #include "ExoPieElement/TreeMaker/interface/patMetTree.h"
+#include "ExoPieElement/TreeMaker/interface/eventInfo.h"
 patMetTree::patMetTree(std::string name, TTree* tree):
   baseTree(name,tree)
 {
@@ -15,6 +16,8 @@ patMetTree::Fill(const edm::Event& iEvent){
   Clear();
 
   // adding Type-1 MET to the tree
+  is_Data = iEvent.isRealData();
+  
   edm::Handle<pat::METCollection> patMetHandle;
   if(not iEvent.getByToken(pfMETToken,patMetHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
@@ -52,7 +55,7 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetRawSumEt_ = met->uncorSumEt();
  
   // gen met  :: set is using mc flag :: in testing phase
-  if (false){
+  if (!is_Data){
   patGenMETPt_ = met->genMET()->et();
   patGenMETPhi_ = met->genMET()->phi();
   patGenMETSumEt_ = met->genMET()->sumEt();
