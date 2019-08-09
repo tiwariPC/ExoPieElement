@@ -23,7 +23,7 @@ patMetTree::Fill(const edm::Event& iEvent){
 
   // adding modified Type-1 MET to the tree: EE Fixed
   edm::Handle<pat::METCollection> patMetModifiedHandle;
-  if(not iEvent.getByToken(pfMETModifiedToken,patMetHandle)){
+  if(not iEvent.getByToken(pfMETModifiedToken,patMetModifiedHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
 	     <<"modified pfMet"<<std::endl; exit(0);}
 
@@ -92,12 +92,12 @@ patMetTree::Fill(const edm::Event& iEvent){
 
 
   // Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc. 
-  /*
+  
   pat::METCollection::const_iterator metmodified=patMetModifiedHandle.product()->begin();
   patMetCorrPt_    = metmodified->et();
   patMetCorrPhi_   = metmodified->phi();
   patMetCorrSumEt_ = metmodified->sumEt();
-  */
+  
   
 // puppi met,  present in miniaod 
 
