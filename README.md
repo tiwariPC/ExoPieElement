@@ -49,10 +49,24 @@ cd test
 
 ## before cmsRun do set the proxy. 
 
-cmsRun treeMaker_Summer17_cfg.py ### login to lxplus602. 
+cmsRun treeMaker_Summer17_cfg.py
 
 If the file doesn't work, instead of /tmp/khurana.... use filename, it will take some time to run via xrootd. 
 
+you have to change the line 
+
+fileNames = cms.untracked.vstring("file:/tmp/khurana/temp2017.root"),
+
+by
+
+fileNames = cms.untracked.vstring(testFile),
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------
 Following is old instructions, will be removed in next version.
 
