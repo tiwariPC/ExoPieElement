@@ -116,7 +116,7 @@ class jetTree  : public baseTree{
   std::vector<std::string> jecNames_; // for reading text file
   std::string              jecUncName_; // for reading text file
 
-  jetSelector jet2012ID_;
+  jetSelector jet2017ID_;
 
 
   boost::shared_ptr<FactorizedJetCorrector> prunedjecText_;
@@ -134,7 +134,7 @@ class jetTree  : public baseTree{
   std::vector<float> genjetpy_;
   std::vector<float> genjetpz_;
   std::vector<float> genjetE_;
-  
+
   std::vector<float> genjetEM_;
   std::vector<float> genjetHAD_;
   std::vector<float> genjetINV_;
@@ -158,7 +158,7 @@ class jetTree  : public baseTree{
   std::vector<float>  jetPy_;
   std::vector<float>  jetPz_;
   std::vector<float>  jetE_;
-  
+
 
 
   std::vector<float> jetArea_;
@@ -237,14 +237,14 @@ class jetTree  : public baseTree{
   std::vector<float> jetCHSTau3_;
   std::vector<float>  jetCHSSDmass_; // from miniAOD
   std::vector<float>  jetCHSPRmass_; // from miniAOD
-  std::vector<float>  jetCHSSDmassL2L3Corr_; // corrected 
-  std::vector<float>  jetCHSPRmassL2L3Corr_; // corrected 
-  
+  std::vector<float>  jetCHSSDmassL2L3Corr_; // corrected
+  std::vector<float>  jetCHSPRmassL2L3Corr_; // corrected
+
   std::vector<float> N2_Beta1_;
   std::vector<float> N3_Beta1_;
   std::vector<float> N2_Beta2_;
   std::vector<float> N3_Beta2_;
-  
+
   TClonesArray *jetCHSP4_;
   std::vector<float> jetCHSPx_;
   std::vector<float> jetCHSPy_;
@@ -260,7 +260,7 @@ class jetTree  : public baseTree{
 
   //jet  Hbb tagger for fat and add jet
 
-  
+
   std::vector<float> jet_probQCDb_;
   std::vector<float> jet_probHbb_;
   std::vector<float> jet_probQCDc_;
