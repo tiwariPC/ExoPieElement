@@ -53,7 +53,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   jecUncPayLoadName_(iConfig.getParameter<std::string>(Form("%sjecUncPayLoad",desc.data()))),
   jecNames_(iConfig.getParameter<std::vector<std::string> >(Form("%sjecNames",desc.data()) )),
   jecUncName_(iConfig.getParameter<std::string>(Form("%sjecUncName",desc.data())) ),
-  jet2012ID_()
+  jet2017ID_()
 {
 
   if (desc.find("THIN")!=std::string::npos)
@@ -405,12 +405,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
 
 
-    // std::map<std::string, bool> Pass = jet2012ID_.LooseJetCut(*jet);
+    // std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut(*jet);
     // bool passOrNot = PassAll(Pass);
     // jetPassIDLoose_.push_back(passOrNot);
 
 
-    std::map<std::string, bool> PassT = jet2012ID_.TightJetCut(*jet);
+    std::map<std::string, bool> PassT = jet2017ID_.TightJetCut(*jet);
     bool passOrNotT = PassAll(PassT);
     jetPassIDTight_.push_back(passOrNotT);
 
