@@ -6,8 +6,8 @@ def submit(datasetdetail):
     print "submitting"
     
     print datasetdetail
-    #os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
-    print ('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
+    os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
+    #print ('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
     
 
 
