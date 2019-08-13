@@ -325,12 +325,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     */
     
 
-
+    /*
     unCorrJetPx_.push_back(uncorrJet.px());
     unCorrJetPy_.push_back(uncorrJet.py());
     unCorrJetPz_.push_back(uncorrJet.pz());
     unCorrJetE_.push_back(uncorrJet.energy());
-    
+    */
     jetArea_.push_back(jet->jetArea());
 
     
@@ -903,13 +903,13 @@ jetTree::SetBranches(){
 
   AddBranch(&nJet_,   "nJet");
   //AddBranch(&jetP4_,       "jetP4");
-
+  
 
   AddBranch(&jetPx_, "jetPx");
   AddBranch(&jetPy_, "jetPy");
   AddBranch(&jetPz_, "jetPz");
   AddBranch(&jetE_, "jetEnergy");
-
+  
 
   AddBranch(&jetRho_, "jetRho");
   AddBranch(&jetNPV_, "jetNPV");
