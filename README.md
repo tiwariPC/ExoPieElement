@@ -98,8 +98,12 @@ python MultiCrab_2017MC.py --submit
 for crab status: 
 python MultiCrab_2017MC.py --status --crabdir=crab_MC_2017miniaodV2_V1
 
+for crab status with summary of all the dataset:  (ss refer to status summary)
+python MultiCrab_2017MC.py --status --crabdir=crab_MC_2017miniaodV2_V1 --ss 
+
 for crab resubmit: 
 python MultiCrab_2017MC.py --resubmit --crabdir=crab_MC_2017miniaodV2_V1
 
 for crab kill: 
 python MultiCrab_2017MC.py --kill --crabdir=crab_MC_2017miniaodV2_V1
+
