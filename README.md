@@ -88,3 +88,18 @@ you need to edit the .txt file name and run it using
 python MultiCrab_2017MC.py
 
  to check the status of all the jobs you just submitted you can add one function in the same file to do it. there is some example in 
+
+
+
+
+for crab submit: 
+python MultiCrab_2017MC.py --submit 
+
+for crab status: 
+python MultiCrab_2017MC.py --status --crabdir=crab_MC_2017miniaodV2_V1
+
+for crab resubmit: 
+python MultiCrab_2017MC.py --resubmit --crabdir=crab_MC_2017miniaodV2_V1
+
+for crab kill: 
+python MultiCrab_2017MC.py --kill --crabdir=crab_MC_2017miniaodV2_V1

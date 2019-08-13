@@ -1,7 +1,7 @@
 from WMCore.Configuration import Configuration
 config = Configuration()
 
-workname ='MC_2017miniaodV2_06082019'
+workname ='MC_2017miniaodV2_V1'
 reqname='DYJetsToLL_M_50_HT_400to600_TuneCP5_13TeV_30K' ## this is temporrt, will be changed by the multicrab
 dataset='/DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM' ## this is temporrt, will be changed by the multicrab
 number_of_units=1 ## this is temporrt, will be changed by the multicrab
