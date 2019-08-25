@@ -70,7 +70,7 @@ process.maxEvents = cms.untracked.PSet(
 
 
 
-## New from Egamma 
+## New from Egamma
 ## https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
 ## for 2017 recomended ID is Fall17V2
 ## a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
@@ -110,7 +110,7 @@ updateJetCollection(
    svSource = cms.InputTag('slimmedSecondaryVertices'),
    rParam = 0.8,
    #jetCorrections = ('AK8PFchs', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
-   jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
+   jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute','L2L3Residual']), 'None'),
    btagDiscriminators = [
       'pfBoostedDoubleSecondaryVertexAK8BJetTags',
       'pfDeepDoubleBJetTags:probQ',
@@ -126,7 +126,7 @@ updateJetCollection(
       'pfMassIndependentDeepDoubleCvLJetTags:probQCD',
       'pfMassIndependentDeepDoubleCvLJetTags:probHcc',
       'pfMassIndependentDeepDoubleCvBJetTags:probHbb',
-      
+
       ## for DeepAK8
       'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:bbvsLight',
       'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ccvsLight',
@@ -357,7 +357,7 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
 
 
 
-## Tau ID embedding 
+## Tau ID embedding
 
 from ExoPieElement.TreeMaker.runTauIdMVA import *
 na = TauIDEmbedder(process, cms,
@@ -366,7 +366,7 @@ na = TauIDEmbedder(process, cms,
 		   )
 na.runTauID()
 
-## adding payloads for Tau ID discriminator 
+## adding payloads for Tau ID discriminator
 
 byIsolationMVArun2017v2DBoldDMwLTraw2017 = cms.string('byIsolationMVArun2017v2DBoldDMwLTraw2017'),
 byVVLooseIsolationMVArun2017v2DBoldDMwLT2017 = cms.string('byVVLooseIsolationMVArun2017v2DBoldDMwLT2017'),
@@ -469,7 +469,7 @@ if options.useJECText:
 
 
 
-## output file name 
+## output file name
 process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
 
 
@@ -479,16 +479,16 @@ process.trigFilter = cms.EDFilter('TrigFilter',
 				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
 							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
 							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
-							  
+
 							  "HLT_Ele27_WPTight_Gsf",
 							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
 							  "HLT_Ele35_WPTight_Gsf",
-							  
+
 							  "HLT_IsoMu24",
 							  "HLT_IsoMu27",
 							  "HLT_IsoTkMu27",
 							  "HLT_IsoTkMu24",
-							  
+
 							  "HLT_Photon200" ),
 				  isMC_ = cms.bool(options.runOnMC)
 				  )
@@ -509,8 +509,8 @@ if not options.useJECText:
 		*process.rerunMvaIsolationSequence
 		*process.NewTauIDsEmbedded+
 		process.egammaPostRecoSeq+
-		process.appliedRegJets+ 
-		process.fullPatMetSequenceModifiedMET+ 
+		process.appliedRegJets+
+		process.fullPatMetSequenceModifiedMET+
 		process.patSmearedJets+
 		process.pfMet+
 		process.jetCorrSequenceAK4+  ## only when using JEC text files
