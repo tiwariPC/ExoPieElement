@@ -1,4 +1,4 @@
-## this branch is already good for 2017 analyssi, 
+## this branch is already good for 2017 analysis, 
 
 ## please make all changes for 2016 in the present branch such that this can be used for both years. 
 
