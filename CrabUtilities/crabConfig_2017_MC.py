@@ -7,7 +7,7 @@ dataset='/DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFal
 number_of_units=1 ## this is temporrt, will be changed by the multicrab
 
 config.section_("General")
-config.General.requestName = reqname
+config.General.requestName = 'XYZ_replacedbyMulticrab'
 config.General.workArea = 'crab_'+workname
 config.General.transferOutputs = True
 config.General.transferLogs = True
@@ -30,7 +30,7 @@ config.JobType.sendPythonFolder = True
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-config.Data.outputDatasetTag = reqname
+#config.Data.outputDatasetTag = config.General.requestName
 
 #config.Data.splitting = 'LumiBased'
 #config.Data.splitting = 'Automatic'
