@@ -1,13 +1,15 @@
 #include "ExoPieElement/TreeMaker/interface/jetSelector.h"
 
 
-jetSelector::jetSelector(const edm::ParameterSet& iConfig)
+//jetSelector::jetSelector(const edm::ParameterSet& iConfig)
+jetSelector::jetSelector()
 {
-    runOn2017_(iConfig.getParameter<bool>("runOn2017")),
-    runOn2016_(iConfig.getParameter<bool>("runOn2016")),
+//    runOn2017_(iConfig.getParameter<bool>("runOn2017")),
+//    runOn2016_(iConfig.getParameter<bool>("runOn2016")),
 
 }
-
+runOn2017_ = True;
+runOn2016_ = True;
 
 std::map<std::string, bool>  jetSelector::MergedJetCut(const pat::Jet& jet){
 
