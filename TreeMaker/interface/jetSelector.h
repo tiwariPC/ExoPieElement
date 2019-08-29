@@ -23,12 +23,15 @@ National Central University
 class jetSelector{
 
  public:
-  jetSelector();
+  jetSelector(const edm::ParameterSet& cfg);
   std::map<std::string, bool> MergedJetCut(const pat::Jet& jet);
-//  std::map<std::string, bool> LooseJetCut(const pat::Jet& jet);
+  std::map<std::string, bool> LooseJetCut(const pat::Jet& jet);
   std::map<std::string, bool> TightJetCut(const pat::Jet& jet);
   ~jetSelector(){}
-
+ private:
+    jetSelector(){};
+    bool runOn2016_;
+    bool runOn2017_;
 };
 
 #endif

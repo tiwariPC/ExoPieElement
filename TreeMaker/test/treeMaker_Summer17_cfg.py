@@ -34,6 +34,18 @@ options.register ('useMiniAOD',
 		    VarParsing.varType.bool,
 		    "useMiniAOD")
 
+options.register ('runOn2017',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOn2017")
+
+options.register ('runOn2016',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOn2016")
+
 options.parseArguments()
 
 
@@ -137,15 +149,15 @@ updateJetCollection(
       ]
         )
 ## This is for modified MET, needed only for 2017 data
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-    process,
-    isData = True, # false for MC
-    fixEE2017 = True,
-    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-    postfix = "ModifiedMET"
-    )
+if options.runOn2017:
+    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+    runMetCorAndUncFromMiniAOD (
+        process,
+        isData = True, # false for MC
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+        )
 
 
 ##
@@ -446,6 +458,8 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
+process.tree.runOn2017             = cms.bool(options.runOn2017)
+process.tree.runOn2016             = cms.bool(options.runOn2016)
 process.tree.THINjecNames          = cms.vstring(AK4JECTextFiles)
 process.tree.THINjecUncName        = cms.string(AK4JECUncTextFile)
 process.tree.FATprunedMassJecNames = cms.vstring(prunedMassJECTextFiles)
@@ -476,20 +490,21 @@ process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieE
 ##Trigger Filter
 process.trigFilter = cms.EDFilter('TrigFilter',
 				  TrigTag = cms.InputTag("TriggerResults::HLT"),
-				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
-							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
-							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+                  if options.runOn2017:
+    				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+    							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+    							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+    							  "HLT_Ele27_WPTight_Gsf",
+    							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
+    							  "HLT_Ele35_WPTight_Gsf",
+    							  "HLT_IsoMu24",
+    							  "HLT_IsoMu27",
+    							  "HLT_IsoTkMu27",
+    							  "HLT_IsoTkMu24",
 
-							  "HLT_Ele27_WPTight_Gsf",
-							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
-							  "HLT_Ele35_WPTight_Gsf",
-
-							  "HLT_IsoMu24",
-							  "HLT_IsoMu27",
-							  "HLT_IsoTkMu27",
-							  "HLT_IsoTkMu24",
-
-							  "HLT_Photon200" ),
+    							  "HLT_Photon200" ),
+                  elif options.runOn2016:
+                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned","HLT_PFMET170_HBHE_BeamHaloCleaned","HLT_PFMET170_NotCleaned","HLT_PFMET170_NoiseCleaned","HLT_PFMET170_JetIdCleaned","HLT_PFMET170_HBHECleaned","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight","HLT_PFMET110_PFMHT110_IDTight","HLT_IsoMu24","HLT_IsoTkMu24","HLT_IsoMu27","HLT_IsoTkMu27","HLT_Ele27_WPTight_Gsf","HLT_Ele105_CaloIdVT_GsfTrkIdT","HLT_Ele115_CaloIdVT_GsfTrkIdT","HLT_Ele32_WPTight_Gsf","HLT_IsoMu20","HLT_Ele27_eta2p1_WPTight_Gsf","HLT_Ele27_WPLoose_Gsf","HLT_Ele32_eta2p1_WPTight_Gsf","HLT_Photon165_HE10","HLT_Photon175","HLT_Ele105_CaloIdVT_GsfTrkIdT")
 				  isMC_ = cms.bool(options.runOnMC)
 				  )
 
