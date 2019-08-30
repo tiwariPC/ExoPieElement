@@ -967,7 +967,7 @@ jetTree::SetBranches(){
   if (runOn2017_){
      AddBranch(&jetPassIDTight_,  "jetPassIDTight");
   }
-  if (runOn2016_){
+  else if (runOn2016_){
      AddBranch(&jetPassIDLoose_,  "jetPassIDLoose");
   }
   AddBranch(&jetCEmEF_,  "jetCEmEF");
