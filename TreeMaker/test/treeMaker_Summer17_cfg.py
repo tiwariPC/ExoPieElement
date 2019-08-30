@@ -527,35 +527,62 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+if options.runOn2017:
+	if not options.useJECText:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.fullPatMetSequenceModifiedMET+
+			process.patSmearedJets+
+			process.pfMet+
+			process.jetCorrSequenceAK4+  ## only when using JEC text files
+			process.jetCorrSequenceAK8+  ## only when using JEC text files
+			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			process.tree
+			)
+	else:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.fullPatMetSequenceModifiedMET+
+			process.patSmearedJets+
+			process.pfMet+
+			process.tree
+			)
 
-if not options.useJECText:
-	process.analysis = cms.Path(
-		process.trigFilter
-		*process.rerunMvaIsolationSequence
-		*process.NewTauIDsEmbedded+
-		process.egammaPostRecoSeq+
-		process.appliedRegJets+
-		process.fullPatMetSequenceModifiedMET+
-		process.patSmearedJets+
-		process.pfMet+
-		process.jetCorrSequenceAK4+  ## only when using JEC text files
-		process.jetCorrSequenceAK8+  ## only when using JEC text files
-		process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
-		process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
-		process.tree
-		)
-else:
-	process.analysis = cms.Path(
-		process.trigFilter
-		*process.rerunMvaIsolationSequence
-		*process.NewTauIDsEmbedded+
-		process.egammaPostRecoSeq+
-		process.appliedRegJets+
-		process.fullPatMetSequenceModifiedMET+
-		process.patSmearedJets+
-		process.pfMet+
-		process.tree
-		)
-
+elif options.runOn2016:
+	if not options.useJECText:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.patSmearedJets+
+			process.pfMet+
+			process.jetCorrSequenceAK4+  ## only when using JEC text files
+			process.jetCorrSequenceAK8+  ## only when using JEC text files
+			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			process.tree
+			)
+	else:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.patSmearedJets+
+			process.pfMet+
+			process.tree
+			)
 
 #print process.dumpPython()
