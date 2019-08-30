@@ -26,10 +26,8 @@ tree = cms.EDAnalyzer(
     pvSrc            = cms.InputTag('offlineSlimmedPrimaryVertices'),
 
     patMet           = cms.InputTag("slimmedMETs"),
-    if runOn2016:
-        pfType1Met       = cms.InputTag("slimmedMETs"),
-    elif runOn2017:
-        pfType1Met       = cms.InputTag("slimmedMETsModifiedMET"),
+
+    pfType1Met       = cms.InputTag("slimmedMETs"),
     puppiMET         = cms.InputTag("slimmedMETsPuppi"),
 
     ## filter

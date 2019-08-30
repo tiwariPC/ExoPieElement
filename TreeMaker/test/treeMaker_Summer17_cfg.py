@@ -473,6 +473,10 @@ process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
 
+if options.runOn2016:
+    process.tree.pfType1Met = cms.InputTag("slimmedMETs")
+if options.runOn2017:
+    process.tree.pfType1Met = cms.InputTag("slimmedMETsModifiedMET")
 
 if options.useJECText:
 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
