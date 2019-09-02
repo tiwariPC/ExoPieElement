@@ -41,7 +41,7 @@ const math::XYZPoint & position(const reco::VertexCompositePtrCandidate & sv) {r
 
 jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig):
 
-  
+
   baseTree(desc, tree),
   isTHINJet_(false),
   isFATJet_(false),
@@ -49,6 +49,8 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   isAK8PuppiJet_(false),
   isCA15PuppiJet_(false),
   useJECText_(iConfig.getParameter<bool>("useJECText")),
+  runOn2017_(iConfig.getParameter<bool>("runOn2017")),
+  runOn2016_(iConfig.getParameter<bool>("runOn2016")),
   svTagInfosCstr_(iConfig.getParameter<std::string>("svTagInfosPY")),
   jecUncPayLoadName_(iConfig.getParameter<std::string>(Form("%sjecUncPayLoad",desc.data()))),
   jecNames_(iConfig.getParameter<std::vector<std::string> >(Form("%sjecNames",desc.data()) )),
@@ -69,7 +71,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
 
   std::cout << " inside jet tree "<< desc << std::endl;
 
-  
+
   //genjetP4_    = new TClonesArray("TLorentzVector");
   //jetP4_       = new TClonesArray("TLorentzVector");
   //unCorrJetP4_ = new TClonesArray("TLorentzVector");
@@ -124,9 +126,9 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
     ecfnmanager = new ECFNManager();
 
     /* ECF: Ends here */
-    
-    
-    
+
+
+
     std::string cmssw_base = getenv("CMSSW_BASE");
     std::string fweight = cmssw_base+"/src/ExoPieElement/TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml";
     mJetBoostedBtaggingMVACalc.initialize("BDT",fweight);
@@ -199,7 +201,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
 
 
-  
+
   // Get the primary vertex collection
   edm::Handle<reco::VertexCollection>  h_pv;
   if(not iEvent.getByToken(vertexToken,h_pv))
@@ -214,7 +216,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
   jetNPV_=  h_pv->size();
 
 
-  // Get the Handle for Jet Collection 
+  // Get the Handle for Jet Collection
   edm::Handle<pat::JetCollection> JetHandle;
   if(not iEvent.getByToken(jetToken,JetHandle))
     {
@@ -224,7 +226,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     }
 
 
-  // for getting the L2+L3 correction factor of pruned jet mass 
+  // for getting the L2+L3 correction factor of pruned jet mass
   edm::Handle<pat::JetCollection> JetHandleForPrunedMass;
   pat::JetCollection jetsForPrunedMass;
 
@@ -234,7 +236,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     	       <<"PrunedMassJet"<<std::endl;
       exit(0);
     }
-  
+
   else if(isFATJet_ && iEvent.getByToken(prunedMToken,JetHandleForPrunedMass))
     jetsForPrunedMass       = *(JetHandleForPrunedMass.product());
 
@@ -250,9 +252,9 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jecUnc_ = new JetCorrectionUncertainty(JetCorPar);
   }
 
-  
 
-  // Loop over jet collection based on the jet type flag 
+
+  // Loop over jet collection based on the jet type flag
   pat::JetCollection jets(*(JetHandle.product()));
   std::sort(jets.begin(),jets.end(),PtGreater());
   std::vector<pat::Jet>::const_iterator jet =jets.begin();
@@ -273,7 +275,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       double a = ( jet->p4().eta() - jet->genJet()->p4().eta()) * ( jet->p4().eta() - jet->genJet()->p4().eta());
       double b = ( jet->p4().phi() - jet->genJet()->p4().phi()) * ( jet->p4().phi() - jet->genJet()->p4().phi());
       DR = sqrt(a+b);
-      
+
       /*
       new( (*genjetP4_)[nJet_-1]) TLorentzVector(
    						 jet->genJet()->p4().px(),
@@ -286,7 +288,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       genjetpy_.push_back(jet->genJet()->p4().py());
       genjetpz_.push_back(jet->genJet()->p4().pz());
       genjetE_.push_back(jet->genJet()->p4().energy());
-      
+
       genjetEM_.push_back(jet->genJet()->emEnergy());
       genjetHAD_.push_back(jet->genJet()->hadEnergy());
       genjetINV_.push_back(jet->genJet()->invisibleEnergy());
@@ -323,7 +325,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 						  uncorrJet.energy()
    							);
     */
-    
+
 
     /*
     unCorrJetPx_.push_back(uncorrJet.px());
@@ -333,10 +335,10 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     */
     jetArea_.push_back(jet->jetArea());
 
-    
+
     // if reading text files, set jet 4-momentum
     // make correction using jecText files
-    
+
     if(useJECText_){
       jecText_->setJetEta( uncorrJet.eta() );
       jecText_->setJetPt ( uncorrJet.pt() );
@@ -345,7 +347,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jecText_->setRho   ( *(h_rho.product()) );
       jecText_->setNPV   ( h_pv->size() );
       Float_t corr_jet = jecText_->getCorrection();
-      
+
       /*
       new( (*jetP4_)[nJet_-1]) TLorentzVector(uncorrJet.px()*corr_jet,
 					      uncorrJet.py()*corr_jet,
@@ -356,7 +358,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jetPy_.push_back(uncorrJet.py()*corr_jet);
       jetPz_.push_back(uncorrJet.pz()*corr_jet);
       jetE_.push_back(uncorrJet.energy()*corr_jet);
-      
+
       jecUncText_->setJetEta( uncorrJet.eta() );
       jecUncText_->setJetPt( corr_jet * uncorrJet.pt() );
       jetCorrUncUp_.push_back(jecUncText_->getUncertainty(true));
@@ -409,10 +411,17 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     // bool passOrNot = PassAll(Pass);
     // jetPassIDLoose_.push_back(passOrNot);
 
+    if (runOn2016_){
+        std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
+        bool passOrNot = PassAll(Pass);
+        jetPassIDLoose_.push_back(passOrNot);
+    }
+    if (runOn2017_){
+        std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
+        bool passOrNotT = PassAll(PassT);
+        jetPassIDTight_.push_back(passOrNotT);
+    }
 
-    std::map<std::string, bool> PassT = jet2017ID_.TightJetCut(*jet);
-    bool passOrNotT = PassAll(PassT);
-    jetPassIDTight_.push_back(passOrNotT);
 
 
     if(isTHINJet_){
@@ -424,7 +433,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
       bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
 
-      
+
       isPUJetIDLoose_.push_back(
 				bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
       isPUJetIDMedium_.push_back(
@@ -432,7 +441,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       isPUJetIDTight_.push_back(
 				bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
     }
-    
+
     jetCEmEF_.push_back(jet->chargedEmEnergyFraction());
     jetCHadEF_.push_back(jet->chargedHadronEnergyFraction());
     jetPhoEF_.push_back(jet->photonEnergyFraction());
@@ -448,7 +457,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetHOEnergy_.push_back(jet->hoEnergy());
     jetHOEF_.push_back(jet->hoEnergyFraction());
 
-    
+
     jetCMulti_.push_back(jet->chargedMultiplicity());
     jetEleMultiplicity_.push_back(jet->electronMultiplicity());
     jetMuoMultiplicity_.push_back(jet->muonMultiplicity());
@@ -494,8 +503,8 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         }
       }
       std::vector<edm::Ptr<reco::Candidate>> constituentPtrs = jet->getJetConstituents();
-    
-      // if (!minimal && data->size()<2)   commented by raman becuase this was not needed here, 
+
+      // if (!minimal && data->size()<2)   commented by raman becuase this was not needed here,
       {
 	// calculate ECFs, groomed tauN
 	typedef std::vector<fastjet::PseudoJet> VPseudoJet;
@@ -547,7 +556,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       // End of ECFs computation
 
 
-      // double b-tagger calculation for the CA15 jets 
+      // double b-tagger calculation for the CA15 jets
       // std::cout<< " using the get function outside  = "<< p_jet->get_ecf(2,3,1)<<"   "<<p_jet->get_ecf(1,2,1)<<std::endl;
       const reco::TaggingVariableList vars = jet->tagInfoBoostedDoubleSV()->taggingVariables();
       float z_ratio_                       = vars.get(reco::btau::z_ratio);
@@ -644,36 +653,36 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     }//     if(isCA15PuppiJet_){
 
 
-    // This is the main jet collection which will be used for the monoH analysis 
+    // This is the main jet collection which will be used for the monoH analysis
     if(isFATJet_){
-      
+
       // CHS subjettiness
       jetCHSTau1_.push_back(jet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1"));
       jetCHSTau2_.push_back(jet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2"));
       jetCHSTau3_.push_back(jet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3"));
-      
-      
+
+
       TLorentzVector temp_CHS;
       temp_CHS.SetPtEtaPhiM(jet->userFloat("ak8PFJetsCHSValueMap:pt"),
 			    jet->userFloat("ak8PFJetsCHSValueMap:eta"),
 			    jet->userFloat("ak8PFJetsCHSValueMap:phi"),
 			    jet->userFloat("ak8PFJetsCHSValueMap:mass"));
       //new( (*jetCHSP4_)[nJet_-1]) TLorentzVector(temp_CHS);
-      
-      
+
+
       jetCHSPx_.push_back(temp_CHS.Px());
       jetCHSPy_.push_back(temp_CHS.Py());
       jetCHSPz_.push_back(temp_CHS.Pz());
       jetCHSE_.push_back(temp_CHS.E());
-      
+
       //Puppi subjettiness
       jetTau1_.push_back(jet->userFloat("NjettinessAK8Puppi:tau1"));
       jetTau2_.push_back(jet->userFloat("NjettinessAK8Puppi:tau2"));
       jetTau3_.push_back(jet->userFloat("NjettinessAK8Puppi:tau3"));
       jetTau4_.push_back(jet->userFloat("NjettinessAK8Puppi:tau4"));
-      
+
       // deep DoubleB tagger
-      
+
       jet_probQCDb_.push_back(jet->bDiscriminator("pfMassIndependentDeepDoubleBvLJetTags:probQCD"));
       jet_probHbb_.push_back(jet->bDiscriminator("pfMassIndependentDeepDoubleBvLJetTags:probHbb"));
       jet_probQCDc_.push_back(jet->bDiscriminator("pfMassIndependentDeepDoubleCvLJetTags:probQCD"));
@@ -687,18 +696,18 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jet_prob_ZHccvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHccvsQCD"));
       jet_prob_WvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
       jet_prob_ZHbbvsQCD_.push_back(jet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD"));
-      
-      
+
+
       //jet__.push_back(jet->bDiscriminator(""));
-// 
+//
       N2_Beta1_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2"));
       N3_Beta1_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3"));
       N2_Beta2_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN2"));
       N3_Beta2_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN3"));
-      
-      
-      
-      
+
+
+
+
       //   using a different way to get corrected pruned/softdrop mass
       // if reading global tag
       float corr=-1;
@@ -903,25 +912,25 @@ jetTree::SetBranches(){
 
   AddBranch(&nJet_,   "nJet");
   //AddBranch(&jetP4_,       "jetP4");
-  
+
 
   AddBranch(&jetPx_, "jetPx");
   AddBranch(&jetPy_, "jetPy");
   AddBranch(&jetPz_, "jetPz");
   AddBranch(&jetE_, "jetEnergy");
-  
+
 
   AddBranch(&jetRho_, "jetRho");
   AddBranch(&jetNPV_, "jetNPV");
 
   if(jet_extra){
     //AddBranch(&jetP4_,       "jetP4");
-    //AddBranch(&genjetP4_,   "genjetP4"); // this is no longer needed as individual component is already there, 
+    //AddBranch(&genjetP4_,   "genjetP4"); // this is no longer needed as individual component is already there,
     AddBranch(&genjetpx_,"genjetpx");
     AddBranch(&genjetpy_,"genjetpy");
     AddBranch(&genjetpz_,"genjetpz");
     AddBranch(&genjetE_,"genjetE");
-    
+
     AddBranch(&genjetEM_ ,  "genjetEM");
     AddBranch(&genjetHAD_ , "genjetHAD");
     AddBranch(&genjetINV_ , "genjetINV");
@@ -934,7 +943,7 @@ jetTree::SetBranches(){
     AddBranch(&unCorrJetPy_, "unCorrJetPy");
     AddBranch(&unCorrJetPz_, "unCorrJetPz");
     AddBranch(&unCorrJetE_, "unCorrJetE");
-    
+
     AddBranch(&jetArea_,        "jetArea");
     AddBranch(&jetCharge_,       "jetCharge");
     AddBranch(&jetPartonFlavor_, "jetPartonFlavor");
@@ -955,8 +964,12 @@ jetTree::SetBranches(){
   AddBranch(&jetCorrUncUp_,   "jetCorrUncUp");
   AddBranch(&jetCorrUncDown_, "jetCorrUncDown");
   AddBranch(&jetHadronFlavor_, "jetHadronFlavor");
-  AddBranch(&jetPassIDTight_,  "jetPassIDTight");
-
+  if (runOn2017_){
+     AddBranch(&jetPassIDTight_,  "jetPassIDTight");
+  }
+  else if (runOn2016_){
+     AddBranch(&jetPassIDLoose_,  "jetPassIDLoose");
+  }
   AddBranch(&jetCEmEF_,  "jetCEmEF");
   AddBranch(&jetCHadEF_, "jetCHadEF");
   AddBranch(&jetPhoEF_,  "jetPhoEF");
@@ -981,11 +994,11 @@ jetTree::SetBranches(){
 
   if(isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_){
     if (jet_extra){
-      
+
       AddBranch(&jet_nSV_,     "jet_nSV");
       AddBranch(&jet_SVMass_,  "jet_SVMass");
 
-      
+
       // subjet information
       AddBranch(&jetGenSDmass_,         "jetGenSDmass");
       AddBranch(&nSubSDJet_,            "nSubSDJet");
@@ -997,7 +1010,7 @@ jetTree::SetBranches(){
       AddBranch(&subjetSDRawFactor_,    "subjetSDRawFactor");
       AddBranch(&subjetSDPartonFlavor_, "subjetSDPartonFlavor");
     }
-    
+
     if (isFATJet_){
       AddBranch(&jet_DoubleSV_,"jet_DoubleSV");
       AddBranch(&jet_probQCDb_,"jet_probQCDb");
@@ -1006,8 +1019,8 @@ jetTree::SetBranches(){
       AddBranch(&jet_probHcc_,"jet_probHcc");
       AddBranch(&jet_probHbbc_,"jet_probHbbc");
       AddBranch(&jet_probHccb_,"jet_probHccb");
-      
-      
+
+
       AddBranch(&jet_prob_bbvsLight_, "jet_prob_bbvsLight");
       AddBranch(&jet_prob_ccvsLight_, "jet_prob_ccvsLight");
       AddBranch(&jet_prob_TvsQCD_, "jet_prob_TvsQCD");
@@ -1015,10 +1028,10 @@ jetTree::SetBranches(){
       AddBranch(&jet_prob_WvsQCD_, "jet_prob_WvsQCD");
       AddBranch(&jet_prob_ZHbbvsQCD_, "jet_prob_ZHbbvsQCD");
     }
-    
+
     AddBranch(&jetSDRawP4_, "jetSDRawP4");
     AddBranch(&jetSDmass_, "jetSDmass");
-    
+
     AddBranch(&subjetSDHadronFlavor_, "subjetSDHadronFlavor");
     AddBranch(&subjetSDCSV_, "subjetSDCSV");
 
@@ -1035,8 +1048,8 @@ jetTree::SetBranches(){
     AddBranch(&jetCHSPRmass_,         "jetCHSPRmass");
     AddBranch(&jetCHSPRmassL2L3Corr_, "jetCHSPRmassL2L3Corr");
     AddBranch(&jetCHSSDmassL2L3Corr_, "jetCHSSDmassL2L3Corr"); // newly added on 4.08.2019
-    
-    
+
+
     AddBranch(&jetCHSTau1_,   "jetCHSTau1");
     AddBranch(&jetCHSTau2_,   "jetCHSTau2");
     AddBranch(&jetCHSTau3_,   "jetCHSTau3");
@@ -1045,20 +1058,20 @@ jetTree::SetBranches(){
     AddBranch(&jetCHSPy_, "jetCHSPy");
     AddBranch(&jetCHSPz_, "jetCHSPz");
     AddBranch(&jetCHSE_, "jetCHSE");
-    
+
     AddBranch(&jetTau1_,  "jetTau1");
     AddBranch(&jetTau2_,  "jetTau2");
     AddBranch(&jetTau3_,  "jetTau3");
     AddBranch(&jetTau4_, "jetTau4");
-    
+
     AddBranch(&N2_Beta1_,"N2_Beta1_");
     AddBranch(&N3_Beta1_,"N3_Beta1_");
     AddBranch(&N2_Beta2_,"N2_Beta2_");
     AddBranch(&N3_Beta2_,"N3_Beta2_");
 
-    
+
   } // only for AK8CHS jets
-  
+
 
 }
 
@@ -1102,7 +1115,7 @@ jetTree::Clear(){
   jetCharge_.clear();
   jetPartonFlavor_.clear();
   jetHadronFlavor_.clear();
-  // jetPassIDLoose_.clear();
+  jetPassIDLoose_.clear();
   jetPassIDTight_.clear();
   PUJetID_.clear();
   isPUJetIDLoose_.clear();
@@ -1157,12 +1170,12 @@ jetTree::Clear(){
   jetTau2_.clear();
   jetTau3_.clear();
   jetTau4_.clear();
-  
+
   N2_Beta1_.clear();
   N3_Beta1_.clear();
   N2_Beta2_.clear();
   N3_Beta2_.clear();
-  
+
 
   jetSDmass_.clear();
   jetSDRawP4_->Clear();
@@ -1173,7 +1186,7 @@ jetTree::Clear(){
   jetCHSPRmass_.clear();
   jetCHSPRmassL2L3Corr_.clear();
   jetCHSSDmassL2L3Corr_.clear();
-  
+
 
   jetCHSTau1_.clear();
   jetCHSTau2_.clear();
@@ -1183,7 +1196,7 @@ jetTree::Clear(){
   jetCHSPy_.clear();
   jetCHSPz_.clear();
   jetCHSE_.clear();
-  
+
   // CA15 and ECFs
   ca15_doublebtag.clear();
   ECF_2_3_10.clear();
@@ -1197,7 +1210,7 @@ jetTree::Clear(){
   jet_probHcc_.clear();
   jet_probHbbc_.clear();
   jet_probHccb_.clear();
-  
+
   jet_prob_bbvsLight_.clear();
   jet_prob_ccvsLight_.clear();
   jet_prob_TvsQCD_.clear();
@@ -1205,7 +1218,7 @@ jetTree::Clear(){
   jet_prob_WvsQCD_.clear();
   jet_prob_ZHbbvsQCD_.clear();
 
-  
+
   jet_DoubleSV_.clear();
 
 

@@ -108,6 +108,8 @@ class jetTree  : public baseTree{
   bool isAK8PuppiJet_;
   bool isCA15PuppiJet_;
   bool useJECText_;
+  bool runOn2017_;
+  bool runOn2016_;
 
   std::string svTagInfosCstr_;
 
@@ -167,7 +169,7 @@ class jetTree  : public baseTree{
   std::vector<int>   jetCharge_;
   std::vector<int>   jetPartonFlavor_;
   std::vector<int>   jetHadronFlavor_;
-  // std::vector<bool>  jetPassIDLoose_;
+  std::vector<bool>  jetPassIDLoose_;
   std::vector<bool>  jetPassIDTight_;
   std::vector<float> PUJetID_;
   std::vector<bool>  isPUJetIDLoose_;
