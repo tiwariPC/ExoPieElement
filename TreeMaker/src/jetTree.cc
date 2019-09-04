@@ -923,10 +923,10 @@ jetTree::SetBranches(){
   AddBranch(&jetCMulti_, "jetCMulti");
   AddBranch(&jetEleMultiplicity_,"jetEleMulti");
   AddBranch(&jetMuoMultiplicity_,"jetMuoMulti");
-  AddBranch(&jetCHHadMultiplicity_,"jetCHHadMultiplicity";
-  AddBranch(&jetPhMultiplicity_,"jetPhMultiplicity";
-  AddBranch(&jetNMultiplicity_,"jetNMultiplicity";
-  AddBranch(&jetNHadMulplicity,"jetNHadMulplicity";
+  AddBranch(&jetCHHadMultiplicity_,"jetCHHadMultiplicity");
+  AddBranch(&jetPhMultiplicity_,"jetPhMultiplicity");
+  AddBranch(&jetNMultiplicity_,"jetNMultiplicity");
+  AddBranch(&jetNHadMulplicity_,"jetNHadMulplicity");
 
 
   if(jet_extra){
