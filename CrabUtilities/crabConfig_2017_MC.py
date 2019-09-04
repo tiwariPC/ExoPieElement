@@ -13,16 +13,16 @@ config.General.transferOutputs = True
 config.General.transferLogs = True
 
 PERIOD="D"
-DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA' ## this is not used at this moment 
+DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA' ## this is not used at this moment
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'treeMaker_Summer17_cfg.py'
+config.JobType.psetName = 'treeMaker_16_17_cfg.py'
 config.JobType.pyCfgParams = ['runOnMC=True']
 
-config.JobType.inputFiles = ['../MetaData/data/DNN_models/breg_training_2017.pb',  ## this is for b-jet regression 
-                             '../TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml'  ## this is for CA15 training, will be removed in next iteration 
-                             ] 
+config.JobType.inputFiles = ['../MetaData/data/DNN_models/breg_training_2017.pb',  ## this is for b-jet regression
+                             '../TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml'  ## this is for CA15 training, will be removed in next iteration
+                             ]
 
 #config.JobType.sendExternalFolder = True
 config.JobType.sendPythonFolder = True
@@ -44,11 +44,11 @@ config.Data.unitsPerJob = 30000
 config.JobType.allowUndistributedCMSSW=True
 
 
-#maxtarballsize = 50 
+#maxtarballsize = 50
 config.section_("Site")
 #config.Site.storageSite = "T3_TW_NCU"
 config.Site.storageSite = "T2_CH_CERN"
-##config.Site.storageSite = "T2_US_Wisconsin"                                                         
-#config.Site.storageSite = "T2_TW_NCHC"                                                               
+##config.Site.storageSite = "T2_US_Wisconsin"
+#config.Site.storageSite = "T2_TW_NCHC"
 
-config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMET/ExoPieElementTuples/%s' %(workname) 
+config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMET/ExoPieElementTuples/%s' %(workname)

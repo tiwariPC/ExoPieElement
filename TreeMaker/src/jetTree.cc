@@ -263,7 +263,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
   for(;jet!=jets.end();jet++){
 
     if(jet->pt() < 10.) continue;
-    if((isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_) && jet->pt() < 170.) continue;
+    if((isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_) && jet->pt() < 200.) continue;
 
     nJet_++;
     //Stuff common for all jets.
@@ -912,16 +912,22 @@ jetTree::SetBranches(){
 
   AddBranch(&nJet_,   "nJet");
   //AddBranch(&jetP4_,       "jetP4");
-
-
   AddBranch(&jetPx_, "jetPx");
   AddBranch(&jetPy_, "jetPy");
   AddBranch(&jetPz_, "jetPz");
   AddBranch(&jetE_, "jetEnergy");
 
-
   AddBranch(&jetRho_, "jetRho");
   AddBranch(&jetNPV_, "jetNPV");
+
+  AddBranch(&jetCMulti_, "jetCMulti");
+  AddBranch(&jetEleMultiplicity_,"jetEleMulti");
+  AddBranch(&jetMuoMultiplicity_,"jetMuoMulti");
+  AddBranch(&jetCHHadMultiplicity_,"jetCHHadMultiplicity");
+  AddBranch(&jetPhMultiplicity_,"jetPhMultiplicity");
+  AddBranch(&jetNMultiplicity_,"jetNMultiplicity");
+  AddBranch(&jetNHadMulplicity_,"jetNHadMulplicity");
+
 
   if(jet_extra){
     //AddBranch(&jetP4_,       "jetP4");
@@ -948,9 +954,6 @@ jetTree::SetBranches(){
     AddBranch(&jetCharge_,       "jetCharge");
     AddBranch(&jetPartonFlavor_, "jetPartonFlavor");
 
-    AddBranch(&jetCMulti_, "jetCMulti");
-    AddBranch(&jetEleMultiplicity_,"jetEleMulti");
-    AddBranch(&jetMuoMultiplicity_,"jetMuoMulti");
 
     AddBranch(&jetSSV_,   "jetSSV");
     AddBranch(&jetCSV_,   "jetCSV");
@@ -960,7 +963,6 @@ jetTree::SetBranches(){
     AddBranch(&jetJP_,    "jetJP");
     AddBranch(&jetJBP_,   "jetJBP");
   }
-
   AddBranch(&jetCorrUncUp_,   "jetCorrUncUp");
   AddBranch(&jetCorrUncDown_, "jetCorrUncDown");
   AddBranch(&jetHadronFlavor_, "jetHadronFlavor");
@@ -997,7 +999,6 @@ jetTree::SetBranches(){
 
       AddBranch(&jet_nSV_,     "jet_nSV");
       AddBranch(&jet_SVMass_,  "jet_SVMass");
-
 
       // subjet information
       AddBranch(&jetGenSDmass_,         "jetGenSDmass");

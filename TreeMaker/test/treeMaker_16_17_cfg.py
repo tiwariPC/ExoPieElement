@@ -34,6 +34,18 @@ options.register ('useMiniAOD',
 		    VarParsing.varType.bool,
 		    "useMiniAOD")
 
+options.register ('runOn2017',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOn2017")
+
+options.register ('runOn2016',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOn2016")
+
 options.parseArguments()
 
 
@@ -83,19 +95,23 @@ setupEgammaPostRecoSeq(process,
 
 
 # Input source
-if options.runOnMC:
-	#testFile='/store/mc/RunIIFall17MiniAOD/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/16E915A2-E60E-E811-AD53-001E67A3EF70.root'
-        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
-else:
-	testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
+if options.runOn2017:
+	if options.runOnMC:
+		testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
+	else:
+		testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
+elif options.runOn2016:
+	if options.runOnMC:
+		testFile='/store/mc/RunIISummer16MiniAODv3/DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/110000/FC23A1C1-1BEA-E811-9671-0025905C445A.root'
+	else:
+		testFile='/store/data/Run2016B/MET/MINIAOD/17Jul2018_ver2-v1/40000/FE78E8B0-288C-E811-81FC-0025904CDDF8.root'
 
 
 process.source = cms.Source("PoolSource",
                             secondaryFileNames = cms.untracked.vstring(),
-
-                            fileNames = cms.untracked.vstring("file:/tmp/khurana/temp.root"),
-			    #fileNames = cms.untracked.vstring(testFile),
-			    #skipEvents = cms.untracked.uint32(0)
+                            #fileNames = cms.untracked.vstring("file:/tmp/khurana/temp.root"),
+							fileNames = cms.untracked.vstring(testFile),
+							#skipEvents = cms.untracked.uint32(0)
                             )
 
 
@@ -137,15 +153,15 @@ updateJetCollection(
       ]
         )
 ## This is for modified MET, needed only for 2017 data
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-    process,
-    isData = True, # false for MC
-    fixEE2017 = True,
-    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-    postfix = "ModifiedMET"
-    )
+if options.runOn2017:
+    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+    runMetCorAndUncFromMiniAOD (
+        process,
+        isData = True, # false for MC
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+        )
 
 
 ##
@@ -446,6 +462,8 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
+process.tree.runOn2017             = cms.bool(options.runOn2017)
+process.tree.runOn2016             = cms.bool(options.runOn2016)
 process.tree.THINjecNames          = cms.vstring(AK4JECTextFiles)
 process.tree.THINjecUncName        = cms.string(AK4JECUncTextFile)
 process.tree.FATprunedMassJecNames = cms.vstring(prunedMassJECTextFiles)
@@ -459,6 +477,10 @@ process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
 
+if options.runOn2016:
+    process.tree.pfType1Met = cms.InputTag("slimmedMETs")
+if options.runOn2017:
+    process.tree.pfType1Met = cms.InputTag("slimmedMETsModifiedMET")
 
 if options.useJECText:
 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
@@ -474,25 +496,28 @@ process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieE
 
 
 ##Trigger Filter
-process.trigFilter = cms.EDFilter('TrigFilter',
-				  TrigTag = cms.InputTag("TriggerResults::HLT"),
-				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
-							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
-							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
-
-							  "HLT_Ele27_WPTight_Gsf",
-							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
-							  "HLT_Ele35_WPTight_Gsf",
-
-							  "HLT_IsoMu24",
-							  "HLT_IsoMu27",
-							  "HLT_IsoTkMu27",
-							  "HLT_IsoTkMu24",
-
-							  "HLT_Photon200" ),
-				  isMC_ = cms.bool(options.runOnMC)
-				  )
-
+if options.runOn2017:
+	process.trigFilter = cms.EDFilter('TrigFilter',
+					  TrigTag = cms.InputTag("TriggerResults::HLT"),
+    				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+    							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+    							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+    							  "HLT_Ele27_WPTight_Gsf",
+    							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
+    							  "HLT_Ele35_WPTight_Gsf",
+    							  "HLT_IsoMu24",
+    							  "HLT_IsoMu27",
+    							  "HLT_IsoTkMu27",
+    							  "HLT_IsoTkMu24",
+    							  "HLT_Photon200" ),
+					  isMC_ = cms.bool(options.runOnMC)
+					  )
+elif options.runOn2016:
+	process.trigFilter = cms.EDFilter('TrigFilter',
+					  TrigTag = cms.InputTag("TriggerResults::HLT"),
+                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned","HLT_PFMET170_HBHE_BeamHaloCleaned","HLT_PFMET170_NotCleaned","HLT_PFMET170_NoiseCleaned","HLT_PFMET170_JetIdCleaned","HLT_PFMET170_HBHECleaned","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight","HLT_PFMET110_PFMHT110_IDTight","HLT_IsoMu24","HLT_IsoTkMu24","HLT_IsoMu27","HLT_IsoTkMu27","HLT_Ele27_WPTight_Gsf","HLT_Ele105_CaloIdVT_GsfTrkIdT","HLT_Ele115_CaloIdVT_GsfTrkIdT","HLT_Ele32_WPTight_Gsf","HLT_IsoMu20","HLT_Ele27_eta2p1_WPTight_Gsf","HLT_Ele27_WPLoose_Gsf","HLT_Ele32_eta2p1_WPTight_Gsf","HLT_Photon165_HE10","HLT_Photon175","HLT_Ele105_CaloIdVT_GsfTrkIdT"),
+					  isMC_ = cms.bool(options.runOnMC)
+					  )
 
 
 process.appliedRegJets= cms.EDProducer('bRegressionProducer',
@@ -502,35 +527,62 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+if options.runOn2017:
+	if not options.useJECText:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.fullPatMetSequenceModifiedMET+
+			process.patSmearedJets+
+			process.pfMet+
+			process.jetCorrSequenceAK4+  ## only when using JEC text files
+			process.jetCorrSequenceAK8+  ## only when using JEC text files
+			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			process.tree
+			)
+	else:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.fullPatMetSequenceModifiedMET+
+			process.patSmearedJets+
+			process.pfMet+
+			process.tree
+			)
 
-if not options.useJECText:
-	process.analysis = cms.Path(
-		process.trigFilter
-		*process.rerunMvaIsolationSequence
-		*process.NewTauIDsEmbedded+
-		process.egammaPostRecoSeq+
-		process.appliedRegJets+
-		process.fullPatMetSequenceModifiedMET+
-		process.patSmearedJets+
-		process.pfMet+
-		process.jetCorrSequenceAK4+  ## only when using JEC text files
-		process.jetCorrSequenceAK8+  ## only when using JEC text files
-		process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
-		process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
-		process.tree
-		)
-else:
-	process.analysis = cms.Path(
-		process.trigFilter
-		*process.rerunMvaIsolationSequence
-		*process.NewTauIDsEmbedded+
-		process.egammaPostRecoSeq+
-		process.appliedRegJets+
-		process.fullPatMetSequenceModifiedMET+
-		process.patSmearedJets+
-		process.pfMet+
-		process.tree
-		)
-
+elif options.runOn2016:
+	if not options.useJECText:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.patSmearedJets+
+			process.pfMet+
+			process.jetCorrSequenceAK4+  ## only when using JEC text files
+			process.jetCorrSequenceAK8+  ## only when using JEC text files
+			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			process.tree
+			)
+	else:
+		process.analysis = cms.Path(
+			process.trigFilter
+			*process.rerunMvaIsolationSequence
+			*process.NewTauIDsEmbedded+
+			process.egammaPostRecoSeq+
+			process.appliedRegJets+
+			process.patSmearedJets+
+			process.pfMet+
+			process.tree
+			)
 
 #print process.dumpPython()
