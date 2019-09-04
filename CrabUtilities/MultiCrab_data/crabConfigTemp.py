@@ -20,7 +20,7 @@ DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'treeMaker_Summer17_cfg.py'
+config.JobType.psetName = 'treeMaker_16_17_cfg.py'
 config.JobType.pyCfgParams = ['runOnMC=False','period='+PERIOD]
 config.JobType.inputFiles = ['effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt','effAreasMuons_cone03_Spring15_25ns.txt',
 '../../../MetaData/data/DNN_models/breg_training_2017.pb',

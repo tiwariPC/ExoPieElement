@@ -49,13 +49,13 @@ scram b -j 4
 
 cd ExoPieElement/TreeMaker
 
-config file to run is in test dir: named treeMaker_Summer17_cfg.py 
+config file to run is in test dir: named treeMaker_16_17_cfg.py 
 
 cd test 
 
 ## before cmsRun do set the proxy. 
 
-cmsRun treeMaker_Summer17_cfg.py
+cmsRun treeMaker_16_17_cfg.py
 
 If the file doesn't work, instead of /tmp/khurana.... use filename, it will take some time to run via xrootd. 
 
