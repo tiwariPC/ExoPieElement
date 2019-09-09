@@ -63,24 +63,24 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-# Other statements
-from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-# Other statements
-if options.runOnMC:
-### Needs to be updated
-	process.GlobalTag.globaltag='94X_mc2017_realistic_v12'
-else:
-    #process.GlobalTag.globaltag='92X_dataRun2_Prompt_v11'  #Conditions for prompt Prompt GT
-    process.GlobalTag.globaltag='94X_dataRun2_ReReco_EOY17_v6'   #Conditions for the data reprocessing Rereco_GT
-    #process.GlobalTag.globaltag='94X_dataRun2_v6'   #recommended here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#2017_Data_re_miniAOD_31Mar2018_9
 
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+#taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
+if options.runOn2017:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='94X_mc2017_realistic_v17'
+    else:
+        process.GlobalTag.globaltag='94X_dataRun2_v11'
+elif options.runOn2016:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='94X_mcRun2_asymptotic_v3'
+    else:
+        process.GlobalTag.globaltag='94X_dataRun2_v10'
 
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1000)
 )
-
-
 
 ## New from Egamma
 ## https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
