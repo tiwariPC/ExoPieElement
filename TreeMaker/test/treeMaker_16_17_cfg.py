@@ -93,7 +93,6 @@ setupEgammaPostRecoSeq(process,
                        era='2017-Nov17ReReco')  #era is new to select between 2016 / 2017,  it defaults to 2017
 
 
-
 # Input source
 if options.runOn2017:
 	if options.runOnMC:
@@ -113,8 +112,6 @@ process.source = cms.Source("PoolSource",
 							fileNames = cms.untracked.vstring(testFile),
 							#skipEvents = cms.untracked.uint32(0)
                             )
-
-
 
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
@@ -306,7 +303,6 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 adaptPVs(process, pvCollection=cms.InputTag(pvSource))
 
 
-
 #### Add reclustered AK8 Puppi jet by Eiko
 
 
@@ -326,8 +322,6 @@ jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', miniAOD=opt
 	    Cut='pt>120',
 	    addSoftDrop=True,addSoftDropSubjets=True, betaCut=1.0, zCutSD=0.15,
 	    addNsub=True )
-
-
 
 
 ## Jet Energy Resolution
@@ -371,8 +365,6 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
 )
 
 
-
-
 ## Tau ID embedding
 
 from ExoPieElement.TreeMaker.runTauIdMVA import *
@@ -410,8 +402,6 @@ process.patJetsReapplyJECAK4 = updatedPatJets.clone(
 process.jetCorrSequenceAK4 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK4 + process.patJetsReapplyJECAK4 )
 
 
-
-
 ### For normal AK8 jet energy correction on top of miniAOD
 process.patJetCorrFactorsReapplyJECAK8 = updatedPatJetCorrFactors.clone(
 	src = cms.InputTag("slimmedJetsAK8"),
@@ -425,7 +415,6 @@ process.patJetsReapplyJECAK8 = updatedPatJets.clone(
 
 
 process.jetCorrSequenceAK8 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK8 + process.patJetsReapplyJECAK8 )
-
 
 
 ## For normal AK4Puppi jets jet energy correction on top of miniAOD
@@ -456,8 +445,6 @@ process.patJetsReapplyJECForPrunedMass = updatedPatJets.clone(
 	)
 
 process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsReapplyJECForPrunedMass + process.patJetsReapplyJECForPrunedMass )
-
-
 
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
@@ -515,7 +502,29 @@ if options.runOn2017:
 elif options.runOn2016:
 	process.trigFilter = cms.EDFilter('TrigFilter',
 					  TrigTag = cms.InputTag("TriggerResults::HLT"),
-                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned","HLT_PFMET170_HBHE_BeamHaloCleaned","HLT_PFMET170_NotCleaned","HLT_PFMET170_NoiseCleaned","HLT_PFMET170_JetIdCleaned","HLT_PFMET170_HBHECleaned","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight","HLT_PFMET110_PFMHT110_IDTight","HLT_IsoMu24","HLT_IsoTkMu24","HLT_IsoMu27","HLT_IsoTkMu27","HLT_Ele27_WPTight_Gsf","HLT_Ele105_CaloIdVT_GsfTrkIdT","HLT_Ele115_CaloIdVT_GsfTrkIdT","HLT_Ele32_WPTight_Gsf","HLT_IsoMu20","HLT_Ele27_eta2p1_WPTight_Gsf","HLT_Ele27_WPLoose_Gsf","HLT_Ele32_eta2p1_WPTight_Gsf","HLT_Photon165_HE10","HLT_Photon175","HLT_Ele105_CaloIdVT_GsfTrkIdT"),
+                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned",
+                                              "HLT_PFMET170_HBHE_BeamHaloCleaned",
+                                              "HLT_PFMET170_NotCleaned",
+                                              "HLT_PFMET170_NoiseCleaned",
+                                              "HLT_PFMET170_JetIdCleaned",
+                                              "HLT_PFMET170_HBHECleaned",
+                                              "HLT_PFMETNoMu90_PFMHTNoMu90_IDTight",
+                                              "HLT_PFMETNoMu100_PFMHTNoMu100_IDTight",
+                                              "HLT_PFMETNoMu110_PFMHTNoMu110_IDTight",
+                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                              "HLT_PFMET110_PFMHT110_IDTight",
+                                              "HLT_IsoMu24","HLT_IsoTkMu24",
+                                              "HLT_IsoMu27","HLT_IsoTkMu27",
+                                              "HLT_Ele27_WPTight_Gsf",
+                                              "HLT_Ele105_CaloIdVT_GsfTrkIdT",
+                                              "HLT_Ele115_CaloIdVT_GsfTrkIdT",
+                                              "HLT_Ele32_WPTight_Gsf",
+                                              "HLT_IsoMu20",
+                                              "HLT_Ele27_eta2p1_WPTight_Gsf",
+                                              "HLT_Ele27_WPLoose_Gsf",
+                                              "HLT_Ele32_eta2p1_WPTight_Gsf",
+                                              "HLT_Photon165_HE10",
+                                              "HLT_Photon175",),
 					  isMC_ = cms.bool(options.runOnMC)
 					  )
 
