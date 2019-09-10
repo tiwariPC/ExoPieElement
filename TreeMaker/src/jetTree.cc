@@ -411,16 +411,16 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     // bool passOrNot = PassAll(Pass);
     // jetPassIDLoose_.push_back(passOrNot);
 
-    if (runOn2016_){
-        std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
-        bool passOrNot = PassAll(Pass);
-        jetPassIDLoose_.push_back(passOrNot);
-    }
-    if (runOn2017_){
-        std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
-        bool passOrNotT = PassAll(PassT);
-        jetPassIDTight_.push_back(passOrNotT);
-    }
+    // if (runOn2016_){
+    //     std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
+    //     bool passOrNot = PassAll(Pass);
+    //     jetPassIDLoose_.push_back(passOrNot);
+    // }
+    // if (runOn2017_){
+    //     std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
+    //     bool passOrNotT = PassAll(PassT);
+    //     jetPassIDTight_.push_back(passOrNotT);
+    // }
 
 
 
@@ -433,13 +433,15 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
       bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
 
-
-      isPUJetIDLoose_.push_back(
-				bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
-      isPUJetIDMedium_.push_back(
-				 bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
-      isPUJetIDTight_.push_back(
-				bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
+      if (runOn2016_){
+          jetPassIDLoose_.push_back(bool(jet->userInt("looseJetID_2016")));
+      }
+      if (runOn2017_){
+          jetPassIDTight_.push_back(bool(jet->userInt("tightJetID_2017")));
+      }
+      isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
+      isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
+      isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
     }
 
     jetCEmEF_.push_back(jet->chargedEmEnergyFraction());
