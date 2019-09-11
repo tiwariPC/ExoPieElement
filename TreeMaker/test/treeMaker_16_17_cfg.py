@@ -118,7 +118,7 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 updateJetCollection(
    process,
-   jetSource = cms.InputTag('slimmedJetsAK8'), ## output will be selectedUpdatedPatJets
+   jetSource = cms.InputTag('appliedFatJetID'), ## output will be selectedUpdatedPatJets
    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
    svSource = cms.InputTag('slimmedSecondaryVertices'),
    rParam = 0.8,
@@ -404,12 +404,12 @@ process.jetCorrSequenceAK4 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK
 
 ### For normal AK8 jet energy correction on top of miniAOD
 process.patJetCorrFactorsReapplyJECAK8 = updatedPatJetCorrFactors.clone(
-	src = cms.InputTag("slimmedJetsAK8"),
+	src = cms.InputTag("appliedFatJetID"),
 	levels = jetCorrectionLevelsFullCHS,
 	payload = 'AK8PFPuppi' ) # Make sure to choose the appropriate levels and payload here!
 
 process.patJetsReapplyJECAK8 = updatedPatJets.clone(
-	jetSource = cms.InputTag("slimmedJetsAK8"),
+	jetSource = cms.InputTag("appliedFatJetID"),
 	jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJECAK8"))
   )
 
@@ -435,12 +435,12 @@ process.jetCorrSequenceAK4Puppi = cms.Sequence( process.patJetCorrFactorsReapply
 
 ## For correcting pruned jet mass + CHS
 process.patJetCorrFactorsReapplyJECForPrunedMass = updatedPatJetCorrFactors.clone(
-	src = cms.InputTag("slimmedJetsAK8"),
+	src = cms.InputTag("appliedFatJetID"),
 	levels = jetCorrectionLevels23CHS,
 	payload = 'AK8PFchs' ) # Make sure to choose the appropriate levels and payload here!
 
 process.patJetsReapplyJECForPrunedMass = updatedPatJets.clone(
-	jetSource = cms.InputTag("slimmedJetsAK8"),
+	jetSource = cms.InputTag("appliedFatJetID"),
 	jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJECForPrunedMass"))
 	)
 
@@ -471,8 +471,8 @@ if options.runOn2017:
 
 if options.useJECText:
 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
-	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
-	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
+	process.tree.FATJets       = cms.InputTag("selectedUpdatedPat")#("appliedFatJetID")
+	process.tree.FATJetsForPrunedMass       = cms.InputTag("appliedFatJetID")
 	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
 
 
@@ -536,6 +536,10 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+
+process.appliedFatJetID= cms.EDProducer('FatJetIDProducer',
+                                          JetTag=cms.InputTag("slimmedJetsAK8")
+                                          )
 if options.runOn2017:
 	if not options.useJECText:
 		process.analysis = cms.Path(
@@ -544,6 +548,7 @@ if options.runOn2017:
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
+			process.appliedFatJetID+
 			process.fullPatMetSequenceModifiedMET+
 			process.patSmearedJets+
 			process.pfMet+
@@ -560,6 +565,7 @@ if options.runOn2017:
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
+			process.appliedFatJetID+
 			process.fullPatMetSequenceModifiedMET+
 			process.patSmearedJets+
 			process.pfMet+
@@ -574,6 +580,7 @@ elif options.runOn2016:
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
+			process.appliedFatJetID+
 			process.patSmearedJets+
 			process.pfMet+
 			process.jetCorrSequenceAK4+  ## only when using JEC text files
@@ -589,6 +596,7 @@ elif options.runOn2016:
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
+			process.appliedFatJetID+
 			process.patSmearedJets+
 			process.pfMet+
 			process.tree

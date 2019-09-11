@@ -107,7 +107,7 @@ tree = cms.EDAnalyzer(
     # jec still need to be checked
 
     ### FatJets
-    FATJets=cms.InputTag("selectedUpdatedPatJets"),
+    FATJets=cms.InputTag("selectedUpdatedPat"),
     #FATJets              = cms.InputTag("patJetsReapplyJECAK8"),
     FATJetsForPrunedMass = cms.InputTag("patJetsReapplyJECForPrunedMass"),
     FATprunedMassJecNames= cms.vstring(
