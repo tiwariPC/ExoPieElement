@@ -405,25 +405,6 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetPartonFlavor_.push_back(jet->partonFlavour());
     jetHadronFlavor_.push_back(jet->hadronFlavour());
 
-
-
-    // std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut(*jet);
-    // bool passOrNot = PassAll(Pass);
-    // jetPassIDLoose_.push_back(passOrNot);
-
-    // if (runOn2016_){
-    //     std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
-    //     bool passOrNot = PassAll(Pass);
-    //     jetPassIDLoose_.push_back(passOrNot);
-    // }
-    // if (runOn2017_){
-    //     std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
-    //     bool passOrNotT = PassAll(PassT);
-    //     jetPassIDTight_.push_back(passOrNotT);
-    // }
-
-
-
     if(isTHINJet_){
       float jpumva=0.;
       jpumva= jet->userFloat("pileupJetId:fullDiscriminant");
@@ -453,7 +434,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         jetNMultiplicity_.push_back(jet->userFloat("NumNeutralParticles_"));
 
     }
-    else {
+    if(!isTHINJet_) {
         if (runOn2016_){
             std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
             bool passOrNot = PassAll(Pass);
@@ -464,6 +445,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
             bool passOrNotT = PassAll(PassT);
             jetPassIDTight_.push_back(passOrNotT);
         }
+
         jetCEmEF_.push_back(jet->chargedEmEnergyFraction());
         jetCHadEF_.push_back(jet->chargedHadronEnergyFraction());
         jetNEmEF_.push_back(jet->neutralEmEnergyFraction());
