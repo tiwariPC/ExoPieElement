@@ -445,9 +445,16 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
         }
         fjet.addUserInt("looseJetID_2016", looseJetID_2016);
         fjet.addUserInt("tightJetID_2017", tightJetID_2017);
+        fjet.addUserFloat("NHF_",NHF_);
+        fjet.addUserFloat("NEMF_",NEMF_);
+        fjet.addUserFloat("CHF_",CHF_);
+        fjet.addUserFloat("CEMF_",CEMF_);
+        fjet.addUserFloat("CHM_",CHM_);
+        fjet.addUserFloat("NumConst_",NumConst_);
+        fjet.addUserFloat("NumNeutralParticles_",NumNeutralParticles_);
+
 
         jetColl->push_back( fjet );
-
 
 
     }
