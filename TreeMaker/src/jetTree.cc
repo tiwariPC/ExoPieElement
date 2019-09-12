@@ -405,25 +405,6 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetPartonFlavor_.push_back(jet->partonFlavour());
     jetHadronFlavor_.push_back(jet->hadronFlavour());
 
-
-
-    // std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut(*jet);
-    // bool passOrNot = PassAll(Pass);
-    // jetPassIDLoose_.push_back(passOrNot);
-
-    // if (runOn2016_){
-    //     std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
-    //     bool passOrNot = PassAll(Pass);
-    //     jetPassIDLoose_.push_back(passOrNot);
-    // }
-    // if (runOn2017_){
-    //     std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
-    //     bool passOrNotT = PassAll(PassT);
-    //     jetPassIDTight_.push_back(passOrNotT);
-    // }
-
-
-
     if(isTHINJet_){
       float jpumva=0.;
       jpumva= jet->userFloat("pileupJetId:fullDiscriminant");
@@ -433,44 +414,61 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
       bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
 
-      if (runOn2016_){
-          jetPassIDLoose_.push_back(bool(jet->userInt("looseJetID_2016")));
-      }
-      if (runOn2017_){
-          jetPassIDTight_.push_back(bool(jet->userInt("tightJetID_2017")));
-      }
       isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
       isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
       isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
     }
 
-    jetCEmEF_.push_back(jet->chargedEmEnergyFraction());
-    jetCHadEF_.push_back(jet->chargedHadronEnergyFraction());
+    if(isTHINJet_){
+        if (runOn2016_){
+            jetPassIDLoose_.push_back(bool(jet->userInt("looseJetID_2016")));
+        }
+        if (runOn2017_){
+            jetPassIDTight_.push_back(bool(jet->userInt("tightJetID_2017")));
+        }
+        jetCEmEF_.push_back(jet->userFloat("CEMF_"));
+        jetCHadEF_.push_back(jet->userFloat("CHF_"));
+        jetNEmEF_.push_back(jet->userFloat("NEMF_"));
+        jetNHadEF_.push_back(jet->userFloat("NHF_"));
+        jetCMulti_.push_back(jet->userFloat("CHM_"));
+        jetNMultiplicity_.push_back(jet->userFloat("NumNeutralParticles_"));
+
+    }
+    if(!isTHINJet_) {
+        if (runOn2016_){
+            std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut_2016(*jet);
+            bool passOrNot = PassAll(Pass);
+            jetPassIDLoose_.push_back(passOrNot);
+        }
+        if (runOn2017_){
+            std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
+            bool passOrNotT = PassAll(PassT);
+            jetPassIDTight_.push_back(passOrNotT);
+        }
+
+        jetCEmEF_.push_back(jet->chargedEmEnergyFraction());
+        jetCHadEF_.push_back(jet->chargedHadronEnergyFraction());
+        jetNEmEF_.push_back(jet->neutralEmEnergyFraction());
+        jetNHadEF_.push_back(jet->neutralHadronEnergyFraction());
+        jetCMulti_.push_back(jet->chargedMultiplicity());
+        jetNMultiplicity_.push_back(jet->neutralMultiplicity());
+    }
+
     jetPhoEF_.push_back(jet->photonEnergyFraction());
-    jetNEmEF_.push_back(jet->neutralEmEnergyFraction());
-    jetNHadEF_.push_back(jet->neutralHadronEnergyFraction());
-
     jetEleEF_.push_back(jet->electronEnergyFraction());
-    jetMuoEF_.push_back(jet->muonEnergyFraction());
     jetChMuEF_.push_back(jet->chargedMuEnergyFraction());
-
+    jetMuoEF_.push_back(jet->muonEnergyFraction());
     jetHFHadEF_.push_back(jet->HFHadronEnergyFraction());
     jetHFEMEF_.push_back(jet->HFEMEnergyFraction());
     jetHOEnergy_.push_back(jet->hoEnergy());
     jetHOEF_.push_back(jet->hoEnergyFraction());
-
-
-    jetCMulti_.push_back(jet->chargedMultiplicity());
     jetEleMultiplicity_.push_back(jet->electronMultiplicity());
     jetMuoMultiplicity_.push_back(jet->muonMultiplicity());
-
     jetCHHadMultiplicity_.push_back(jet->chargedHadronMultiplicity());
     jetPhMultiplicity_.push_back(jet->photonMultiplicity());
-    jetNMultiplicity_.push_back(jet->neutralMultiplicity());
     jetNHadMulplicity_.push_back(jet->neutralHadronMultiplicity());
     jetHFHadMultiplicity_.push_back(jet->HFHadronMultiplicity());
     jetHFEMMultiplicity_.push_back(jet->HFEMMultiplicity());
-
 
 
     // b-tagging
@@ -904,7 +902,6 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
   if(!useJECText_)
     delete jecUnc_;
 
-
 }
 
 bool jet_extra = false;
@@ -922,14 +919,12 @@ jetTree::SetBranches(){
   AddBranch(&jetRho_, "jetRho");
   AddBranch(&jetNPV_, "jetNPV");
 
+  AddBranch(&jetCEmEF_,  "jetCEmEF");
+  AddBranch(&jetCHadEF_, "jetCHadEF");
+  AddBranch(&jetNEmEF_,  "jetNEmEF");
+  AddBranch(&jetNHadEF_, "jetNHadEF");
   AddBranch(&jetCMulti_, "jetCMulti");
-  AddBranch(&jetEleMultiplicity_,"jetEleMulti");
-  AddBranch(&jetMuoMultiplicity_,"jetMuoMulti");
-  AddBranch(&jetCHHadMultiplicity_,"jetCHHadMultiplicity");
-  AddBranch(&jetPhMultiplicity_,"jetPhMultiplicity");
   AddBranch(&jetNMultiplicity_,"jetNMultiplicity");
-  AddBranch(&jetNHadMulplicity_,"jetNHadMulplicity");
-
 
   if(jet_extra){
     //AddBranch(&jetP4_,       "jetP4");
@@ -951,12 +946,9 @@ jetTree::SetBranches(){
     AddBranch(&unCorrJetPy_, "unCorrJetPy");
     AddBranch(&unCorrJetPz_, "unCorrJetPz");
     AddBranch(&unCorrJetE_, "unCorrJetE");
-
     AddBranch(&jetArea_,        "jetArea");
     AddBranch(&jetCharge_,       "jetCharge");
     AddBranch(&jetPartonFlavor_, "jetPartonFlavor");
-
-
     AddBranch(&jetSSV_,   "jetSSV");
     AddBranch(&jetCSV_,   "jetCSV");
     AddBranch(&jetSSVHE_, "jetSSVHE");
@@ -964,23 +956,26 @@ jetTree::SetBranches(){
     AddBranch(&jetTCHE_,  "jetTCHE");
     AddBranch(&jetJP_,    "jetJP");
     AddBranch(&jetJBP_,   "jetJBP");
+    AddBranch(&jetEleMultiplicity_,"jetEleMulti");
+    AddBranch(&jetMuoMultiplicity_,"jetMuoMulti");
+    AddBranch(&jetCHHadMultiplicity_,"jetCHHadMultiplicity");
+    AddBranch(&jetPhMultiplicity_,"jetPhMultiplicity");
+    AddBranch(&jetNHadMulplicity_,"jetNHadMulplicity");
+    AddBranch(&jetPhoEF_,  "jetPhoEF");
+    AddBranch(&jetEleEF_,  "jetEleEF");
+    AddBranch(&jetMuoEF_,  "jetMuoEF");
   }
+
   AddBranch(&jetCorrUncUp_,   "jetCorrUncUp");
   AddBranch(&jetCorrUncDown_, "jetCorrUncDown");
   AddBranch(&jetHadronFlavor_, "jetHadronFlavor");
+
   if (runOn2017_){
      AddBranch(&jetPassIDTight_,  "jetPassIDTight");
   }
   else if (runOn2016_){
      AddBranch(&jetPassIDLoose_,  "jetPassIDLoose");
   }
-  AddBranch(&jetCEmEF_,  "jetCEmEF");
-  AddBranch(&jetCHadEF_, "jetCHadEF");
-  AddBranch(&jetPhoEF_,  "jetPhoEF");
-  AddBranch(&jetNEmEF_,  "jetNEmEF");
-  AddBranch(&jetNHadEF_, "jetNHadEF");
-  AddBranch(&jetEleEF_,  "jetEleEF");
-  AddBranch(&jetMuoEF_,  "jetMuoEF");
 
   if(isTHINJet_){
     AddBranch(&jetCISVV2_,"jetCISVV2");

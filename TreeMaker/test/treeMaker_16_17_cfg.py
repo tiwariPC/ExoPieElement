@@ -528,7 +528,6 @@ elif options.runOn2016:
                                       isMC_ = cms.bool(options.runOnMC)
                                      )
 
-
 process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            JetTag=cms.InputTag("slimmedJets"),
                                            rhoFixedGridCollection = cms.InputTag('fixedGridRhoFastjetAll'),
@@ -536,6 +535,7 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+
 if options.runOn2017:
 	if not options.useJECText:
 		process.analysis = cms.Path(
