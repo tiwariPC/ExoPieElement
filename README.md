@@ -1,5 +1,5 @@
 ## this branch is already good for 2017 analysis, 
-
+## add the instruction for 2018
 ## please make all changes for 2016 in the present branch such that this can be used for both years. 
 
 ## make all the new switches configurable via python file, DO NOT MAKE C++ ONLY SWITCHES ANYMORE. 
