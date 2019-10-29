@@ -142,9 +142,12 @@ Should change with this need to check : git checkout jetToolbox_102X_v2
 scram b -j 4
 
 cd ExoPieElement/TreeMaker/test/
-## For Photon ID and other
 
-Please change treeMaker_Summer17_cfg.py by the followings:
+##Then run the test file by
+
+cmsRun treeMaker_2018_cfg.py
+
+## For Photon ID and other treeMaker_Summer17_cfg.py changed by the followings:
 
 1--> from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq setupEgammaPostRecoSeq(process,era='2018-Prompt') ## Twiki: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
 
@@ -152,6 +155,4 @@ Please change treeMaker_Summer17_cfg.py by the followings:
 
 3--> Input file name by "/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root"
 
-Then run the test file by
 
-cmsRun treeMaker_Summer17_cfg.py
