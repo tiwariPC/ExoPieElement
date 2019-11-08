@@ -51,4 +51,4 @@ config.Site.storageSite = "T2_CH_CERN"
 ##config.Site.storageSite = "T2_US_Wisconsin"
 #config.Site.storageSite = "T2_TW_NCHC"
 
-config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMET/ExoPieElementTuples/%s' %(workname)
+config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMETmonoHiggs/%s' %(workname)

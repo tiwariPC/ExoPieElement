@@ -14,6 +14,7 @@ args = parser.parse_args()
 
 print args
 print len(sys.argv)
+
 def submit(datasetdetail):
     print "submitting"
     
@@ -136,7 +137,7 @@ def kill(crabdirname):
         
                                  
 
-textfilename='raman.txt'
+textfilename='fordeepak.txt'
 
 
 if args.submit:
