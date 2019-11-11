@@ -28,8 +28,6 @@
 patHltTree::patHltTree(std::string name, TTree* tree, const edm::ParameterSet& iConfig):
   baseTree(name,tree),
   saveAllTrigPaths_(iConfig.getParameter<bool>("saveAllTrigPaths")),
-  runOn2017_(iConfig.getParameter<bool>("runOn2017")),
-  runOn2016_(iConfig.getParameter<bool>("runOn2016")),
   nTrigs_(0),
   nTrigObj_(0)
 {

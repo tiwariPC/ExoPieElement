@@ -53,8 +53,6 @@ class patHltTree : public baseTree{
   std::vector<float> trigObj_eta_;
   std::vector<float> trigObj_phi_;
   edm::InputTag trigTag;
-  bool runOn2016_;
-  bool runOn2017_;
 };
 
 #endif
