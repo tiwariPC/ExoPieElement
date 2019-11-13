@@ -49,7 +49,6 @@ options.register ('runOn2016',
 options.parseArguments()
 
 
-
 MCJEC='Summer16_23Sep2016V3_MC'
 DATAJEC='Summer16_23Sep2016'+options.period+'V3_DATA'
 

@@ -52,6 +52,7 @@ patHltTree::Fill(const edm::Event& iEvent)
     return;
   }
 std::vector<std::string> triggerlist={"HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight","HLT_PFMETNoMu140_PFMHTNoMu140_IDTight","HLT_IsoMu27","HLT_IsoTkMu27","HLT_IsoMu24","HLT_IsoTkMu24","HLT_Ele27_WPTight_Gsf","HLT_Ele35_WPTight_Gsf","HLT_Photon200", "HLT_Ele115_CaloIdVT_GsfTrkIdT_v","HLT_Ele32_WPTight_Gsf_v"};
+
   const edm::TriggerNames & trigNames = iEvent.triggerNames(*trigResults);
 
   for (unsigned int i=0; i<trigResults->size(); i++)

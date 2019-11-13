@@ -264,6 +264,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
     if(jet->pt() < 30.) continue;
     if((isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_) && jet->pt() < 200.) continue;
+    if (!(jet->isPFJet())) continue;
 
     nJet_++;
     //Stuff common for all jets.
