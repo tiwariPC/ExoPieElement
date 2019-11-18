@@ -17,7 +17,7 @@ patMetTree::Fill(const edm::Event& iEvent){
 
   // adding Type-1 MET to the tree
   is_Data = iEvent.isRealData();
-  
+
   edm::Handle<pat::METCollection> patMetHandle;
   if(not iEvent.getByToken(pfMETToken,patMetHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
@@ -35,34 +35,34 @@ patMetTree::Fill(const edm::Event& iEvent){
   if(not iEvent.getByToken(puppimetToken, puppiMetHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
              <<"slimmedMETsPuppi"<<std::endl; exit(0);}
-  
-  
-  
-  
+
+
+
+
   pat::METCollection::const_iterator met=patMetHandle.product()->begin();
-  // Type 1 corrected MET default in miniaod 
+  // Type 1 corrected MET default in miniaod
   patMetCorrPt_    = met->et();
   patMetCorrPhi_   = met->phi();
   patMetCorrSumEt_ = met->sumEt();
   patMetCorrSig_   = met->significance() < 1.e10 ? met->significance() : 0;
 
-  
 
 
-  // uncorrected raw met 
+
+  // uncorrected raw met
   patMetRawPt_ = met->uncorPt();
   patMetRawPhi_ = met->uncorPhi();
   patMetRawSumEt_ = met->uncorSumEt();
- 
+
   // gen met  :: set is using mc flag :: in testing phase
   if (!is_Data){
   patGenMETPt_ = met->genMET()->et();
   patGenMETPhi_ = met->genMET()->phi();
   patGenMETSumEt_ = met->genMET()->sumEt();
   }
-   
-  
-  // calo met 
+
+
+  // calo met
   patCaloMETPt_ = met->caloMETPt();
   patCaloMETPhi_ = met->caloMETPhi();
   patCaloMETSumEt_ = met->caloMETSumEt();
@@ -79,7 +79,7 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::PhotonEnDown));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::NoShift));
 
-  
+
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::MuonEnUp));
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::MuonEnDown));
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::ElectronEnUp));
@@ -90,30 +90,39 @@ patMetTree::Fill(const edm::Event& iEvent){
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUpSmear));
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResDownSmear));
   //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::METFullUncertaintySize));
-  
-  
 
 
-  // Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc. 
-  
+  // Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc.
+
   pat::METCollection::const_iterator metmodified=patMetModifiedHandle.product()->begin();
-  patMetCorrPt_    = metmodified->et();
-  patMetCorrPhi_   = metmodified->phi();
-  patMetCorrSumEt_ = metmodified->sumEt();
-  
-  
-// puppi met,  present in miniaod 
+  patmodifiedMetCorrPt_    = metmodified->et();
+  patmodifiedMetCorrPhi_   = metmodified->phi();
+  patmodifiedMetCorrSumEt_ = metmodified->sumEt();
+  patmodifiedMetCorrSig_   = metmodified->significance() < 1.e10 ? met->significance() : 0;
+
+  // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetResUp));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetResDown));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetEnUp));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetEnDown));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::UnclusteredEnUp));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::UnclusteredEnDown));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::PhotonEnUp));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::PhotonEnDown));
+  patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::NoShift));
+
+// puppi met,  present in miniaod
 
   auto metpuppi = puppiMetHandle.product()->begin();
   puppiMETPt_         = metpuppi->et();
   puppiMETPhi_        = metpuppi->phi();
   puppiMETSumEt_      = metpuppi->sumEt();
   puppiMETSig_        = metpuppi->significance() < 1.e10 ? met->significance() : 0 ;
-  
-  
-  
+
+
+
   /*  JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
-     
+
     MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
     TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
     PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
@@ -147,15 +156,19 @@ patMetTree::SetBranches(){
   AddBranch(&patMetCorrPt_, "MetCorrPt");
   AddBranch(&patMetCorrPhi_, "MetCorrPhi");
   AddBranch(&patMetCorrSumEt_, "MetCorrSumEt");
-  
   AddBranch(&patMetCorrUnc_, "MetCorrUnc");
   AddBranch(&patMetCorrSig_, "MetCorrSig");
-  
+
+  AddBranch(&patmodifiedMetCorrPt_, "modifiedMetCorrPt");
+  AddBranch(&patmodifiedMetCorrPhi_, "modifiedMetCorrPhi");
+  AddBranch(&patmodifiedMetCorrSumEt_, "modifiedMetCorrSumEt");
+  AddBranch(&patmodifiedMetCorrSig_, "modifiedMetCorrSig");
+  AddBranch(&patmodifiedMetCorrUnc_,"modifiedMetCorrUnc");
+
   AddBranch(&patMetRawPt_, "MetRawPt");
   AddBranch(&patMetRawPhi_, "MetRawPhi");
   AddBranch(&patMetRawSumEt_, "MetRawSumEt");
 
-  
   AddBranch(&patGenMETPt_,     "patGenMETPt");
   AddBranch(&patGenMETPhi_,    "patGenMETPhi");
   AddBranch(&patGenMETSumEt_,  "patGenMETSumEt");
@@ -164,14 +177,14 @@ patMetTree::SetBranches(){
   AddBranch(&patCaloMETPhi_,    "patCaloMETPhi");
   AddBranch(&patCaloMETSumEt_,  "patCaloMETSumEt");
 
-  
+
   AddBranch(&puppiMETPt_,     "puppiMETPt");
   AddBranch(&puppiMETPhi_,    "puppiMETPhi");
   AddBranch(&puppiMETSumEt_,  "puppiMETSumEt");
-  
+
   AddBranch(&puppiMETSig_,    "puppiMETSig");
   AddBranch(&puppiMETUnc_,    "puppiMETUnc");
-  
+
 }
 
 
@@ -186,14 +199,21 @@ patMetTree::Clear(){
   patMetCorrSig_= dummy;
   patMetCorrUnc_.clear();
 
+  patmodifiedMetCorrPt_= dummy;
+  patmodifiedMetCorrPhi_= dummy;
+  patmodifiedMetCorrSumEt_= dummy;
+
+  patmodifiedMetCorrSig_= dummy;
+  patmodifiedMetCorrUnc_.clear();
+
   patMetRawPt_= dummy;
   patMetRawPhi_= dummy;
   patMetRawSumEt_= dummy;
-  
+
   patGenMETPt_   = dummy ;
   patGenMETPhi_   = dummy ;
   patGenMETSumEt_   = dummy ;
-  
+
   patCaloMETPt_   = dummy ;
   patCaloMETPhi_   = dummy ;
   patCaloMETSumEt_   = dummy ;
@@ -201,12 +221,12 @@ patMetTree::Clear(){
   puppiMETPt_     = dummy ;
   puppiMETPhi_    = dummy ;
   puppiMETSumEt_  = dummy ;
-  
+
   puppiMETSig_    = dummy ;
   puppiMETUnc_.clear();
-  
-  
-  
+
+
+
 
 
 }
