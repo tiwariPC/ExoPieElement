@@ -1,10 +1,16 @@
 import FWCore.ParameterSet.Config as cms
 
+import time
+start = time.time()
+
 process = cms.Process('EXOPIE')
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 process.options = cms.untracked.PSet(
 	allowUnscheduled = cms.untracked.bool(True)
 )
+
+process.options.numberOfThreads=cms.untracked.uint32(8)
+#process.Timing =  cms.Service("Timing")
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('analysis')
@@ -29,7 +35,7 @@ options.register ('useJECText',
 		  "useJECText")
 
 options.register ('useMiniAOD',
-		    True,
+		    'miniAOD',
 		    VarParsing.multiplicity.singleton,
 		    VarParsing.varType.bool,
 		    "useMiniAOD")
@@ -56,16 +62,16 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 # Other statements
 if options.runOnMC:
 ### Needs to be updated
-	process.GlobalTag.globaltag='100X_upgrade2018_realistic_v10'
+	process.GlobalTag.globaltag='102X_upgrade2018_realistic_v18'
 else:
     #process.GlobalTag.globaltag='92X_dataRun2_Prompt_v11'  #Conditions for prompt Prompt GT
-    process.GlobalTag.globaltag='100X_upgrade2018_realistic_v10'   #Conditions for the data reprocessing Rereco_GT
+    process.GlobalTag.globaltag='102X_dataRun2_v12'#for 2018ABC; For D 102X_dataRun2_Prompt_v15 #Conditions for the data reprocessing Rereco_GT
     #process.GlobalTag.globaltag='94X_dataRun2_v6'   #recommended here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#2017_Data_re_miniAOD_31Mar2018_9
 
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(100)
 )
 
 
@@ -85,16 +91,19 @@ setupEgammaPostRecoSeq(process,
 # Input source
 if options.runOnMC:
 	#testFile='/store/mc/RunIIFall17MiniAOD/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/16E915A2-E60E-E811-AD53-001E67A3EF70.root'
-        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
+#        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
+	testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
+#        testfile='/store/user/dekumar/t3store2/2017_SignalSample/CRAB_PrivateMC/EXO-ggToXdXdHToBB_sinp_0p35_tanb_1p0_mXd_10_MH3_600_MH4_150_MH2_600_MHC_600_CP3Tune_13TeV/190831_062403/0000/MINIAODSIM_10.root'
 else:
-	testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
+	testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
 
 
 process.source = cms.Source("PoolSource",
                             secondaryFileNames = cms.untracked.vstring(),
 
                             #fileNames = cms.untracked.vstring("file:/tmp/khurana/temp.root"),
-			    fileNames = cms.untracked.vstring("/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root"),
+			    fileNames = cms.untracked.vstring(testFile),
+			    # fileNames = cms.untracked.vstring("/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root"),
 			    #skipEvents = cms.untracked.uint32(0)
                             )
 
@@ -193,8 +202,8 @@ bTagDiscriminators = [
 ]
 
 
-## Jet energy corrections
 
+## Jet energy corrections
 ## For jet energy correction
 if options.runOnMC:
 	jetCorrectionsAK4CHS       = ('AK4PFchs', ['L1FastJet','L2Relative', 'L3Absolute'], 'None')
@@ -303,7 +312,7 @@ from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
 ### CA15Puppi
 ### do we still need this? I guess no.
-jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', miniAOD=options.useMiniAOD, runOnMC=options.runOnMC,
+jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', dataTier=options.useMiniAOD, runOnMC=options.runOnMC,
 	    bTagDiscriminators=(bTagDiscriminators + ([] if NOTADDHBBTag else ['pfBoostedDoubleSecondaryVertexCA15BJetTags'])),
 	    JETCorrPayload='AK8PFPuppi',JETCorrLevels=jetCorrectionLevelsPuppi,
 	    subJETCorrPayload='AK4PFPuppi',subJETCorrLevels=jetCorrectionLevelsPuppi,
@@ -471,11 +480,11 @@ if options.useJECText:
 
 ## output file name
 process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
-
+#TrigTag = cms.InputTag("TriggerResults::HLT"),
 
 ##Trigger Filter
 process.trigFilter = cms.EDFilter('TrigFilter',
-				  TrigTag = cms.InputTag("TriggerResults::HLT"),
+				  TrigTag = cms.InputTag("TriggerResults","","HLT"),
 				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
 							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
 							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
@@ -532,5 +541,6 @@ else:
 		process.tree
 		)
 
-
+end = time.time()
+print ">>>\n>>> The program lasted %.3f seconds.\n" % (end-start)
 #print process.dumpPython()
