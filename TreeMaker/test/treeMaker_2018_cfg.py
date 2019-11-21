@@ -39,7 +39,11 @@ options.register ('useMiniAOD',
 		    VarParsing.multiplicity.singleton,
 		    VarParsing.varType.bool,
 		    "useMiniAOD")
-
+options.register ('runOn2018',
+                  True,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "runOn2018")
 options.parseArguments()
 
 
@@ -60,13 +64,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 # Other statements
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 # Other statements
-if options.runOnMC:
-### Needs to be updated
-	process.GlobalTag.globaltag='102X_upgrade2018_realistic_v18'
-else:
-    #process.GlobalTag.globaltag='92X_dataRun2_Prompt_v11'  #Conditions for prompt Prompt GT
-    process.GlobalTag.globaltag='102X_dataRun2_v12'#for 2018ABC; For D 102X_dataRun2_Prompt_v15 #Conditions for the data reprocessing Rereco_GT
-    #process.GlobalTag.globaltag='94X_dataRun2_v6'   #recommended here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#2017_Data_re_miniAOD_31Mar2018_9
+if options.runOn2018:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='102X_upgrade2018_realistic_v18'
+    else:
+        process.GlobalTag.globaltag='102X_dataRun2_v12'
 
 
 
@@ -89,14 +91,11 @@ setupEgammaPostRecoSeq(process,
 
 
 # Input source
-if options.runOnMC:
-	#testFile='/store/mc/RunIIFall17MiniAOD/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/16E915A2-E60E-E811-AD53-001E67A3EF70.root'
-#        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
-	testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
-#        testfile='/store/user/dekumar/t3store2/2017_SignalSample/CRAB_PrivateMC/EXO-ggToXdXdHToBB_sinp_0p35_tanb_1p0_mXd_10_MH3_600_MH4_150_MH2_600_MHC_600_CP3Tune_13TeV/190831_062403/0000/MINIAODSIM_10.root'
-else:
-	testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
-
+if options.runOn2018:
+        if options.runOnMC:
+                testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
+        else:
+                testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
 
 process.source = cms.Source("PoolSource",
                             secondaryFileNames = cms.untracked.vstring(),
@@ -455,6 +454,7 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
+process.tree.runOn2018             = cms.bool(options.runOn2018)
 process.tree.THINjecNames          = cms.vstring(AK4JECTextFiles)
 process.tree.THINjecUncName        = cms.string(AK4JECUncTextFile)
 process.tree.FATprunedMassJecNames = cms.vstring(prunedMassJECTextFiles)
