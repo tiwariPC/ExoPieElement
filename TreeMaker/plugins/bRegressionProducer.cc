@@ -431,17 +431,17 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
 
         //std::cout << "bRegNNCorr" << bRegNN[0]*y_std_+y_mean_  << std::endl;
         //std::cout << "checking userfloat" << fjet.userFloat("bRegNNCorr")  << std::endl;
-        if  (abs(Jet_eta)<=2.7) {
-            looseJetID_2016 = (NHF_<0.99 && NEMF_<0.99 && NumConst_>1) && ((abs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0 && CEMF_<0.99) || abs(Jet_eta)>2.4) && abs(Jet_eta)<=2.7;
-            tightJetID_2017 = (NHF_<0.90 && NEMF_<0.90 && NumConst_>1) && ((abs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0) || abs(Jet_eta)>2.4) && abs(Jet_eta)<=2.7;
+        if  (fabs(Jet_eta)<=2.7) {
+            looseJetID_2016 = (NHF_<0.99 && NEMF_<0.99 && NumConst_>1) && ((fabs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0 && CEMF_<0.99) || fabs(Jet_eta)>2.4) && fabs(Jet_eta)<=2.7;
+            tightJetID_2017 = (NHF_<0.90 && NEMF_<0.90 && NumConst_>1) && ((fabs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0) || fabs(Jet_eta)>2.4) && fabs(Jet_eta)<=2.7;
         }
-        else if  (abs(Jet_eta)>2.7 && abs(Jet_eta)<= 3.0){
-            looseJetID_2016 = (NHF_<0.98 && NEMF_>0.01 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
-            tightJetID_2017 = (NEMF_<0.99 && NEMF_>0.02 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
+        else if  (fabs(Jet_eta)>2.7 && fabs(Jet_eta)<= 3.0){
+            looseJetID_2016 = (NHF_<0.98 && NEMF_>0.01 && NumNeutralParticles_>2 && fabs(Jet_eta)>2.7 && fabs(Jet_eta)<=3.0 );
+            tightJetID_2017 = (NEMF_<0.99 && NEMF_>0.02 && NumNeutralParticles_>2 && fabs(Jet_eta)>2.7 && fabs(Jet_eta)<=3.0 );
         }
-        else if (abs(Jet_eta)>3.0) {
-            looseJetID_2016 = (NEMF_<0.90 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
-            tightJetID_2017 = (NEMF_<0.90 && NHF_ >0.02 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
+        else if (fabs(Jet_eta)>3.0) {
+            looseJetID_2016 = (NEMF_<0.90 && NumNeutralParticles_>10 && fabs(Jet_eta)>3.0 );
+            tightJetID_2017 = (NEMF_<0.90 && NHF_ >0.02 && NumNeutralParticles_>10 && fabs(Jet_eta)>3.0 );
         }
         fjet.addUserInt("looseJetID_2016", looseJetID_2016);
         fjet.addUserInt("tightJetID_2017", tightJetID_2017);
