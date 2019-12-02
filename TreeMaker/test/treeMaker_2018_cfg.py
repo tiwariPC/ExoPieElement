@@ -16,7 +16,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('analysis')
 
 options.register ('runOnMC',
-		  True,
+		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOnMC")
@@ -483,24 +483,67 @@ process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieE
 #TrigTag = cms.InputTag("TriggerResults::HLT"),
 
 ##Trigger Filter
-process.trigFilter = cms.EDFilter('TrigFilter',
-				  TrigTag = cms.InputTag("TriggerResults","","HLT"),
-				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
-							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
-							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+if options.runOn2018:
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+                                                              "HLT_IsoMu24_v",
+                                                              "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
+                                                              "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
+							      "HLT_Ele27_WPTight_Gsf_v",
+                                                              "HLT_Ele32_WPTight_Gsf_v",
+                                                              "HLT_Photon200_v" ),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
+elif options.runOn2017:
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+                                                              "HLT_Ele27_WPTight_Gsf",
+                                                              "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
+                                                              "HLT_Ele35_WPTight_Gsf",
+                                                              "HLT_IsoMu24",
+                                                              "HLT_IsoMu27",
+                                                              "HLT_IsoTkMu27",
+                                                              "HLT_IsoTkMu24",
+                                                              "HLT_Photon200" ),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
+elif options.runOn2016:
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned",
+                                                              "HLT_PFMET170_HBHE_BeamHaloCleaned",
+                                                              "HLT_PFMET170_NotCleaned",
+                                                              "HLT_PFMET170_NoiseCleaned",
+                                                              "HLT_PFMET170_JetIdCleaned",
+                                                              "HLT_PFMET170_HBHECleaned",
+                                                              "HLT_PFMETNoMu90_PFMHTNoMu90_IDTight",
+                                                              "HLT_PFMETNoMu100_PFMHTNoMu100_IDTight",
+                                                              "HLT_PFMETNoMu110_PFMHTNoMu110_IDTight",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMET110_PFMHT110_IDTight",
+                                                              "HLT_IsoMu24","HLT_IsoTkMu24",
+                                                              "HLT_IsoMu27","HLT_IsoTkMu27",
+                                                              "HLT_Ele27_WPTight_Gsf",
+                                                              "HLT_Ele105_CaloIdVT_GsfTrkIdT",
+                                                              "HLT_Ele115_CaloIdVT_GsfTrkIdT",
+                                                              "HLT_Ele32_WPTight_Gsf",
+                                                              "HLT_IsoMu20",
+                                                              "HLT_Ele27_eta2p1_WPTight_Gsf",
+                                                              "HLT_Ele27_WPLoose_Gsf",
+                                                              "HLT_Ele32_eta2p1_WPTight_Gsf",
+                                                              "HLT_Photon165_HE10",
+                                                              "HLT_Photon175",),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
 
-							  "HLT_Ele27_WPTight_Gsf",
-							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
-							  "HLT_Ele35_WPTight_Gsf",
 
-							  "HLT_IsoMu24",
-							  "HLT_IsoMu27",
-							  "HLT_IsoTkMu27",
-							  "HLT_IsoTkMu24",
 
-							  "HLT_Photon200" ),
-				  isMC_ = cms.bool(options.runOnMC)
-				  )
 
 
 
