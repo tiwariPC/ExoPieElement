@@ -132,8 +132,7 @@ git cms-init
 
 git cms-merge-topic cms-egamma:EgammaPostRecoTools
 
-git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X 
-##Twiki: https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription
+git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X  ##Twiki: https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription
 
 git clone -b setup_2017_2016_2018 git@github.com:ExoPie/ExoPieElement.git
 
