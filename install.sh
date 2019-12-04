@@ -118,3 +118,5 @@ git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToo
 scram b -j 4
 
 }
+
+"$@"
