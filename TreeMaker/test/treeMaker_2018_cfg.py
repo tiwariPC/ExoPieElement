@@ -1,16 +1,22 @@
 import FWCore.ParameterSet.Config as cms
 
+import time
+start = time.time()
+
 process = cms.Process('EXOPIE')
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 process.options = cms.untracked.PSet(
 	allowUnscheduled = cms.untracked.bool(True)
 )
 
+process.options.numberOfThreads=cms.untracked.uint32(8)
+#process.Timing =  cms.Service("Timing")
+
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('analysis')
 
 options.register ('runOnMC',
-		  True,
+		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOnMC")
@@ -29,11 +35,15 @@ options.register ('useJECText',
 		  "useJECText")
 
 options.register ('useMiniAOD',
-		    True,
+		    'miniAOD',
 		    VarParsing.multiplicity.singleton,
 		    VarParsing.varType.bool,
 		    "useMiniAOD")
-
+options.register ('runOn2018',
+                  True,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "runOn2018")
 options.parseArguments()
 
 
@@ -54,18 +64,16 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 # Other statements
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 # Other statements
-if options.runOnMC:
-### Needs to be updated
-	process.GlobalTag.globaltag='100X_upgrade2018_realistic_v10'
-else:
-    #process.GlobalTag.globaltag='92X_dataRun2_Prompt_v11'  #Conditions for prompt Prompt GT
-    process.GlobalTag.globaltag='100X_upgrade2018_realistic_v10'   #Conditions for the data reprocessing Rereco_GT
-    #process.GlobalTag.globaltag='94X_dataRun2_v6'   #recommended here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#2017_Data_re_miniAOD_31Mar2018_9
+if options.runOn2018:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='102X_upgrade2018_realistic_v18'
+    else:
+        process.GlobalTag.globaltag='102X_dataRun2_v12'
 
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(100)
 )
 
 
@@ -83,18 +91,18 @@ setupEgammaPostRecoSeq(process,
 
 
 # Input source
-if options.runOnMC:
-	#testFile='/store/mc/RunIIFall17MiniAOD/QCD_Pt_120to170_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/16E915A2-E60E-E811-AD53-001E67A3EF70.root'
-        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
-else:
-	testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
-
+if options.runOn2018:
+        if options.runOnMC:
+                testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
+        else:
+                testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
 
 process.source = cms.Source("PoolSource",
                             secondaryFileNames = cms.untracked.vstring(),
 
                             #fileNames = cms.untracked.vstring("file:/tmp/khurana/temp.root"),
-			    fileNames = cms.untracked.vstring("/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root"),
+			    fileNames = cms.untracked.vstring(testFile),
+			    # fileNames = cms.untracked.vstring("/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root"),
 			    #skipEvents = cms.untracked.uint32(0)
                             )
 
@@ -193,8 +201,8 @@ bTagDiscriminators = [
 ]
 
 
-## Jet energy corrections
 
+## Jet energy corrections
 ## For jet energy correction
 if options.runOnMC:
 	jetCorrectionsAK4CHS       = ('AK4PFchs', ['L1FastJet','L2Relative', 'L3Absolute'], 'None')
@@ -303,7 +311,7 @@ from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
 ### CA15Puppi
 ### do we still need this? I guess no.
-jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', miniAOD=options.useMiniAOD, runOnMC=options.runOnMC,
+jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', dataTier=options.useMiniAOD, runOnMC=options.runOnMC,
 	    bTagDiscriminators=(bTagDiscriminators + ([] if NOTADDHBBTag else ['pfBoostedDoubleSecondaryVertexCA15BJetTags'])),
 	    JETCorrPayload='AK8PFPuppi',JETCorrLevels=jetCorrectionLevelsPuppi,
 	    subJETCorrPayload='AK4PFPuppi',subJETCorrLevels=jetCorrectionLevelsPuppi,
@@ -446,6 +454,7 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
+process.tree.runOn2018             = cms.bool(options.runOn2018)
 process.tree.THINjecNames          = cms.vstring(AK4JECTextFiles)
 process.tree.THINjecUncName        = cms.string(AK4JECUncTextFile)
 process.tree.FATprunedMassJecNames = cms.vstring(prunedMassJECTextFiles)
@@ -471,27 +480,70 @@ if options.useJECText:
 
 ## output file name
 process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
-
+#TrigTag = cms.InputTag("TriggerResults::HLT"),
 
 ##Trigger Filter
-process.trigFilter = cms.EDFilter('TrigFilter',
-				  TrigTag = cms.InputTag("TriggerResults::HLT"),
-				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
-							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
-							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+if options.runOn2018:
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+                                                              "HLT_IsoMu24_v",
+                                                              "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
+                                                              "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
+							      "HLT_Ele27_WPTight_Gsf_v",
+                                                              "HLT_Ele32_WPTight_Gsf_v",
+                                                              "HLT_Photon200_v" ),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
+elif options.runOn2017:
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+                                                              "HLT_Ele27_WPTight_Gsf",
+                                                              "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
+                                                              "HLT_Ele35_WPTight_Gsf",
+                                                              "HLT_IsoMu24",
+                                                              "HLT_IsoMu27",
+                                                              "HLT_IsoTkMu27",
+                                                              "HLT_IsoTkMu24",
+                                                              "HLT_Photon200" ),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
+elif options.runOn2016:
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned",
+                                                              "HLT_PFMET170_HBHE_BeamHaloCleaned",
+                                                              "HLT_PFMET170_NotCleaned",
+                                                              "HLT_PFMET170_NoiseCleaned",
+                                                              "HLT_PFMET170_JetIdCleaned",
+                                                              "HLT_PFMET170_HBHECleaned",
+                                                              "HLT_PFMETNoMu90_PFMHTNoMu90_IDTight",
+                                                              "HLT_PFMETNoMu100_PFMHTNoMu100_IDTight",
+                                                              "HLT_PFMETNoMu110_PFMHTNoMu110_IDTight",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMET110_PFMHT110_IDTight",
+                                                              "HLT_IsoMu24","HLT_IsoTkMu24",
+                                                              "HLT_IsoMu27","HLT_IsoTkMu27",
+                                                              "HLT_Ele27_WPTight_Gsf",
+                                                              "HLT_Ele105_CaloIdVT_GsfTrkIdT",
+                                                              "HLT_Ele115_CaloIdVT_GsfTrkIdT",
+                                                              "HLT_Ele32_WPTight_Gsf",
+                                                              "HLT_IsoMu20",
+                                                              "HLT_Ele27_eta2p1_WPTight_Gsf",
+                                                              "HLT_Ele27_WPLoose_Gsf",
+                                                              "HLT_Ele32_eta2p1_WPTight_Gsf",
+                                                              "HLT_Photon165_HE10",
+                                                              "HLT_Photon175",),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
 
-							  "HLT_Ele27_WPTight_Gsf",
-							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
-							  "HLT_Ele35_WPTight_Gsf",
 
-							  "HLT_IsoMu24",
-							  "HLT_IsoMu27",
-							  "HLT_IsoTkMu27",
-							  "HLT_IsoTkMu24",
 
-							  "HLT_Photon200" ),
-				  isMC_ = cms.bool(options.runOnMC)
-				  )
 
 
 
@@ -532,5 +584,6 @@ else:
 		process.tree
 		)
 
-
+end = time.time()
+print ">>>\n>>> The program lasted %.3f seconds.\n" % (end-start)
 #print process.dumpPython()

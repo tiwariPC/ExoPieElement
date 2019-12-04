@@ -262,7 +262,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
   for(;jet!=jets.end();jet++){
 
-    if(jet->pt() < 30.) continue;
+    if(jet->pt() < 30. || (!(jet->isPFJet()))) continue;
     if((isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_) && jet->pt() < 200.) continue;
 
     nJet_++;
@@ -680,6 +680,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jetTau2_.push_back(jet->userFloat("NjettinessAK8Puppi:tau2"));
       jetTau3_.push_back(jet->userFloat("NjettinessAK8Puppi:tau3"));
       jetTau4_.push_back(jet->userFloat("NjettinessAK8Puppi:tau4"));
+      jetSDmass_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropMass"));
 
       // deep DoubleB tagger
 
