@@ -147,6 +147,3 @@ cd ExoPieElement/TreeMaker/test/
 ##Then run the test file by
 
 cmsRun treeMaker_2018_cfg.py
-
-
-
