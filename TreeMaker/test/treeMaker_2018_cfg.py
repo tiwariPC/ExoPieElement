@@ -35,15 +35,35 @@ options.register ('useJECText',
 		  "useJECText")
 
 options.register ('useMiniAOD',
-		    'miniAOD',
+		    True,
 		    VarParsing.multiplicity.singleton,
 		    VarParsing.varType.bool,
 		    "useMiniAOD")
+
 options.register ('runOn2018',
                   True,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "runOn2018")
+
+options.register ('runOn2017',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOn2017")
+
+options.register ('runOn2016',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOn2016")
+
+options.register ('runOn2018DGT',
+                  False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "runOn2018DGT")
+
 options.parseArguments()
 
 
@@ -66,10 +86,22 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 # Other statements
 if options.runOn2018:
     if options.runOnMC:
-        process.GlobalTag.globaltag='102X_upgrade2018_realistic_v18'
+        process.GlobalTag.globaltag='102X_upgrade2018_realistic_v20'
     else:
-        process.GlobalTag.globaltag='102X_dataRun2_v12'
-
+	if options.runOn2018DGT:
+		procesn.GlobalTag.globaltag='102X_dataRun2_Prompt_v15'
+	else:
+        	process.GlobalTag.globaltag='102X_dataRun2_v12'
+elif options.runOn2017:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='94X_mc2017_realistic_v17'
+    else:
+        process.GlobalTag.globaltag='94X_dataRun2_v11'
+elif options.runOn2016:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='94X_mcRun2_asymptotic_v3'
+    else:
+        process.GlobalTag.globaltag='94X_dataRun2_v10'
 
 
 process.maxEvents = cms.untracked.PSet(
@@ -307,18 +339,24 @@ process.puppi.candName       = cms.InputTag('packedPFCandidates')
 process.puppi.vertexName     = cms.InputTag('offlineSlimmedPrimaryVertices')
 
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-
-
-### CA15Puppi
+### CA15Puppi)
 ### do we still need this? I guess no.
-jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', dataTier=options.useMiniAOD, runOnMC=options.runOnMC,
-	    bTagDiscriminators=(bTagDiscriminators + ([] if NOTADDHBBTag else ['pfBoostedDoubleSecondaryVertexCA15BJetTags'])),
-	    JETCorrPayload='AK8PFPuppi',JETCorrLevels=jetCorrectionLevelsPuppi,
-	    subJETCorrPayload='AK4PFPuppi',subJETCorrLevels=jetCorrectionLevelsPuppi,
-	    Cut='pt>120',
-	    addSoftDrop=True,addSoftDropSubjets=True, betaCut=1.0, zCutSD=0.15,
-	    addNsub=True )
-
+if options.runOn2018:
+	jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', dataTier='miniAOD', runOnMC=options.runOnMC,
+	    	    bTagDiscriminators=(bTagDiscriminators + ([] if NOTADDHBBTag else ['pfBoostedDoubleSecondaryVertexCA15BJetTags'])),
+	            JETCorrPayload='AK8PFPuppi',JETCorrLevels=jetCorrectionLevelsPuppi,
+	            subJETCorrPayload='AK4PFPuppi',subJETCorrLevels=jetCorrectionLevelsPuppi,
+	            Cut='pt>120',
+	            addSoftDrop=True,addSoftDropSubjets=True, betaCut=1.0, zCutSD=0.15,
+	            addNsub=True )
+else:
+	jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', miniAOD=options.useMiniAOD, runOnMC=options.runOnMC,
+                    bTagDiscriminators=(bTagDiscriminators + ([] if NOTADDHBBTag else ['pfBoostedDoubleSecondaryVertexCA15BJetTags'])),
+                    JETCorrPayload='AK8PFPuppi',JETCorrLevels=jetCorrectionLevelsPuppi,
+                    subJETCorrPayload='AK4PFPuppi',subJETCorrLevels=jetCorrectionLevelsPuppi,
+                    Cut='pt>120',
+                    addSoftDrop=True,addSoftDropSubjets=True, betaCut=1.0, zCutSD=0.15,
+                    addNsub=True )
 
 
 
@@ -492,7 +530,6 @@ if options.runOn2018:
                                                               "HLT_IsoMu24_v",
                                                               "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
                                                               "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
-							      "HLT_Ele27_WPTight_Gsf_v",
                                                               "HLT_Ele32_WPTight_Gsf_v",
                                                               "HLT_Photon200_v" ),
                                       isMC_ = cms.bool(options.runOnMC)

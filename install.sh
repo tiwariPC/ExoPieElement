@@ -1,3 +1,5 @@
+
+ExoPieElement2017() {
 # Installation of ExoPieElement and dependencies
 
 ## This setup has been tested only for slc6 for centos7 please contact, work is in progress. 
@@ -87,4 +89,34 @@ cd $CMSSW_BASE/external/slc6_amd64_gcc630/data/RecoEgamma/ElectronIdentification
 rm -rf Spring15/ Spring16_GeneralPurpose_V1/ Spring16_HZZ_V1/
 
 cd $CMSSW_BASE/src
+}
 
+
+
+ExoPieElement2018() {
+
+##Working on lxplus7
+
+export SCRAM_ARCH=slc7_amd64_gcc700
+
+cmsrel CMSSW_10_2_17
+
+cd CMSSW_10_2_17/src/
+
+git cms-init
+
+git cms-merge-topic cms-egamma:EgammaPostRecoTools
+
+git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X ##Twiki: https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription
+
+git clone -b setup_2017_2016_2018 git@github.com:ExoPie/ExoPieElement.git
+
+scram b -j 4
+
+git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v2
+
+scram b -j 4
+
+}
+
+"$@"
