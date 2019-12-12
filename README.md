@@ -120,13 +120,15 @@ python MultiCrab_2017MC.py --kill --crabdir=crab_MC_2017miniaodV2_V1
 
 Working on lxplus7
 
-##SCRAM ARCH SET for CMSSW_10_2_10
+##SCRAM ARCH SET for CMSSW_10_2_X
 
 export SCRAM_ARCH=slc7_amd64_gcc700
 
-cmsrel CMSSW_10_2_17
+cmsrel CMSSW_10_2_18
 
-cd CMSSW_10_2_17/src/
+cd CMSSW_10_2_18/src/
+
+cmsenv
 
 git cms-init
 
@@ -144,9 +146,8 @@ scram b -j 4
 
 cd ExoPieElement/TreeMaker/test/
 
+## before cmsRun set the proxy
+
 ##Then run the test file by
 
 cmsRun treeMaker_2018_cfg.py
-
-
-
