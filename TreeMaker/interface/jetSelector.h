@@ -29,6 +29,7 @@ class jetSelector{
   std::map<std::string, bool> LooseJetCut_2016(const pat::Jet& jet);
   std::map<std::string, bool> TightJetCut_2016(const pat::Jet& jet);
   std::map<std::string, bool> TightJetCut_2017(const pat::Jet& jet);
+  std::map<std::string, bool> TightJetCut_2018(const pat::Jet& jet);
   ~jetSelector(){}
 
 };

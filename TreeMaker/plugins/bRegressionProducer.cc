@@ -106,9 +106,11 @@ private:
     float NumConst_;
     float NumNeutralParticles_;
     float CHM_;
+    float MUF_;
 
     int looseJetID_2016;
     int tightJetID_2017;
+    int tightJetID_2018;
 };
 
 
@@ -183,6 +185,7 @@ bRegressionProducer::bRegressionProducer( const ParameterSet &iConfig ) :
     NumConst_ = 0;
     NumNeutralParticles_ = 0;
     CHM_ = 0;
+    MUF_ = 0;
 
     produces<vector<pat::Jet> > ();
 }
@@ -312,6 +315,7 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
         NumConst_ = fjet.chargedMultiplicity()+fjet.neutralMultiplicity();
         NumNeutralParticles_ =fjet.neutralMultiplicity();
         CHM_  = fjet.chargedMultiplicity();
+        MUF_  = fjet.muonEnergyFraction();
 
         int lepPdgID = softLepPdgId;//fjet.userInt("softLepPdgId");
         if (abs(lepPdgID)==13){
@@ -431,17 +435,26 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
 
         //std::cout << "bRegNNCorr" << bRegNN[0]*y_std_+y_mean_  << std::endl;
         //std::cout << "checking userfloat" << fjet.userFloat("bRegNNCorr")  << std::endl;
+
         if  (abs(Jet_eta)<=2.7) {
             looseJetID_2016 = (NHF_<0.99 && NEMF_<0.99 && NumConst_>1) && ((abs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0 && CEMF_<0.99) || abs(Jet_eta)>2.4) && abs(Jet_eta)<=2.7;
             tightJetID_2017 = (NHF_<0.90 && NEMF_<0.90 && NumConst_>1) && ((abs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0) || abs(Jet_eta)>2.4) && abs(Jet_eta)<=2.7;
+            if  (abs(Jet_eta)<=2.6) {
+                tightJetID_2018=(abs(eta)<=2.6 && CEMF_<0.8 && CHM_>0 && CHF_>0 && NumConst_>1 && NEMF_<0.9 && MUF_ <0.8 && NHF_ < 0.9 );
+            }
+            if  (abs(Jet_eta)>2.6 && abs(Jet_eta)<= 2.7){
+                tightJetID_2018=( abs(eta)>2.6 && abs(eta)<=2.7 && CEMF_<0.8 && CHM_>0 && NEMF_<0.99 && MUF_ <0.8 && NHF_ < 0.9 );
+            }
         }
         else if  (abs(Jet_eta)>2.7 && abs(Jet_eta)<= 3.0){
             looseJetID_2016 = (NHF_<0.98 && NEMF_>0.01 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
             tightJetID_2017 = (NEMF_<0.99 && NEMF_>0.02 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
+            tightJetID_2018 = (NEMF_>0.02 && NEMF_<0.99 && NumNeutralParticle_>2 && abs(eta)>2.7 && abs(eta)<=3.0 )
         }
         else if (abs(Jet_eta)>3.0) {
             looseJetID_2016 = (NEMF_<0.90 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
             tightJetID_2017 = (NEMF_<0.90 && NHF_ >0.02 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
+            tightJetID_2018 = (NEMF<0.90 && NHF>0.2 && NumNeutralParticle>10 && abs(eta)>3.0 )
         }
         fjet.addUserInt("looseJetID_2016", looseJetID_2016);
         fjet.addUserInt("tightJetID_2017", tightJetID_2017);
@@ -450,6 +463,7 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
         fjet.addUserFloat("CHF_",CHF_);
         fjet.addUserFloat("CEMF_",CEMF_);
         fjet.addUserFloat("CHM_",CHM_);
+        fjet.addUserFloat("MUF_",MUF_);
         fjet.addUserFloat("NumConst_",NumConst_);
         fjet.addUserFloat("NumNeutralParticles_",NumNeutralParticles_);
 

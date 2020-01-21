@@ -49,6 +49,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   isAK8PuppiJet_(false),
   isCA15PuppiJet_(false),
   useJECText_(iConfig.getParameter<bool>("useJECText")),
+  runOn2018_(iConfig.getParameter<bool>("runOn2018")),
   runOn2017_(iConfig.getParameter<bool>("runOn2017")),
   runOn2016_(iConfig.getParameter<bool>("runOn2016")),
   svTagInfosCstr_(iConfig.getParameter<std::string>("svTagInfosPY")),
@@ -426,6 +427,9 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         if (runOn2017_){
             jetPassIDTight_.push_back(bool(jet->userInt("tightJetID_2017")));
         }
+        if (runOn2018_){
+            jetPassIDTight_.push_back(bool(jet->userInt("tightJetID_2018")));
+        }
         jetCEmEF_.push_back(jet->userFloat("CEMF_"));
         jetCHadEF_.push_back(jet->userFloat("CHF_"));
         jetNEmEF_.push_back(jet->userFloat("NEMF_"));
@@ -442,6 +446,11 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         }
         if (runOn2017_){
             std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2017(*jet);
+            bool passOrNotT = PassAll(PassT);
+            jetPassIDTight_.push_back(passOrNotT);
+        }
+        if (runOn2018_){
+            std::map<std::string, bool> PassT = jet2017ID_.TightJetCut_2018(*jet);
             bool passOrNotT = PassAll(PassT);
             jetPassIDTight_.push_back(passOrNotT);
         }
