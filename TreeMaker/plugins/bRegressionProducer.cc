@@ -440,24 +440,25 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
             looseJetID_2016 = (NHF_<0.99 && NEMF_<0.99 && NumConst_>1) && ((abs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0 && CEMF_<0.99) || abs(Jet_eta)>2.4) && abs(Jet_eta)<=2.7;
             tightJetID_2017 = (NHF_<0.90 && NEMF_<0.90 && NumConst_>1) && ((abs(Jet_eta)<=2.4 && CHF_>0 && CHM_>0) || abs(Jet_eta)>2.4) && abs(Jet_eta)<=2.7;
             if  (abs(Jet_eta)<=2.6) {
-                tightJetID_2018=(abs(eta)<=2.6 && CEMF_<0.8 && CHM_>0 && CHF_>0 && NumConst_>1 && NEMF_<0.9 && MUF_ <0.8 && NHF_ < 0.9 );
+                tightJetID_2018=(abs(Jet_eta)<=2.6 && CEMF_<0.8 && CHM_>0 && CHF_>0 && NumConst_>1 && NEMF_<0.9 && MUF_ <0.8 && NHF_ < 0.9 );
             }
             if  (abs(Jet_eta)>2.6 && abs(Jet_eta)<= 2.7){
-                tightJetID_2018=( abs(eta)>2.6 && abs(eta)<=2.7 && CEMF_<0.8 && CHM_>0 && NEMF_<0.99 && MUF_ <0.8 && NHF_ < 0.9 );
+                tightJetID_2018=( abs(Jet_eta)>2.6 && abs(Jet_eta)<=2.7 && CEMF_<0.8 && CHM_>0 && NEMF_<0.99 && MUF_ <0.8 && NHF_ < 0.9 );
             }
         }
         else if  (abs(Jet_eta)>2.7 && abs(Jet_eta)<= 3.0){
             looseJetID_2016 = (NHF_<0.98 && NEMF_>0.01 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
             tightJetID_2017 = (NEMF_<0.99 && NEMF_>0.02 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
-            tightJetID_2018 = (NEMF_>0.02 && NEMF_<0.99 && NumNeutralParticle_>2 && abs(eta)>2.7 && abs(eta)<=3.0 )
+            tightJetID_2018 = (NEMF_>0.02 && NEMF_<0.99 && NumNeutralParticle_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 )
         }
         else if (abs(Jet_eta)>3.0) {
             looseJetID_2016 = (NEMF_<0.90 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
             tightJetID_2017 = (NEMF_<0.90 && NHF_ >0.02 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
-            tightJetID_2018 = (NEMF<0.90 && NHF>0.2 && NumNeutralParticle>10 && abs(eta)>3.0 )
+            tightJetID_2018 = (NEMF_<0.90 && NHF_>0.2 && NumNeutralParticle_>10 && abs(Jet_eta)>3.0 )
         }
         fjet.addUserInt("looseJetID_2016", looseJetID_2016);
         fjet.addUserInt("tightJetID_2017", tightJetID_2017);
+        fjet.addUserInt("tightJetID_2018", tightJetID_2018);
         fjet.addUserFloat("NHF_",NHF_);
         fjet.addUserFloat("NEMF_",NEMF_);
         fjet.addUserFloat("CHF_",CHF_);
