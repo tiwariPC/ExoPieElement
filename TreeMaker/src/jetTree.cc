@@ -434,6 +434,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         jetCHadEF_.push_back(jet->userFloat("CHF_"));
         jetNEmEF_.push_back(jet->userFloat("NEMF_"));
         jetNHadEF_.push_back(jet->userFloat("NHF_"));
+        jetMuoEF_.push_back(jet->userFloat("MUF_"));
         jetCMulti_.push_back(jet->userFloat("CHM_"));
         jetNMultiplicity_.push_back(jet->userFloat("NumNeutralParticles_"));
 
@@ -458,6 +459,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         jetCEmEF_.push_back(jet->chargedEmEnergyFraction());
         jetCHadEF_.push_back(jet->chargedHadronEnergyFraction());
         jetNEmEF_.push_back(jet->neutralEmEnergyFraction());
+        jetMuoEF_.push_back(jet->muonEnergyFraction());
         jetNHadEF_.push_back(jet->neutralHadronEnergyFraction());
         jetCMulti_.push_back(jet->chargedMultiplicity());
         jetNMultiplicity_.push_back(jet->neutralMultiplicity());
@@ -466,7 +468,6 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetPhoEF_.push_back(jet->photonEnergyFraction());
     jetEleEF_.push_back(jet->electronEnergyFraction());
     jetChMuEF_.push_back(jet->chargedMuEnergyFraction());
-    jetMuoEF_.push_back(jet->muonEnergyFraction());
     jetHFHadEF_.push_back(jet->HFHadronEnergyFraction());
     jetHFEMEF_.push_back(jet->HFEMEnergyFraction());
     jetHOEnergy_.push_back(jet->hoEnergy());
@@ -933,6 +934,7 @@ jetTree::SetBranches(){
   AddBranch(&jetCHadEF_, "jetCHadEF");
   AddBranch(&jetNEmEF_,  "jetNEmEF");
   AddBranch(&jetNHadEF_, "jetNHadEF");
+  AddBranch(&jetMuoEF_,  "jetMuoEF");
   AddBranch(&jetCMulti_, "jetCMulti");
   AddBranch(&jetNMultiplicity_,"jetNMultiplicity");
 
@@ -973,7 +975,6 @@ jetTree::SetBranches(){
     AddBranch(&jetNHadMulplicity_,"jetNHadMulplicity");
     AddBranch(&jetPhoEF_,  "jetPhoEF");
     AddBranch(&jetEleEF_,  "jetEleEF");
-    AddBranch(&jetMuoEF_,  "jetMuoEF");
   }
 
   AddBranch(&jetCorrUncUp_,   "jetCorrUncUp");

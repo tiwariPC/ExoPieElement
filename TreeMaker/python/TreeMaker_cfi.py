@@ -20,6 +20,7 @@ tree = cms.EDAnalyzer(
     fillAK8PuppiJetInfo = cms.bool(False), ## Only if we need to recluster
     fillCA15PuppiJetInfo = cms.bool(False),
 
+    runOn2018 = cms.bool(False),
     runOn2017 = cms.bool(False),
     runOn2016 = cms.bool(False),
 

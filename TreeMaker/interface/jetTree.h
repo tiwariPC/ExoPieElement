@@ -108,6 +108,7 @@ class jetTree  : public baseTree{
   bool isAK8PuppiJet_;
   bool isCA15PuppiJet_;
   bool useJECText_;
+  bool runOn2018_;
   bool runOn2017_;
   bool runOn2016_;
 
