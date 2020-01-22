@@ -981,7 +981,10 @@ jetTree::SetBranches(){
   AddBranch(&jetCorrUncDown_, "jetCorrUncDown");
   AddBranch(&jetHadronFlavor_, "jetHadronFlavor");
 
-  if (runOn2017_){
+  if (runOn2018_){
+     AddBranch(&jetPassIDTight_,  "jetPassIDTight");
+  }
+  else if (runOn2017_){
      AddBranch(&jetPassIDTight_,  "jetPassIDTight");
   }
   else if (runOn2016_){
