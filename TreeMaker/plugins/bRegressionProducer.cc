@@ -449,12 +449,12 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
         else if  (abs(Jet_eta)>2.7 && abs(Jet_eta)<= 3.0){
             looseJetID_2016 = (NHF_<0.98 && NEMF_>0.01 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
             tightJetID_2017 = (NEMF_<0.99 && NEMF_>0.02 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
-            tightJetID_2018 = (NEMF_>0.02 && NEMF_<0.99 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 )
+            tightJetID_2018 = (NEMF_>0.02 && NEMF_<0.99 && NumNeutralParticles_>2 && abs(Jet_eta)>2.7 && abs(Jet_eta)<=3.0 );
         }
         else if (abs(Jet_eta)>3.0) {
             looseJetID_2016 = (NEMF_<0.90 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
             tightJetID_2017 = (NEMF_<0.90 && NHF_ >0.02 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
-            tightJetID_2018 = (NEMF_<0.90 && NHF_>0.2 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 )
+            tightJetID_2018 = (NEMF_<0.90 && NHF_>0.2 && NumNeutralParticles_>10 && abs(Jet_eta)>3.0 );
         }
         fjet.addUserInt("looseJetID_2016", looseJetID_2016);
         fjet.addUserInt("tightJetID_2017", tightJetID_2017);
