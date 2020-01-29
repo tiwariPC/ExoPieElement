@@ -41,7 +41,7 @@ options.register ('useMiniAOD',
 		    "useMiniAOD")
 
 options.register ('runOn2018',
-                  True,
+                  False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "runOn2018")

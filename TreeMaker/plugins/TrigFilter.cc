@@ -135,7 +135,7 @@ TrigFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(prescaled) continue;
     if (!isMC_){
       std::string trigName_1234 = trigName.substr(0, trigName.find("_v"));
-      if( find(triglist.begin(), triglist.end(), trigName_1234)  == triglist.end() ) continue;
+      if( find(triglist.begin(), triglist.end(), trigName_1234) == triglist.end() ) continue;
     }
     decision = decision||trigResult;
   }
