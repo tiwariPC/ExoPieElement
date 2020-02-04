@@ -12,6 +12,7 @@ parser.add_argument("-l", "--ss", action="store_true",  dest="ss") ## status sum
 
 args = parser.parse_args()
 
+
 print args
 print len(sys.argv)
 

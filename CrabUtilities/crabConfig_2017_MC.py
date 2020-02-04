@@ -1,8 +1,7 @@
 from WMCore.Configuration import Configuration
 config = Configuration()
 
-workname ='MC_2017miniaodV2_V1'
-reqname='DYJetsToLL_M_50_HT_400to600_TuneCP5_13TeV_30K' ## this is temporrt, will be changed by the multicrab
+workname ='MC_2017miniaodV2JetIDFix'
 dataset='/DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM' ## this is temporrt, will be changed by the multicrab
 number_of_units=1 ## this is temporrt, will be changed by the multicrab
 
@@ -18,7 +17,7 @@ DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA' ## this is not used at this moment
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'treeMaker_16_17_cfg.py'
-config.JobType.pyCfgParams = ['runOnMC=True']
+config.JobType.pyCfgParams = ['runOnMC=True', 'runOn2017=True']
 
 config.JobType.inputFiles = ['../MetaData/data/DNN_models/breg_training_2017.pb',  ## this is for b-jet regression
                              '../TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml'  ## this is for CA15 training, will be removed in next iteration
@@ -47,8 +46,12 @@ config.JobType.allowUndistributedCMSSW=True
 #maxtarballsize = 50
 config.section_("Site")
 #config.Site.storageSite = "T3_TW_NCU"
-config.Site.storageSite = "T2_CH_CERN"
-##config.Site.storageSite = "T2_US_Wisconsin"
+#config.Site.storageSite = "T2_CH_CERN"
+config.Site.storageSite = "T2_US_Wisconsin"
 #config.Site.storageSite = "T2_TW_NCHC"
+config.Data.outLFNDirBase = '/store/user/khurana/monohrun2/%s' %(workname)
+#source /cvmfs/cms.cern.ch/crab3/crab_slc6.sh
 
-config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMETmonoHiggs/%s' %(workname)
+
+
+
