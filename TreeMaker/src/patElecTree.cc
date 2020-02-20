@@ -305,6 +305,8 @@ patElecTree::SetBranches(){
   AddBranch(&isPassTight_,"eleIsPassTight");
   
   //AddBranch(&isPassHEEP_,"eleIsPassHEEP");
+    AddBranch(&patElecD0_,"eleD0");
+    AddBranch(&patElecDz_,"eleDz");
 
   if (ele_extra){
     AddBranch(&patElecP4_,"eleP4");
