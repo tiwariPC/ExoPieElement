@@ -20,8 +20,20 @@
 
 // system include files
 #include <memory>
+#include<string>
+
 
 // user include files
+
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/Utilities/interface/EDGetToken.h"
+#include "DataFormats/Math/interface/deltaR.h"
+
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/Common/interface/View.h"
+
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDFilter.h"
 
@@ -34,6 +46,8 @@
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 
@@ -41,7 +55,28 @@
 
 //
 // class declaration
-//
+namespace{
+  template<typename T>
+  edm::Handle<T> getHandle(const edm::Event& iEvent,const edm::EDGetTokenT<T>& token)
+  {
+    edm::Handle<T> handle;
+    iEvent.getByToken(token,handle);
+    return handle;
+  }
+}
+//the functions which actually match the trigger objects and see if it passes
+namespace{
+  std::vector<const pat::TriggerObjectStandAlone*> getMatchedObjs(const float eta,const float phi,const std::vector<pat::TriggerObjectStandAlone>& trigObjs,const float maxDeltaR=0.1)
+  {
+    std::vector<const pat::TriggerObjectStandAlone*> matchedObjs;
+    const float maxDR2 = maxDeltaR*maxDeltaR;
+    for(auto& trigObj : trigObjs){
+      const float dR2 = reco::deltaR2(eta,phi,trigObj.eta(),trigObj.phi());
+      if(dR2<maxDR2) matchedObjs.push_back(&trigObj);
+    }
+    return matchedObjs;
+  }
+}
 
 class TrigFilter : public edm::EDFilter {
    public:
@@ -49,7 +84,8 @@ class TrigFilter : public edm::EDFilter {
       ~TrigFilter();
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       edm::EDGetTokenT<edm::TriggerResults>       trigResultToken;
-
+      edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection>     triggerObjectsToken;
+      edm::EDGetTokenT<edm::View<pat::Electron> > elesToken_;
    private:
       virtual void beginJob() ;
       virtual bool filter(edm::Event&, const edm::EventSetup&);
@@ -62,8 +98,9 @@ class TrigFilter : public edm::EDFilter {
 
       // ----------member data ---------------------------
       edm::InputTag trigTag_;
-      bool isMC_;
       std::vector<std::string> triglist;
+      bool isMC_;
+      edm::InputTag patTrigObj_;
 
       bool isValidHltConfig_;
       HLTConfigProvider  hltConfigProvider_;
@@ -82,14 +119,16 @@ class TrigFilter : public edm::EDFilter {
 // constructors and destructor
 //
 TrigFilter::TrigFilter(const edm::ParameterSet& iConfig):
- trigTag_(iConfig.getParameter<edm::InputTag> ("TrigTag")),//, edm::InputTag("TriggerResults::HLT"))),
+ elesToken_(consumes<edm::View<pat::Electron> >(edm::InputTag("slimmedElectrons"))),
+ trigTag_(iConfig.getParameter<edm::InputTag> ("TrigTag")),
+ triglist(iConfig.getParameter<std::vector< std::string > >("TrigPaths")),
  isMC_( iConfig.getParameter<bool>( "isMC_" ) ),
- triglist(iConfig.getParameter<std::vector< std::string > >("TrigPaths"))
-
+ patTrigObj_(edm::InputTag("slimmedPatTrigger"))
 {
    //now do what ever initialization is needed
    isValidHltConfig_ = false;
    trigResultToken = consumes<edm::TriggerResults>(trigTag_);
+   triggerObjectsToken = consumes<std::vector<pat::TriggerObjectStandAlone> >(patTrigObj_);
 
 }
 
@@ -111,14 +150,15 @@ TrigFilter::~TrigFilter()
 bool
 TrigFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
+  iEvent.getByToken(triggerObjectsToken,triggerObjects);
 
   edm::Handle<edm::TriggerResults> trigResults;
-  //edm::InputTag trigTag("TriggerResults::HLT");
+
   if (not iEvent.getByToken(trigResultToken, trigResults)) {
     std::cout << ">>> TRIGGER collection does not exist !!!\n";
     return false;
   }
-
   const edm::TriggerNames & trigNames = iEvent.triggerNames(*trigResults);
   bool decision = false;
   for (unsigned int i=0; i<trigResults->size(); i++){
@@ -133,10 +173,50 @@ TrigFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(prescaleValue !=1 )prescaled = true;
     }
     if(prescaled) continue;
+    bool  ele_L1DoubleEG_trig = false;
     if (!isMC_){
       std::string trigName_1234 = trigName.substr(0, trigName.find("_v"));
       if( find(triglist.begin(), triglist.end(), trigName_1234)  == triglist.end() ) continue;
-    }
+      std::string trig_ele_comp =  "HLT_Ele32_WPTight_Gsf_L1DoubleEG";
+      //std::cout<<"trigName_1234:  "<<trigName_1234<<std::endl;
+      if((trigName_1234.compare(trig_ele_comp)) == 0)
+        {
+            auto trigResultsHandle = getHandle(iEvent, trigResultToken);
+            auto trigObjsHandle = getHandle(iEvent, triggerObjectsToken);
+            auto elesHandle = getHandle(iEvent, elesToken_);
+            // so the filter names are all packed in miniAOD so we need to create a new collection of them which are unpacked
+            std::vector<pat::TriggerObjectStandAlone> unpackedTrigObjs;
+            for (auto& trigObj : *trigObjsHandle)
+            {
+                unpackedTrigObjs.push_back(trigObj);
+                unpackedTrigObjs.back().unpackFilterLabels(iEvent, *trigResultsHandle);
+            }
+            //std::cout << "checking eles " << std::endl;
+            for (auto& ele : *elesHandle)
+            {
+                // the eta/phi of e/gamma trigger objects is the supercluster eta/phi
+                const float eta = ele.superCluster()->eta();
+                const float phi = ele.superCluster()->phi();
+
+                // now match ALL objects in a cone of DR<0.1
+                // it is important to match all objects as there are different ways to reconstruct the same electron
+                // eg, L1 seeded, unseeded, as a jet etc and so you want to be sure you get all possible objects
+
+                std::vector<const pat::TriggerObjectStandAlone*> matchedTrigObjs = getMatchedObjs(eta, phi, unpackedTrigObjs, 0.1);
+                for (const auto trigObj : matchedTrigObjs)
+                {
+                    // now just check if it passes the two filters
+                    if(trigObj->hasFilterLabel("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter") && trigObj->hasFilterLabel("hltEGL1SingleEGOrFilter") )
+                    {
+                        //std::cout << " ele " << ele.et() << " " << eta << " " << phi << " passes HLT_Ele32_WPTight_Gsf" << std::endl;
+                        ele_L1DoubleEG_trig = true;
+                    }
+                }
+            }
+        }
+
+      }
+    if(ele_L1DoubleEG_trig) trigResult = trigResult && ele_L1DoubleEG_trig;
     decision = decision||trigResult;
   }
   return decision;
