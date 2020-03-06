@@ -542,6 +542,7 @@ elif options.runOn2017:
                                                               "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
                                                               "HLT_Ele27_WPTight_Gsf",
                                                               "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
+                                                              "HLT_Ele32_WPTight_Gsf",
                                                               "HLT_Ele35_WPTight_Gsf",
                                                               "HLT_IsoMu24",
                                                               "HLT_IsoMu27",
