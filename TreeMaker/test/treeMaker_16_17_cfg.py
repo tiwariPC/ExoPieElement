@@ -41,7 +41,7 @@ options.register ('runOn2017',
 		  "runOn2017")
 
 options.register ('runOn2016',
-		  False,
+		  True,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2016")
@@ -78,7 +78,7 @@ elif options.runOn2016:
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(300)
 )
 
 ## New from Egamma
@@ -461,7 +461,7 @@ process.tree.AK8PuppijecNames      = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.AK8PuppijecUncName    = cms.string(AK8PuppiJECUncTextFile)
 process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
-process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
+process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
 
 if options.runOn2016:
     process.tree.pfType1Met = cms.InputTag("slimmedMETs")

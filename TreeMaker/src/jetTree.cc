@@ -414,7 +414,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       //  b  jet regrssion correction
       bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
       bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
-
+      
       isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
       isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
       isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
@@ -871,8 +871,9 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 	}
 
       if(isFATJet_)
-	jetSDmass_.push_back(nSubSoftDropjets==0? DUMMY:softdrop_raw_l4.M());
-
+	//jetSDmass_.push_back(nSubSoftDropjets==0? DUMMY:softdrop_raw_l4.M());
+	jetSDmass_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropMass"));
+        //std::cout << "ak8PFJetsPuppiSoftDropMass"  << jet->userFloat("ak8PFJetsPuppiSoftDropMass")  << "RawMass" << softdrop_raw_l4.M() << std::endl;
       if(nSubSoftDropjets==0 || genjet_softdrop_l4.E()<1e-6)
 	genjet_softdropmass = DUMMY;
       else
@@ -927,14 +928,14 @@ jetTree::SetBranches(){
   AddBranch(&jetCMulti_, "jetCMulti");
   AddBranch(&jetNMultiplicity_,"jetNMultiplicity");
 
-  if(jet_extra){
+
     //AddBranch(&jetP4_,       "jetP4");
     //AddBranch(&genjetP4_,   "genjetP4"); // this is no longer needed as individual component is already there,
     AddBranch(&genjetpx_,"genjetpx");
     AddBranch(&genjetpy_,"genjetpy");
     AddBranch(&genjetpz_,"genjetpz");
     AddBranch(&genjetE_,"genjetE");
-
+  if(jet_extra){
     AddBranch(&genjetEM_ ,  "genjetEM");
     AddBranch(&genjetHAD_ , "genjetHAD");
     AddBranch(&genjetINV_ , "genjetINV");
