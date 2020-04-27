@@ -334,7 +334,7 @@ void bRegressionProducer::produce( Event &evt, const EventSetup & )
         Jet_vtxNtrk = 0.0;//std::max(float(0.),fjet.userFloat("vtxNTracks"));
         Jet_vtx3deL = 0.0;//std::max(float(0.),fjet.userFloat("vtx3DSig"));
         if (pjet->hasTagInfo("pfSecondaryVertex")){
-          float vtxPx=0.0; float vtxPy=0.0; float vtxPz=0.0; float vtxMass=0.0; int vtxNTracks=0; float vtx3DSig=0.0; float vtx3DVal=0.0;
+          float vtxPx=0.0; float vtxPy=0.0;  float vtxMass=0.0; int vtxNTracks=0; float vtx3DSig=0.0; float vtx3DVal=0.0;
           vtxPx = pjet->tagInfoCandSecondaryVertex("pfSecondaryVertex")->secondaryVertex(0).p4().px();
           vtxPy = pjet->tagInfoCandSecondaryVertex("pfSecondaryVertex")->secondaryVertex(0).p4().py();
           //vtxPz = pjet->tagInfoCandSecondaryVertex("pfSecondaryVertex")->secondaryVertex(0).p4().pz();
