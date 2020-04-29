@@ -1,13 +1,13 @@
 from WMCore.Configuration import Configuration
 config = Configuration()
 
-workname ='MC_2017miniaodV2_06082019'
-reqname='DYJetsToLL_M_50_HT_400to600_TuneCP5_13TeV' ## this is temporrt, will be changed by the multicrab
+workname ='MC_2017miniaodV2_V1'
+reqname='DYJetsToLL_M_50_HT_400to600_TuneCP5_13TeV_30K' ## this is temporrt, will be changed by the multicrab
 dataset='/DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM' ## this is temporrt, will be changed by the multicrab
 number_of_units=1 ## this is temporrt, will be changed by the multicrab
 
 config.section_("General")
-config.General.requestName = reqname
+config.General.requestName = 'XYZ_replacedbyMulticrab'
 config.General.workArea = 'crab_'+workname
 config.General.transferOutputs = True
 config.General.transferLogs = True
@@ -30,15 +30,17 @@ config.JobType.sendPythonFolder = True
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-config.Data.outputDatasetTag = reqname
+#config.Data.outputDatasetTag = config.General.requestName
 
 #config.Data.splitting = 'LumiBased'
 #config.Data.splitting = 'Automatic'
-config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = number_of_units
+#config.Data.splitting = 'FileBased'
+#config.Data.unitsPerJob = number_of_units
+
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 30000
 
 #config.Data.ignoreLocality = True
-
 config.JobType.allowUndistributedCMSSW=True
 
 

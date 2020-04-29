@@ -53,7 +53,7 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   jecUncPayLoadName_(iConfig.getParameter<std::string>(Form("%sjecUncPayLoad",desc.data()))),
   jecNames_(iConfig.getParameter<std::vector<std::string> >(Form("%sjecNames",desc.data()) )),
   jecUncName_(iConfig.getParameter<std::string>(Form("%sjecUncName",desc.data())) ),
-  jet2012ID_()
+  jet2017ID_()
 {
 
   if (desc.find("THIN")!=std::string::npos)
@@ -261,7 +261,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
   for(;jet!=jets.end();jet++){
 
     if(jet->pt() < 10.) continue;
-    if((isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_) && jet->pt() < 170.) continue;
+    if((isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_) && jet->pt() < 200.) continue;
 
     nJet_++;
     //Stuff common for all jets.
@@ -325,12 +325,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     */
     
 
-
+    /*
     unCorrJetPx_.push_back(uncorrJet.px());
     unCorrJetPy_.push_back(uncorrJet.py());
     unCorrJetPz_.push_back(uncorrJet.pz());
     unCorrJetE_.push_back(uncorrJet.energy());
-    
+    */
     jetArea_.push_back(jet->jetArea());
 
     
@@ -405,12 +405,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
 
 
-    // std::map<std::string, bool> Pass = jet2012ID_.LooseJetCut(*jet);
+    // std::map<std::string, bool> Pass = jet2017ID_.LooseJetCut(*jet);
     // bool passOrNot = PassAll(Pass);
     // jetPassIDLoose_.push_back(passOrNot);
 
 
-    std::map<std::string, bool> PassT = jet2012ID_.TightJetCut(*jet);
+    std::map<std::string, bool> PassT = jet2017ID_.TightJetCut(*jet);
     bool passOrNotT = PassAll(PassT);
     jetPassIDTight_.push_back(passOrNotT);
 
@@ -903,13 +903,13 @@ jetTree::SetBranches(){
 
   AddBranch(&nJet_,   "nJet");
   //AddBranch(&jetP4_,       "jetP4");
-
+  
 
   AddBranch(&jetPx_, "jetPx");
   AddBranch(&jetPy_, "jetPy");
   AddBranch(&jetPz_, "jetPz");
   AddBranch(&jetE_, "jetEnergy");
-
+  
 
   AddBranch(&jetRho_, "jetRho");
   AddBranch(&jetNPV_, "jetNPV");

@@ -1,4 +1,5 @@
 #include "ExoPieElement/TreeMaker/interface/patMetTree.h"
+#include "ExoPieElement/TreeMaker/interface/eventInfo.h"
 patMetTree::patMetTree(std::string name, TTree* tree):
   baseTree(name,tree)
 {
@@ -15,6 +16,8 @@ patMetTree::Fill(const edm::Event& iEvent){
   Clear();
 
   // adding Type-1 MET to the tree
+  is_Data = iEvent.isRealData();
+  
   edm::Handle<pat::METCollection> patMetHandle;
   if(not iEvent.getByToken(pfMETToken,patMetHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
@@ -23,7 +26,7 @@ patMetTree::Fill(const edm::Event& iEvent){
 
   // adding modified Type-1 MET to the tree: EE Fixed
   edm::Handle<pat::METCollection> patMetModifiedHandle;
-  if(not iEvent.getByToken(pfMETModifiedToken,patMetHandle)){
+  if(not iEvent.getByToken(pfMETModifiedToken,patMetModifiedHandle)){
     std::cout<<"FATAL EXCEPTION: "<<"Following Not Found: "
 	     <<"modified pfMet"<<std::endl; exit(0);}
 
@@ -52,7 +55,7 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetRawSumEt_ = met->uncorSumEt();
  
   // gen met  :: set is using mc flag :: in testing phase
-  if (false){
+  if (!is_Data){
   patGenMETPt_ = met->genMET()->et();
   patGenMETPhi_ = met->genMET()->phi();
   patGenMETSumEt_ = met->genMET()->sumEt();
@@ -92,12 +95,12 @@ patMetTree::Fill(const edm::Event& iEvent){
 
 
   // Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc. 
-  /*
+  
   pat::METCollection::const_iterator metmodified=patMetModifiedHandle.product()->begin();
   patMetCorrPt_    = metmodified->et();
   patMetCorrPhi_   = metmodified->phi();
   patMetCorrSumEt_ = metmodified->sumEt();
-  */
+  
   
 // puppi met,  present in miniaod 
 

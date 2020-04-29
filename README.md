@@ -1,29 +1,13 @@
+# Installation of ExoPieElement and dependencies
 New README
-## Right now the setup works only in SLC6, You can login using USERNAME@lxplus6.cern.ch
 
-## The code is now tested for centos 7. 
+## now the setup works both in SLC6 and centos 7, You can login to slc6 using USERNAME@lxplus6.cern.ch   and slc7 using USERNAME@lxplus.cern.ch
 
 ## it is recomended to use centos 7 
 
-## setup CMSSW
+### setup CMSSW
 
-One need to update the SCRAM_ARCH at two places. 
-
-## If you want to install the code with SLC6 then do: 
-
-export SCRAM_ARCH=slc6_amd64_gcc630
-
-cmsrel CMSSW_9_4_13
-
-cd CMSSW_9_4_13/src
-
-cmsenv
-
-
-
-## if you want to install code with centos 7 then do: 
-
-export SCRAM_ARCH=slc7_amd64_gcc630
+export SCRAM_ARCH=slc7_amd64_gcc630     ## for slc 6 use export SCRAM_ARCH=slc6_amd64_gcc630 
 
 cmsrel CMSSW_9_4_13
 
@@ -65,142 +49,61 @@ cd test
 
 ## before cmsRun do set the proxy. 
 
-cmsRun treeMaker_Summer17_cfg.py ### login to lxplus602. 
+cmsRun treeMaker_Summer17_cfg.py
 
 If the file doesn't work, instead of /tmp/khurana.... use filename, it will take some time to run via xrootd. 
 
-----------------------------------------------------------------------------------------------------------------------------
-Following is old instructions, will be removed in next version.
+you have to change the line 
 
+fileNames = cms.untracked.vstring("file:/tmp/khurana/temp2017.root"),
 
+by
 
+fileNames = cms.untracked.vstring(testFile),
 
 
+## for crab submission 
 
+go the the directory: 
 
+cd ExoPieElement/CrabUtilities
 
+copy the latest .py file from test dir, do it via
 
+source setup.sh
 
-# Installation of ExoPieElement and dependencies
 
-## This setup has been tested only for slc6 for centos7 please contact, work is in progress. 
+edit the crabConfig_2017_MC.py file, change following parameters as per your site of storage: 
 
-## You can follow the step by step installation instructions in this page or copy the install.sh and run it. 
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 30000
 
-wget https://raw.githubusercontent.com/ExoPie/ExoPieElement/master/install.sh
-. install.sh
+config.Site.storageSite = "T3_TW_NCU"                                                                                                                                                                      
+config.Data.outLFNDirBase = '/store/group/phys_exotica/bbMET/ExoPieElementTuples/%s' %(workname)
 
+you can make a list of samples in a text and use it to submit multiple jobs using MultiCrab_2017MC.py
 
-## setup CMSSW
+you need to edit the .txt file name and run it using 
 
-One need to update the SCRAM_ARCH at two places. 
+python MultiCrab_2017MC.py
 
-export SCRAM_ARCH=slc6_amd64_gcc630
+ to check the status of all the jobs you just submitted you can add one function in the same file to do it. there is some example in 
 
-cmsrel CMSSW_9_4_13
 
-cd CMSSW_9_4_13/src
 
-cmsenv
 
-## checkout dependencies 
+for crab submit: 
+python MultiCrab_2017MC.py --submit 
 
-git cms-init
+for crab status: 
+python MultiCrab_2017MC.py --status --crabdir=crab_MC_2017miniaodV2_V1
 
-git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
+for crab status with summary of all the dataset:  (ss refer to status summary)
+python MultiCrab_2017MC.py --status --crabdir=crab_MC_2017miniaodV2_V1 --ss 
 
-git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3
+for crab resubmit: 
+python MultiCrab_2017MC.py --resubmit --crabdir=crab_MC_2017miniaodV2_V1
 
-git cms-merge-topic cms-met:METFixEE2017_949_v2
-
-#For BadMuon Filters (default code is reversed logic)
-git cms-addpkg RecoMET/METFilters
-
-## checkout the ExoPieElement package. we need branch for 2017 analysis. 
-** update branch name here ** 
-
-git clone git@github.com:ExoPie/ExoPieElement.git
-
-
-## checkout remaining dependencies
-cp -p ExoPieElement/tempfix/BadGlobalMuonTagger.cc RecoMET/METFilters/plugins/BadGlobalMuonTagger.cc
-
-
-## One need to check if the following two are still needed 
-
-##For jetToolBox
-git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox
-
-cd JMEAnalysis/JetToolbox
-
-git checkout jetToolbox_94X_v3
-
-cd -
-
-##For DeepDoubleX
-git cms-merge-topic 25371
-
-git cms-addpkg RecoBTag/Combined
-
-cd RecoBTag/Combined/
-
-git clone -b V01-01-01 --depth 1 --no-checkout https://github.com/cms-data/RecoBTag-Combined.git data
-
-cd data
-
-git config core.sparseCheckout true
-
-echo 'DeepDoubleX/94X/V01/' > .git/info/sparse-checkout
-
-git checkout --
-
-cd $CMSSW_BASE/src
-
-
-## Compile (due to the external packages, will take about 15-20 mins)
-
-scramv1 b clean
-
-scramv1 b -j 10
-
-
-## Add the area containing the MVA weights (from cms-data, to appear in "external").  Note: the "external" area appears after "scram build" is run at least once, as above 
-cd $CMSSW_BASE/external
-
-## below, you may have a different architecture, this is just one example from lxplus
-## always update this when changing the CMSSW 
-cd slc6_amd64_gcc630/
-
-git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data
-
-cd data/RecoEgamma/PhotonIdentification/data
-
-git checkout CMSSW_9_4_0_pre3_TnP
-
-cd $CMSSW_BASE/external
-
-cd slc6_amd64_gcc630/
-
-git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
-
-cd data/RecoEgamma/ElectronIdentification/data
-
-git checkout CMSSW_9_4_0_pre3_TnP
-
-## Go back to the src/
-cd $CMSSW_BASE/src
-
-scram b -j 10
-
-## cleanup
-cd $CMSSW_BASE/external/slc6_amd64_gcc630/data/RecoEgamma/PhotonIdentification/data/
-
-rm -rf Spring15/ Spring16/
-
-cd $CMSSW_BASE/external/slc6_amd64_gcc630/data/RecoEgamma/ElectronIdentification/data/
-
-rm -rf Spring15/ Spring16_GeneralPurpose_V1/ Spring16_HZZ_V1/
-
-
-cd $CMSSW_BASE/src
+for crab kill: 
+python MultiCrab_2017MC.py --kill --crabdir=crab_MC_2017miniaodV2_V1
 

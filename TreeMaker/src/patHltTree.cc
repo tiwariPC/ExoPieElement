@@ -105,20 +105,21 @@ std::vector<std::string> triggerlist={"HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFH
   //std::cout<<"# trigObjects: "<<nTrigObj_<<std::endl;
 
 }
-
+bool trig_match = false;
 void patHltTree::SetBranches(){
 
   AddBranch(&nTrigs_,"nTrigs");
   AddBranch(&nTrigObj_,"nTrigObj");
   AddBranch(&trigResult_,"trigResult");
   AddBranch(&trigName_,"trigName");
-  AddBranch(&trigPrescale_,"trigPrescale");
-  AddBranch(&trigObj_pT_,"trigObj_pT");
-  AddBranch(&trigObj_eta_,"trigObj_eta");
-  AddBranch(&trigObj_phi_,"trigObj_phi");
-  AddBranch(&trigFilterLabels_,"trigFilterLabels");
-  AddBranch(&trigPathName_,"trigPathName");
-
+  if (trig_match){
+      AddBranch(&trigPrescale_,"trigPrescale");
+      AddBranch(&trigObj_pT_,"trigObj_pT");
+      AddBranch(&trigObj_eta_,"trigObj_eta");
+      AddBranch(&trigObj_phi_,"trigObj_phi");
+      AddBranch(&trigFilterLabels_,"trigFilterLabels");
+      AddBranch(&trigPathName_,"trigPathName");
+  }
 }
 
 void
