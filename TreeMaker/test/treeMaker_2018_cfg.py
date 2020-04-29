@@ -505,7 +505,10 @@ process.tree.AK8PuppijecUncName    = cms.string(AK8PuppiJECUncTextFile)
 process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
-
+if options.runOnMC:
+    process.tree.filterLabel = cms.InputTag("TriggerResults::PAT")
+else:
+    process.tree.filterLabel = cms.InputTag("TriggerResults::RECO")
 
 if options.useJECText:
 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
