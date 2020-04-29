@@ -138,16 +138,24 @@ def kill(crabdirname):
         
                                  
 
-textfilename='backgroundList_2017_miniaodV2_1.txt'
+def wait(isam,time):
+    if isam%10==0:
+        os.system("sleep "+str(time))
+
+textfilename='backgroundList_2017_miniaodV2.txt'
 
 
 if args.submit:
     f = open(textfilename,'r')
+    iisample = 0
+    time = 600
     for line in f:
         print line
         a,b,c = line.split()
         datasetdetail=[a,b,c]
         submit(datasetdetail)
+        wait(iisample, time)
+        iisample = iisample +1 
 
 if (args.status or args.resubmit or args.kill ) and len(sys.argv)<3 :
     print "insufficienct input provided, please look at the script MultiCrab_2017MC.py for usage. or ask Raman"

@@ -7,3 +7,5 @@ setup_2017_2016_v01: * switched off the CA15 jets,
                      * Added new b-jet regression files from Deepak (he took from Twiki) 
                      * added filters for MC 2017 
 
+setup_2017_2016_v02: * added the duMMy varibale for genjet for data 
+                     * this is essentially same as setup_2017_2016_v01 but it works without error on data also (for gen jet part). 

@@ -46,7 +46,8 @@ config.JobType.allowUndistributedCMSSW=True
 
 
 config.section_("Site")
-#config.Site.storageSite = "T3_TW_NCU"                                                                                                                                                                     #config.Site.storageSite = "T2_CH_CERN"                                                                                                                                                                    config.Site.storageSite = "T2_US_Wisconsin"
+#config.Site.storageSite = "T3_TW_NCU"                                                                                                                                                                     #config.Site.storageSite = "T2_CH_CERN
+config.Site.storageSite = "T2_US_Wisconsin"
 #config.Site.storageSite = "T2_TW_NCHC"                                                                                                                                                                     
 config.Data.outLFNDirBase = '/store/user/khurana/ExoPieElement/%s' %(workname)
 

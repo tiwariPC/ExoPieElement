@@ -35,19 +35,18 @@ options.register ('useMiniAOD',
 		    "useMiniAOD")
 
 options.register ('runOn2017',
-		  True,
+		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2017")
 
 options.register ('runOn2016',
-		  False,
+		  True,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2016")
 
 options.parseArguments()
-
 
 
 MCJEC='Summer16_23Sep2016V3_MC'
@@ -63,24 +62,24 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-# Other statements
-from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-# Other statements
-if options.runOnMC:
-### Needs to be updated
-	process.GlobalTag.globaltag='94X_mc2017_realistic_v12'
-else:
-    #process.GlobalTag.globaltag='92X_dataRun2_Prompt_v11'  #Conditions for prompt Prompt GT
-    process.GlobalTag.globaltag='94X_dataRun2_ReReco_EOY17_v6'   #Conditions for the data reprocessing Rereco_GT
-    #process.GlobalTag.globaltag='94X_dataRun2_v6'   #recommended here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#2017_Data_re_miniAOD_31Mar2018_9
 
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+#taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
+if options.runOn2017:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='94X_mc2017_realistic_v17'
+    else:
+        process.GlobalTag.globaltag='94X_dataRun2_v11'
+elif options.runOn2016:
+    if options.runOnMC:
+        process.GlobalTag.globaltag='94X_mcRun2_asymptotic_v3'
+    else:
+        process.GlobalTag.globaltag='94X_dataRun2_v10'
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(300)
 )
-
-
 
 ## New from Egamma
 ## https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
@@ -91,7 +90,6 @@ from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=True, #if you want the Fall17V2 IDs, set this to True or remove (default is True)
                        era='2017-Nov17ReReco')  #era is new to select between 2016 / 2017,  it defaults to 2017
-
 
 
 # Input source
@@ -113,8 +111,6 @@ process.source = cms.Source("PoolSource",
 							fileNames = cms.untracked.vstring(testFile),
 							#skipEvents = cms.untracked.uint32(0)
                             )
-
-
 
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
@@ -306,7 +302,6 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 adaptPVs(process, pvCollection=cms.InputTag(pvSource))
 
 
-
 #### Add reclustered AK8 Puppi jet by Eiko
 
 
@@ -326,8 +321,6 @@ jetToolbox( process, 'ca15', 'jetSequence', 'out', PUMethod='Puppi', miniAOD=opt
 	    Cut='pt>120',
 	    addSoftDrop=True,addSoftDropSubjets=True, betaCut=1.0, zCutSD=0.15,
 	    addNsub=True )
-
-
 
 
 ## Jet Energy Resolution
@@ -371,8 +364,6 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
 )
 
 
-
-
 ## Tau ID embedding
 
 from ExoPieElement.TreeMaker.runTauIdMVA import *
@@ -410,8 +401,6 @@ process.patJetsReapplyJECAK4 = updatedPatJets.clone(
 process.jetCorrSequenceAK4 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK4 + process.patJetsReapplyJECAK4 )
 
 
-
-
 ### For normal AK8 jet energy correction on top of miniAOD
 process.patJetCorrFactorsReapplyJECAK8 = updatedPatJetCorrFactors.clone(
 	src = cms.InputTag("slimmedJetsAK8"),
@@ -425,7 +414,6 @@ process.patJetsReapplyJECAK8 = updatedPatJets.clone(
 
 
 process.jetCorrSequenceAK8 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK8 + process.patJetsReapplyJECAK8 )
-
 
 
 ## For normal AK4Puppi jets jet energy correction on top of miniAOD
@@ -458,8 +446,6 @@ process.patJetsReapplyJECForPrunedMass = updatedPatJets.clone(
 process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsReapplyJECForPrunedMass + process.patJetsReapplyJECForPrunedMass )
 
 
-
-
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
 process.tree.runOn2017             = cms.bool(options.runOn2017)
@@ -475,11 +461,15 @@ process.tree.AK8PuppijecNames      = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.AK8PuppijecUncName    = cms.string(AK8PuppiJECUncTextFile)
 process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
-process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
+process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
 
 if options.runOn2016:
     process.tree.pfType1Met = cms.InputTag("slimmedMETs")
 if options.runOn2017:
+    if options.runOnMC:
+        process.tree.filterLabel = cms.InputTag("TriggerResults::PAT")
+    else:
+        process.tree.filterLabel = cms.InputTag("TriggerResults::RECO")
     process.tree.pfType1Met = cms.InputTag("slimmedMETsModifiedMET")
 
 if options.useJECText:
@@ -497,28 +487,50 @@ process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieE
 
 ##Trigger Filter
 if options.runOn2017:
-	process.trigFilter = cms.EDFilter('TrigFilter',
-					  TrigTag = cms.InputTag("TriggerResults::HLT"),
-    				  TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
-    							  "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
-    							  "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
-    							  "HLT_Ele27_WPTight_Gsf",
-    							  "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
-    							  "HLT_Ele35_WPTight_Gsf",
-    							  "HLT_IsoMu24",
-    							  "HLT_IsoMu27",
-    							  "HLT_IsoTkMu27",
-    							  "HLT_IsoTkMu24",
-    							  "HLT_Photon200" ),
-					  isMC_ = cms.bool(options.runOnMC)
-					  )
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+                                                              "HLT_Ele27_WPTight_Gsf",
+                                                              "HLT_Ele32_WPTight_Gsf_L1DoubleEG",
+                                                              "HLT_Ele32_WPTight_Gsf",
+                                                              "HLT_Ele35_WPTight_Gsf",
+                                                              "HLT_IsoMu24",
+                                                              "HLT_IsoMu27",
+                                                              "HLT_IsoTkMu27",
+                                                              "HLT_IsoTkMu24",
+                                                              "HLT_Photon200" ),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
 elif options.runOn2016:
-	process.trigFilter = cms.EDFilter('TrigFilter',
-					  TrigTag = cms.InputTag("TriggerResults::HLT"),
-                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned","HLT_PFMET170_HBHE_BeamHaloCleaned","HLT_PFMET170_NotCleaned","HLT_PFMET170_NoiseCleaned","HLT_PFMET170_JetIdCleaned","HLT_PFMET170_HBHECleaned","HLT_PFMETNoMu90_PFMHTNoMu90_IDTight","HLT_PFMETNoMu100_PFMHTNoMu100_IDTight","HLT_PFMETNoMu110_PFMHTNoMu110_IDTight","HLT_PFMETNoMu120_PFMHTNoMu120_IDTight","HLT_PFMET110_PFMHT110_IDTight","HLT_IsoMu24","HLT_IsoTkMu24","HLT_IsoMu27","HLT_IsoTkMu27","HLT_Ele27_WPTight_Gsf","HLT_Ele105_CaloIdVT_GsfTrkIdT","HLT_Ele115_CaloIdVT_GsfTrkIdT","HLT_Ele32_WPTight_Gsf","HLT_IsoMu20","HLT_Ele27_eta2p1_WPTight_Gsf","HLT_Ele27_WPLoose_Gsf","HLT_Ele32_eta2p1_WPTight_Gsf","HLT_Photon165_HE10","HLT_Photon175","HLT_Ele105_CaloIdVT_GsfTrkIdT"),
-					  isMC_ = cms.bool(options.runOnMC)
-					  )
-
+    process.trigFilter = cms.EDFilter('TrigFilter',
+                                      TrigTag = cms.InputTag("TriggerResults::HLT"),
+                                      TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned",
+                                                              "HLT_PFMET170_HBHE_BeamHaloCleaned",
+                                                              "HLT_PFMET170_NotCleaned",
+                                                              "HLT_PFMET170_NoiseCleaned",
+                                                              "HLT_PFMET170_JetIdCleaned",
+                                                              "HLT_PFMET170_HBHECleaned",
+                                                              "HLT_PFMETNoMu90_PFMHTNoMu90_IDTight",
+                                                              "HLT_PFMETNoMu100_PFMHTNoMu100_IDTight",
+                                                              "HLT_PFMETNoMu110_PFMHTNoMu110_IDTight",
+                                                              "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
+                                                              "HLT_PFMET110_PFMHT110_IDTight",
+                                                              "HLT_IsoMu24","HLT_IsoTkMu24",
+                                                              "HLT_IsoMu27","HLT_IsoTkMu27",
+                                                              "HLT_Ele27_WPTight_Gsf",
+                                                              "HLT_Ele105_CaloIdVT_GsfTrkIdT",
+                                                              "HLT_Ele115_CaloIdVT_GsfTrkIdT",
+                                                              "HLT_Ele32_WPTight_Gsf",
+                                                              "HLT_IsoMu20",
+                                                              "HLT_Ele27_eta2p1_WPTight_Gsf",
+                                                              "HLT_Ele27_WPLoose_Gsf",
+                                                              "HLT_Ele32_eta2p1_WPTight_Gsf",
+                                                              "HLT_Photon165_HE10",
+                                                              "HLT_Photon175",),
+                                      isMC_ = cms.bool(options.runOnMC)
+                                     )
 
 process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            JetTag=cms.InputTag("slimmedJets"),
@@ -527,6 +539,7 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+
 if options.runOn2017:
 	if not options.useJECText:
 		process.analysis = cms.Path(
