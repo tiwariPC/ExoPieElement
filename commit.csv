@@ -2,4 +2,8 @@ syntax: setup_2017_2016_vXY: only the last two digits XY will change, prefix is 
 
 setup_2017_2016_v00: this is the base version for setup_2017_2016 branch 
 
-setup_2017_2016_v01: * switched off the CA15 jets, * switched on the AK8 gen jets in jetTree.  * Added new b-jet regression files from Deepak (likley from Twiki) 
+setup_2017_2016_v01: * switched off the CA15 jets,
+                     * switched on the AK8 gen jets in jetTree.  
+                     * Added new b-jet regression files from Deepak (he took from Twiki) 
+                     * added filters for MC 2017 
+

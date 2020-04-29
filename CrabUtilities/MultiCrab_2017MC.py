@@ -138,7 +138,7 @@ def kill(crabdirname):
         
                                  
 
-textfilename='fordeepak.txt'
+textfilename='backgroundList_2017_miniaodV2_1.txt'
 
 
 if args.submit:
