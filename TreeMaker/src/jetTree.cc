@@ -941,21 +941,20 @@ jetTree::SetBranches(){
   AddBranch(&jetMuoEF_,  "jetMuoEF");
   AddBranch(&jetCMulti_, "jetCMulti");
   AddBranch(&jetNMultiplicity_,"jetNMultiplicity");
+  AddBranch(&genjetpx_,"genjetpx");
+  AddBranch(&genjetpy_,"genjetpy");
+  AddBranch(&genjetpz_,"genjetpz");
+  AddBranch(&genjetE_,"genjetE");
+  AddBranch(&genjetEM_ ,  "genjetEM");
+  AddBranch(&genjetHAD_ , "genjetHAD");
+  AddBranch(&genjetINV_ , "genjetINV");
+  AddBranch(&genjetAUX_ , "genjetAUX");
 
   if(jet_extra){
     //AddBranch(&jetP4_,       "jetP4");
     //AddBranch(&genjetP4_,   "genjetP4"); // this is no longer needed as individual component is already there,
-    AddBranch(&genjetpx_,"genjetpx");
-    AddBranch(&genjetpy_,"genjetpy");
-    AddBranch(&genjetpz_,"genjetpz");
-    AddBranch(&genjetE_,"genjetE");
 
-    AddBranch(&genjetEM_ ,  "genjetEM");
-    AddBranch(&genjetHAD_ , "genjetHAD");
-    AddBranch(&genjetINV_ , "genjetINV");
-    AddBranch(&genjetAUX_ , "genjetAUX");
     AddBranch(&matchedDR_ , "matchedDR");
-
     AddBranch(&jetRawFactor_, "jetRawFactor");
     //AddBranch(&unCorrJetP4_, "unCorrJetP4");
     AddBranch(&unCorrJetPx_, "unCorrJetPx");
