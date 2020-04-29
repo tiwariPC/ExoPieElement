@@ -466,6 +466,10 @@ process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
 if options.runOn2016:
     process.tree.pfType1Met = cms.InputTag("slimmedMETs")
 if options.runOn2017:
+    if options.runOnMC:
+        process.tree.filterLabel = cms.InputTag("TriggerResults::PAT")
+    else:
+        process.tree.filterLabel = cms.InputTag("TriggerResults::RECO")
     process.tree.pfType1Met = cms.InputTag("slimmedMETsModifiedMET")
 
 if options.useJECText:
