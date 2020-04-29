@@ -92,7 +92,8 @@ else:
 
 process.source = cms.Source("PoolSource",
                             secondaryFileNames = cms.untracked.vstring(),
-                            fileNames = cms.untracked.vstring("file:/tmp/khurana/temp2017.root"),
+                            #fileNames = cms.untracked.vstring("file:/tmp/khurana/temp2017.root"),
+                            fileNames = cms.untracked.vstring($inputFileNames),
 			    #skipEvents = cms.untracked.uint32(0)
                             )
 
@@ -468,7 +469,8 @@ if options.useJECText:
 
 
 ## output file name 
-process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
+#process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
+process.TFileService = cms.Service("TFileService",fileName = cms.string('$outputFileName'))
 
 
 ##Trigger Filter
