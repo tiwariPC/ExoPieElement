@@ -277,14 +277,6 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       double b = ( jet->p4().phi() - jet->genJet()->p4().phi()) * ( jet->p4().phi() - jet->genJet()->p4().phi());
       DR = sqrt(a+b);
 
-      /*
-      new( (*genjetP4_)[nJet_-1]) TLorentzVector(
-   						 jet->genJet()->p4().px(),
-   						 jet->genJet()->p4().py(),
-   						 jet->genJet()->p4().pz(),
-   						 jet->genJet()->p4().energy()
-   						 );
-      */
       genjetpx_.push_back(jet->genJet()->p4().px());
       genjetpy_.push_back(jet->genJet()->p4().py());
       genjetpz_.push_back(jet->genJet()->p4().pz());
@@ -307,6 +299,10 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
    			 <<std::endl;
     }
     else{
+      genjetpx_.push_back(DUMMY);
+      genjetpy_.push_back(DUMMY);
+      genjetpz_.push_back(DUMMY);
+      genjetE_.push_back(DUMMY);
       genjetEM_.push_back(DUMMY);
       genjetHAD_.push_back(DUMMY);
       genjetINV_.push_back(DUMMY);
