@@ -307,6 +307,10 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
    			 <<std::endl;
     }
     else{
+      genjetpx_.push_back(DUMMY);
+      genjetpy_.push_back(DUMMY);
+      genjetpz_.push_back(DUMMY);
+      genjetE_.push_back(DUMMY);
       genjetEM_.push_back(DUMMY);
       genjetHAD_.push_back(DUMMY);
       genjetINV_.push_back(DUMMY);
