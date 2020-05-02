@@ -154,7 +154,7 @@ if args.submit:
         a,b,c = line.split()
         datasetdetail=[a,b,c]
         submit(datasetdetail)
-        wait(iisample, time)
+        #wait(iisample, time)
         iisample = iisample +1 
 
 if (args.status or args.resubmit or args.kill ) and len(sys.argv)<3 :
