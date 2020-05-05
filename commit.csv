@@ -4,3 +4,4 @@ setup_2017_2016_2018_v00: this is the base version for setup_2017_2016_2018 bran
 setup_2017_2016_2018_v01: * switched off the CA15 jets,
 			  * updated b-jet regression weight file for 2018
 			  * modified cfg file for period==D
+			  * updated SDMass (taking from userFloat)
