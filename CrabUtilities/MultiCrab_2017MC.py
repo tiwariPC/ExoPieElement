@@ -148,7 +148,7 @@ textfilename='backgroundList_2017_miniaodV2.txt'
 if args.submit:
     f = open(textfilename,'r')
     iisample = 0
-    time = 600
+    time = 1800
     for line in f:
         print line
         a,b,c = line.split()
