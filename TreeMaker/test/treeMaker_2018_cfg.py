@@ -57,12 +57,13 @@ options.register ('runOn2016',
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2016")
-
+'''
 options.register ('runOn2018DGT',
                   False,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.bool,
                   "runOn2018DGT")
+'''
 
 options.parseArguments()
 
@@ -88,8 +89,9 @@ if options.runOn2018:
     if options.runOnMC:
         process.GlobalTag.globaltag='102X_upgrade2018_realistic_v20'
     else:
-	if options.runOn2018DGT:
-		procesn.GlobalTag.globaltag='102X_dataRun2_Prompt_v15'
+	print 'period',options.period
+	if options.period=="D":
+		process.GlobalTag.globaltag='102X_dataRun2_Prompt_v15'
 	else:
         	process.GlobalTag.globaltag='102X_dataRun2_v12'
 elif options.runOn2017:
@@ -103,9 +105,10 @@ elif options.runOn2016:
     else:
         process.GlobalTag.globaltag='94X_dataRun2_v10'
 
+print 'running code with GT:  ',process.GlobalTag.globaltag
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(10)
 )
 
 
@@ -504,7 +507,7 @@ process.tree.AK8PuppijecNames      = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.AK8PuppijecUncName    = cms.string(AK8PuppiJECUncTextFile)
 process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
-process.tree.fillCA15PuppiJetInfo  = cms.bool(True)
+process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
 if options.runOnMC:
     process.tree.filterLabel = cms.InputTag("TriggerResults::PAT")
 else:

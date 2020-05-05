@@ -885,8 +885,8 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 	}
 
       if(isFATJet_)
-	jetSDmass_.push_back(nSubSoftDropjets==0? DUMMY:softdrop_raw_l4.M());
-
+	//jetSDmass_.push_back(nSubSoftDropjets==0? DUMMY:softdrop_raw_l4.M());
+	jetSDmass_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropMass"));
       if(nSubSoftDropjets==0 || genjet_softdrop_l4.E()<1e-6)
 	genjet_softdropmass = DUMMY;
       else
