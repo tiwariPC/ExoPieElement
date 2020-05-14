@@ -29,7 +29,9 @@ class eventInfo : public baseTree {
   void Fill(const edm::Event& iEvent);
   void Clear();
   edm::EDGetTokenT<reco::VertexCollection>          vertexToken;
-
+  edm::EDGetTokenT< double > prefweight_token;
+  edm::EDGetTokenT< double > prefweightup_token;
+  edm::EDGetTokenT< double > prefweightdown_token;
  private:
 
   eventInfo(){};
