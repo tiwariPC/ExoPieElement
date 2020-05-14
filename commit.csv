@@ -14,4 +14,6 @@ setup_2017_2016_v02: * added the duMMy varibale for genjet for data
 setup_2017_2016_v03: * changes on top of setup_2017_2016_v02 
 		     * this can be used for both data and MC 
 		     * updated the bjet regression 
+
+setup_2017_2016_v04: * added l1 prefire weights for 2017 era using the recipe from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
 		     
