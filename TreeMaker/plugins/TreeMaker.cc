@@ -55,7 +55,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   edm::Service<TFileService> fs;
 
 
-  bool debug__ = false; 
+  bool debug__ = false;
   tree_ = fs->make<TTree>("treeMaker","tree");
   if( fillPUweightInfo_)
     {
@@ -69,6 +69,9 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       if (debug__) std::cout<< " fillEventInfo_"<<std::endl;
       eventInfo_                  = new eventInfo("",tree_);
       eventInfo_->vertexToken     = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("pvSrc"));
+      eventInfo_->prefweight_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
+      eventInfo_->prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+      eventInfo_->prefweightdown_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
     }
 
 
@@ -79,7 +82,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       patMetTree_->pfMETToken     = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("patMet"));
       patMetTree_->pfMETModifiedToken  = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("pfType1Met"));
       patMetTree_->puppimetToken  = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("puppiMET"));
-      
+
     }
 
 
@@ -117,7 +120,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   if( fillElecInfo_ )
     {
       if (debug__) std::cout<< " fillElecInfo_"<<std::endl;
-      
+
       patElecTree_                              = new patElecTree("",tree_,iConfig);
       patElecTree_->vertexToken                 = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("pvSrc"));
       patElecTree_->rhoForLepToken              = consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
@@ -181,7 +184,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   if( fillJetInfo_ )
     {
       if (debug__) std::cout<< "fillJetInfo_ "<<std::endl;
-      
+
       std::string desc             = "THIN";
       THINjetTree_                 = new jetTree(desc,tree_,iConfig);
       THINjetTree_->jetToken       = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>(Form("%sJets",desc.data())));
@@ -249,7 +252,7 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillMetInfo_ )      patMetTree_    ->Fill(iEvent);
   if( fillTrigInfo_ )     patHltTree_    ->Fill(iEvent);
   if( fillFilterInfo_ )   patFilterTree_ ->Fill(iEvent);
-  
+
   if( fillGenInfo_ )      genInfoTree_   ->Fill(iEvent);
 
   if( fillElecInfo_ )     patElecTree_   ->Fill(iEvent);
@@ -258,7 +261,7 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillTauInfo_ )      tauTree_       ->Fill(iEvent, iSetup);
 
 
-      
+
   if( fillFATJetInfo_ )   FATjetTree_    ->Fill(iEvent, iSetup);
   if( fillJetInfo_ )      THINjetTree_   ->Fill(iEvent, iSetup);
   if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);
