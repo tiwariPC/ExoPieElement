@@ -1,19 +1,18 @@
-syntax: setup_2017_2016_vXY: only the last two digits XY will change, prefix is the branch name 
+syntax: setup_2017_2016_vXY: only the last two digits XY will change, prefix is the branch name
 
-setup_2017_2016_v00: this is the base version for setup_2017_2016 branch 
+setup_2017_2016_v00: this is the base version for setup_2017_2016 branch
 
 setup_2017_2016_v01: * switched off the CA15 jets,
-                     * switched on the AK8 gen jets in jetTree.  
-                     * Added new b-jet regression files from Deepak (he took from Twiki) 
-                     * added filters for MC 2017 
-		     * tup;les deleted without using, bjet regression file was wrong 
+                     * switched on the AK8 gen jets in jetTree.
+                     * Added new b-jet regression files from Deepak (he took from Twiki)
+                     * added filters for MC 2017
+		     * tup;les deleted without using, bjet regression file was wrong
 
-setup_2017_2016_v02: * added the duMMy varibale for genjet for data 
-                     * this is essentially same as setup_2017_2016_v01 but it works without error on data also (for gen jet part). 
+setup_2017_2016_v02: * added the duMMy varibale for genjet for data
+                     * this is essentially same as setup_2017_2016_v01 but it works without error on data also (for gen jet part).
 
-setup_2017_2016_v03: * changes on top of setup_2017_2016_v02 
-		     * this can be used for both data and MC 
-		     * updated the bjet regression 
+setup_2017_2016_v03: * changes on top of setup_2017_2016_v02
+		     * this can be used for both data and MC
+		     * updated the bjet regression
 
-setup_2017_2016_v04: * added l1 prefire weights for 2017 era using the recipe from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
-		     
+setup_2017_2016_v04: * added l1 prefire weights for 2017 and 2016 era using the recipe from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
