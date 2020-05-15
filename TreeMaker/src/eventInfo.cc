@@ -67,9 +67,9 @@ eventInfo::SetBranches(){
   AddBranch(&bunchX_, "bunchXing");
   AddBranch(&nVtx_, "nVtx");
   AddBranch(&vertexP3_,"vertexP3");
-  AddBranch(&_prefiringweight, "prefire_wgt");
-  AddBranch(&_prefiringweightup,"prefire_wgtup");
-  AddBranch(&_prefiringweightdown,"prefire_wgtdown");
+  AddBranch(&_prefiringweight, "prefiringweight");
+  AddBranch(&_prefiringweightup,"prefiringweightup");
+  AddBranch(&_prefiringweightdown,"prefiringweightdown");
 }
 
 
