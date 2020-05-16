@@ -20,7 +20,8 @@ def submit(datasetdetail):
     print "submitting"
     
     print datasetdetail
-    os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
+    os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1])
+    #os.system('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
     #print ('crab submit -c crabConfig_2017_MC.py General.requestName='+datasetdetail[0]+' Data.inputDataset='+datasetdetail[1]+' Data.unitsPerJob='+datasetdetail[2])
 
 
@@ -142,7 +143,7 @@ def wait(isam,time):
     if isam%10==0:
         os.system("sleep "+str(time))
 
-textfilename='backgroundList_2017_miniaodV2.txt'
+textfilename='backgroundList_2017_miniaodV2_2.txt'
 
 
 if args.submit:
