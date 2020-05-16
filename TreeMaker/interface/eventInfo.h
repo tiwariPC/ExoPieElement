@@ -11,8 +11,8 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "TTree.h" 
-#include "FWCore/Framework/interface/Event.h" 
+#include "TTree.h"
+#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
@@ -26,10 +26,12 @@ class eventInfo : public baseTree {
   eventInfo(std::string name, TTree* tree);
   ~eventInfo();
 
-  void Fill(const edm::Event& iEvent); 
+  void Fill(const edm::Event& iEvent);
   void Clear();
   edm::EDGetTokenT<reco::VertexCollection>          vertexToken;
-  
+  edm::EDGetTokenT< double > prefweight_token;
+  edm::EDGetTokenT< double > prefweightup_token;
+  edm::EDGetTokenT< double > prefweightdown_token;
  private:
 
   eventInfo(){};
@@ -43,10 +45,11 @@ class eventInfo : public baseTree {
   unsigned long bunchX_;
 
   int nVtx_;
-  
-  TClonesArray *vertexP3_;
 
+  TClonesArray *vertexP3_;
+  float _prefiringweight;
+  float _prefiringweightup;
+  float _prefiringweightdown;
 };
 
 #endif
-

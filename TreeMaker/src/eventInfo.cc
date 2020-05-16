@@ -31,7 +31,7 @@ eventInfo::Fill(const edm::Event& iEvent){
 
   if (iEvent.getByToken(vertexToken, recVtxs_)) {
     for (size_t i=0; i<recVtxs_->size(); ++i) {
-      
+
       //bool isFake = ((*recVtxs_)[i].chi2()==0 && (*recVtxs_)[i].ndof()==0);
       if((*recVtxs_)[i].ndof() >= 4 && fabs((*recVtxs_)[i].z()) <= 24 && fabs((*recVtxs_)[i].position().rho()) <= 2
 	 //&& !(isFake)
@@ -45,6 +45,17 @@ eventInfo::Fill(const edm::Event& iEvent){
 	} // if satifying good vertices
     }
   }
+  edm::Handle< double > theprefweight;
+  iEvent.getByToken(prefweight_token, theprefweight ) ;
+  _prefiringweight =(*theprefweight);
+
+  edm::Handle< double > theprefweightup;
+  iEvent.getByToken(prefweightup_token, theprefweightup ) ;
+  _prefiringweightup =(*theprefweightup);
+
+  edm::Handle< double > theprefweightdown;
+  iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+  _prefiringweightdown =(*theprefweightdown);
 }
 
 void
@@ -56,10 +67,13 @@ eventInfo::SetBranches(){
   AddBranch(&bunchX_, "bunchXing");
   AddBranch(&nVtx_, "nVtx");
   AddBranch(&vertexP3_,"vertexP3");
+  AddBranch(&_prefiringweight, "prefiringweight");
+  AddBranch(&_prefiringweightup,"prefiringweightup");
+  AddBranch(&_prefiringweightdown,"prefiringweightdown");
 }
 
 
-void 
+void
 eventInfo::Clear(){
 
   isData_  = false;
@@ -70,4 +84,3 @@ eventInfo::Clear(){
   nVtx_ = 0;
   vertexP3_->Clear();
 }
-
