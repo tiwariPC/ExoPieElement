@@ -16,3 +16,4 @@ setup_2017_2016_v03: * changes on top of setup_2017_2016_v02
 		     * updated the bjet regression
 
 setup_2017_2016_v04: * added l1 prefire weights for 2017 and 2016 era using the recipe from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+		     * added chs met and track met for cross-checks. 
