@@ -41,7 +41,7 @@ options.register ('runOn2017',
 		  "runOn2017")
 
 options.register ('runOn2016',
-		  True,
+		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2016")
