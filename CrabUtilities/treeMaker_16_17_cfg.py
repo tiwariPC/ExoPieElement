@@ -41,7 +41,7 @@ options.register ('runOn2017',
 		  "runOn2017")
 
 options.register ('runOn2016',
-		  True,
+		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2016")
@@ -95,7 +95,7 @@ setupEgammaPostRecoSeq(process,
 # Input source
 if options.runOn2017:
 	if options.runOnMC:
-		testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
+            testFile='file:/hdfs//store/mc/RunIIFall17MiniAODv2/ZprimeToTauTau_M-4000_TuneCP5_13TeV-pythia8-tauola/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/100000/2AABB119-93B4-E811-97FF-A4BF0112BC58.root'
 	else:
 		testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
 elif options.runOn2016:
@@ -487,6 +487,13 @@ process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieE
 
 ##Trigger Filter
 if options.runOn2017:
+    from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+    process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
     process.trigFilter = cms.EDFilter('TrigFilter',
                                       TrigTag = cms.InputTag("TriggerResults::HLT"),
                                       TrigPaths = cms.vstring("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
@@ -504,6 +511,12 @@ if options.runOn2017:
                                       isMC_ = cms.bool(options.runOnMC)
                                      )
 elif options.runOn2016:
+    from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+    process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
     process.trigFilter = cms.EDFilter('TrigFilter',
                                       TrigTag = cms.InputTag("TriggerResults::HLT"),
                                       TrigPaths = cms.vstring("HLT_PFMET170_BeamHaloCleaned",
@@ -544,6 +557,7 @@ if options.runOn2017:
 	if not options.useJECText:
 		process.analysis = cms.Path(
 			process.trigFilter
+            *process.prefiringweight
 			*process.rerunMvaIsolationSequence
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
@@ -560,6 +574,7 @@ if options.runOn2017:
 	else:
 		process.analysis = cms.Path(
 			process.trigFilter
+            *process.prefiringweight
 			*process.rerunMvaIsolationSequence
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
@@ -574,6 +589,7 @@ elif options.runOn2016:
 	if not options.useJECText:
 		process.analysis = cms.Path(
 			process.trigFilter
+            *process.prefiringweight
 			*process.rerunMvaIsolationSequence
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
@@ -589,6 +605,7 @@ elif options.runOn2016:
 	else:
 		process.analysis = cms.Path(
 			process.trigFilter
+            *process.prefiringweight
 			*process.rerunMvaIsolationSequence
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+

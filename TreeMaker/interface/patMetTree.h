@@ -83,6 +83,20 @@ class patMetTree : public baseTree{
   float puppiMETPhi_;
   float puppiMETSumEt_;
   float puppiMETSig_;
+
+  
+  float CHSMETPt_;
+  float CHSMETPhi_;
+  float CHSMETSumEt_;
+  
+  float TRKMETPt_;
+  float TRKMETPhi_;
+  float TRKMETPSumEt_;
+  
+
+
+
+
   std::vector<float>  puppiMETUnc_;
   bool is_Data;
 

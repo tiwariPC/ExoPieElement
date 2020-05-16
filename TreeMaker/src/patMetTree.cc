@@ -68,6 +68,16 @@ patMetTree::Fill(const edm::Event& iEvent){
   patCaloMETSumEt_ = met->caloMETSumEt();
 
 
+  // CHS MET 
+  CHSMETPt_     = met->corPt(pat::MET::RawChs);
+  CHSMETPhi_    = met->corPhi(pat::MET::RawChs);
+  CHSMETSumEt_  = met->corSumEt(pat::MET::RawChs);
+  
+  // Track MET 
+  TRKMETPt_     = met->corPt(pat::MET::RawTrk);
+  TRKMETPhi_    = met->corPhi(pat::MET::RawTrk);
+  TRKMETPSumEt_ = met->corSumEt(pat::MET::RawTrk);
+  
   // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUp));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResDown));
@@ -89,17 +99,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   patMetCorrUnc_.push_back(met->shiftedPhi(pat::MET::PhotonEnDown));
   patMetCorrUnc_.push_back(met->shiftedPhi(pat::MET::NoShift));
 
-
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::MuonEnUp));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::MuonEnDown));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::ElectronEnUp));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::ElectronEnDown));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::TauEnUp));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::TauEnDown));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::METUncertaintySize));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUpSmear));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResDownSmear));
-  //patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::METFullUncertaintySize));
 
 
   // Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc.
@@ -140,14 +139,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   puppiMETSig_        = metpuppi->significance() < 1.e10 ? met->significance() : 0 ;
 
 
-
-  /*  JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
-
-    MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
-    TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
-    PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
-    JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
-  */
   puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetResUp));
   puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetResDown));
   puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetEnUp));
@@ -157,16 +148,6 @@ patMetTree::Fill(const edm::Event& iEvent){
   puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::PhotonEnUp));
   puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::PhotonEnDown));
   puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::NoShift));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::MuonEnUp));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::MuonEnDown));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::ElectronEnUp));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::ElectronEnDown));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::TauEnUp));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::TauEnDown));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::METUncertaintySize));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetResUpSmear));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::JetResDownSmear));
-  //puppiMETUnc_.push_back(metpuppi->shiftedPt(pat::MET::METFullUncertaintySize));
 
 }
 bool met_extra = false;
@@ -197,6 +178,13 @@ patMetTree::SetBranches(){
   AddBranch(&patCaloMETPhi_,    "patCaloMETPhi");
   AddBranch(&patCaloMETSumEt_,  "patCaloMETSumEt");
 
+  AddBranch(&CHSMETPt_, "CHSMETPt_");
+  AddBranch(&CHSMETPhi_, "CHSMETPhi_");
+  AddBranch(&CHSMETSumEt_, "CHSMETSumEt_");
+  
+  AddBranch(&TRKMETPt_, "TRKMETPt_");
+  AddBranch(&TRKMETPhi_, "TRKMETPhi_");
+  AddBranch(&TRKMETPSumEt_, "TRKMETPSumEt_");
 
   AddBranch(&puppiMETPt_,     "puppiMETPt");
   AddBranch(&puppiMETPhi_,    "puppiMETPhi");
@@ -237,6 +225,14 @@ patMetTree::Clear(){
   patCaloMETPt_   = dummy ;
   patCaloMETPhi_   = dummy ;
   patCaloMETSumEt_   = dummy ;
+
+  CHSMETPt_   = dummy;
+  CHSMETPhi_   = dummy;
+  CHSMETSumEt_   = dummy;
+
+  TRKMETPt_   = dummy;
+  TRKMETPhi_   = dummy;
+  TRKMETPSumEt_   = dummy;
 
   puppiMETPt_     = dummy ;
   puppiMETPhi_    = dummy ;
