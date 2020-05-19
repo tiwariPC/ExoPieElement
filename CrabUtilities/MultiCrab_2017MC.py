@@ -12,6 +12,10 @@ parser.add_argument("-l", "--ss", action="store_true",  dest="ss") ## status sum
 
 args = parser.parse_args()
 
+textfilename='backgroundList_2017_miniaodV2.txt'
+
+#textfilename='signal_private_monoHbb_2017.txt'
+
 
 print args
 print len(sys.argv)
@@ -143,7 +147,6 @@ def wait(isam,time):
     if isam%10==0:
         os.system("sleep "+str(time))
 
-textfilename='backgroundList_2017_miniaodV2_2.txt'
 
 
 if args.submit:
