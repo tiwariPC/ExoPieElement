@@ -35,7 +35,7 @@ options.register ('useMiniAOD',
 		    "useMiniAOD")
 
 options.register ('runOn2017',
-		  True,
+		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
 		  "runOn2017")
@@ -95,7 +95,7 @@ setupEgammaPostRecoSeq(process,
 # Input source
 if options.runOn2017:
 	if options.runOnMC:
-            testFile='file:/hdfs//store/mc/RunIIFall17MiniAODv2/ZprimeToTauTau_M-4000_TuneCP5_13TeV-pythia8-tauola/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/100000/2AABB119-93B4-E811-97FF-A4BF0112BC58.root'
+            testFile='file:/hdfs//store/mc/RunIIFall17MiniAODv2/Wprimetotb_M4400W880_LH_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/60000/FE56118F-A78F-EA11-95E6-0025904A9472.root'
 	else:
 		testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
 elif options.runOn2016:
