@@ -597,7 +597,6 @@ if not options.useJECText:
 		process.egammaPostRecoSeq+
 		process.appliedRegJets+
         process.appliedRegpuppiJets+
-		process.fullPatMetSequenceModifiedMET+
 		process.patSmearedJets+
         process.patSmearedpuppiJets+
 		process.pfMet+
@@ -615,7 +614,6 @@ else:
 		process.egammaPostRecoSeq+
 		process.appliedRegJets+
         process.appliedRegpuppiJets+
-		process.fullPatMetSequenceModifiedMET+
 		process.patSmearedJets+
         process.patSmearedpuppiJets+
 		process.pfMet+

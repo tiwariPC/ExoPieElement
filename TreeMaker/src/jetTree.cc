@@ -410,18 +410,20 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetPartonFlavor_.push_back(jet->partonFlavour());
     jetHadronFlavor_.push_back(jet->hadronFlavour());
 
-    if(isTHINJet_||isAK4PuppiJet_){
+    if(isTHINJet_){
       float jpumva=0.;
       jpumva= jet->userFloat("pileupJetId:fullDiscriminant");
       PUJetID_.push_back(jpumva);
 
-      //  b  jet regrssion correction
-      bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
-      bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
-
       isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
       isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
       isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
+    }
+
+    if(isTHINJet_||isAK4PuppiJet_){
+      //  b  jet regrssion correction
+      bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
+      bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
     }
 
     if(isTHINJet_){
