@@ -405,7 +405,8 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     debug = cms.untracked.bool(False)
 )
 
-
+process.patSmearedpuppiJets = process.patSmearedJets.clone(
+	src = cms.InputTag("appliedRegpuppiJets"))
 
 
 ## Tau ID embedding
@@ -519,7 +520,7 @@ if options.useJECText:
 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
 	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
 	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
-	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
+	process.tree.AK4PuppiJets  = cms.InputTag("patSmearedpuppiJets")
 
 
 
@@ -600,6 +601,7 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+process.appliedRegpuppiJets = process.appliedRegJets.clone(setTag=cms.InputTag("slimmedJetsPuppi"))
 
 if not options.useJECText:
 	process.analysis = cms.Path(
@@ -608,8 +610,10 @@ if not options.useJECText:
 		*process.NewTauIDsEmbedded+
 		process.egammaPostRecoSeq+
 		process.appliedRegJets+
+        process.appliedRegpuppiJets+
 		process.fullPatMetSequenceModifiedMET+
 		process.patSmearedJets+
+        process.patSmearedpuppiJets+
 		process.pfMet+
 		process.jetCorrSequenceAK4+  ## only when using JEC text files
 		process.jetCorrSequenceAK8+  ## only when using JEC text files
@@ -624,8 +628,10 @@ else:
 		*process.NewTauIDsEmbedded+
 		process.egammaPostRecoSeq+
 		process.appliedRegJets+
+        process.appliedRegpuppiJets+
 		process.fullPatMetSequenceModifiedMET+
 		process.patSmearedJets+
+        process.patSmearedpuppiJets+
 		process.pfMet+
 		process.tree
 		)
