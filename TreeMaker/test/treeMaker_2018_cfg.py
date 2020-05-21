@@ -125,12 +125,14 @@ setupEgammaPostRecoSeq(process,
 
 
 
+testFile=""
 # Input source
 if options.runOn2018:
         if options.runOnMC:
-                testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
+            testFile='file:/hdfs//store/mc/RunIIAutumn18MiniAOD/ADDMonoJet_MD_9_d_6_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/50000/A29D34C0-8CF0-814E-89A7-0D9DDB326137.root'
+            #testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
         else:
-                testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
+            testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
 
 process.source = cms.Source("PoolSource",
                             secondaryFileNames = cms.untracked.vstring(),

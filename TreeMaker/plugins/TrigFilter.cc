@@ -50,7 +50,8 @@
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
-
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 
 //
@@ -104,7 +105,7 @@ class TrigFilter : public edm::EDFilter {
 
       bool isValidHltConfig_;
       HLTConfigProvider  hltConfigProvider_;
-
+  TH1F* event_counter_;
 };
 
 //
@@ -129,6 +130,8 @@ TrigFilter::TrigFilter(const edm::ParameterSet& iConfig):
    isValidHltConfig_ = false;
    trigResultToken = consumes<edm::TriggerResults>(trigTag_);
    triggerObjectsToken = consumes<std::vector<pat::TriggerObjectStandAlone> >(patTrigObj_);
+   edm::Service<TFileService> fs;
+   event_counter_ = fs->make<TH1F>("event_counter_", "event_counter_", 2,0.5,2.5);
 
 }
 
@@ -150,6 +153,8 @@ TrigFilter::~TrigFilter()
 bool
 TrigFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+
+  event_counter_->Fill(1);
   edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
   iEvent.getByToken(triggerObjectsToken,triggerObjects);
 
