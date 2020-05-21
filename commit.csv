@@ -5,4 +5,7 @@ setup_2017_2016_2018_v01: * switched off the CA15 jets,
 			  * updated b-jet regression weight file for 2018
 			  * modified cfg file for period==D
 			  * updated SDMass (taking from userFloat)
+			  
+setup_2017_2016_2018_v02: * removed the duplicity of the pfMET variable
+			  * added AK4puppiJET branch
 
