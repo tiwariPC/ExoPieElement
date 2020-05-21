@@ -181,18 +181,6 @@ updateJetCollection(
       'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD',
       ]
         )
-## This is for modified MET, needed only for 2017 data
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-    process,
-    isData = True, # false for MC
-    fixEE2017 = True,
-    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-    postfix = "ModifiedMET"
-    )
-
-
 ##
 ## This is for Uncorrected MET
 from RecoMET.METProducers.PFMET_cfi import pfMet
@@ -200,9 +188,7 @@ process.pfMet = pfMet.clone(src = "packedPFCandidates")
 process.pfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
 ## Uncorrected MET edns here
 ##
-
 pvSource = 'offlineSlimmedPrimaryVertices'
-
 
 bTagDiscriminators = [
     'pfJetBProbabilityBJetTags'
