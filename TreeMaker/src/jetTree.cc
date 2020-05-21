@@ -410,7 +410,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     jetPartonFlavor_.push_back(jet->partonFlavour());
     jetHadronFlavor_.push_back(jet->hadronFlavour());
 
-    if(isTHINJet_){
+    if(isTHINJet_||isAK4PuppiJet_){
       float jpumva=0.;
       jpumva= jet->userFloat("pileupJetId:fullDiscriminant");
       PUJetID_.push_back(jpumva);
@@ -993,7 +993,7 @@ jetTree::SetBranches(){
      AddBranch(&jetPassIDLoose_,  "jetPassIDLoose");
   }
 
-  if(isTHINJet_){
+  if(isTHINJet_ || isAK4PuppiJet_){
     AddBranch(&jetCISVV2_,"jetCISVV2");
     AddBranch(&jetDeepCSV_b_,"jetDeepCSV_b");
     AddBranch(&jetDeepCSV_c_,"jetDeepCSV_c");
