@@ -601,7 +601,7 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
-process.appliedRegpuppiJets = process.appliedRegJets.clone(setTag=cms.InputTag("slimmedJetsPuppi"))
+process.appliedRegpuppiJets = process.appliedRegJets.clone(JetTag=cms.InputTag("slimmedJetsPuppi"))
 
 if not options.useJECText:
 	process.analysis = cms.Path(
