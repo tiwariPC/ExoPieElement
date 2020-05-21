@@ -67,15 +67,16 @@ patMetTree::Fill(const edm::Event& iEvent){
   patCaloMETPhi_ = met->caloMETPhi();
   patCaloMETSumEt_ = met->caloMETSumEt();
 
-  // CHS MET 
+  // CHS MET
   CHSMETPt_     = met->corPt(pat::MET::RawChs);
   CHSMETPhi_    = met->corPhi(pat::MET::RawChs);
   CHSMETSumEt_  = met->corSumEt(pat::MET::RawChs);
-  
-  // Track MET 
+
+  // Track MET
   TRKMETPt_     = met->corPt(pat::MET::RawTrk);
   TRKMETPhi_    = met->corPhi(pat::MET::RawTrk);
   TRKMETPSumEt_ = met->corSumEt(pat::MET::RawTrk);
+
 
 
   // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
@@ -116,9 +117,10 @@ patMetTree::Fill(const edm::Event& iEvent){
   // Modified Type 1 corrected MET default in miniaod :: Needed only for 2017 data mc.
 
   pat::METCollection::const_iterator metmodified=patMetModifiedHandle.product()->begin();
-  patMetCorrPt_    = metmodified->et();
-  patMetCorrPhi_   = metmodified->phi();
-  patMetCorrSumEt_ = metmodified->sumEt();
+  patmodifiedMetCorrPt_    = metmodified->et();
+  patmodifiedMetCorrPhi_   = metmodified->phi();
+  patmodifiedMetCorrSumEt_ = metmodified->sumEt();
+  patmodifiedMetCorrSig_   = metmodified->significance() < 1.e10 ? met->significance() : 0;
 
 
 // puppi met,  present in miniaod
@@ -170,6 +172,12 @@ patMetTree::SetBranches(){
   AddBranch(&patMetCorrUnc_, "MetCorrUnc");
   AddBranch(&patMetCorrSig_, "MetCorrSig");
 
+  AddBranch(&patmodifiedMetCorrPt_, "modifiedMetCorrPt");
+  AddBranch(&patmodifiedMetCorrPhi_, "modifiedMetCorrPhi");
+  AddBranch(&patmodifiedMetCorrSumEt_, "modifiedMetCorrSumEt");
+  AddBranch(&patmodifiedMetCorrSig_, "modifiedMetCorrSig");
+  AddBranch(&patmodifiedMetCorrUnc_,"modifiedMetCorrUnc");
+
   AddBranch(&patMetRawPt_, "MetRawPt");
   AddBranch(&patMetRawPhi_, "MetRawPhi");
   AddBranch(&patMetRawSumEt_, "MetRawSumEt");
@@ -186,7 +194,7 @@ patMetTree::SetBranches(){
   AddBranch(&CHSMETPt_, "CHSMETPt_");
   AddBranch(&CHSMETPhi_, "CHSMETPhi_");
   AddBranch(&CHSMETSumEt_, "CHSMETSumEt_");
-  
+
   AddBranch(&TRKMETPt_, "TRKMETPt_");
   AddBranch(&TRKMETPhi_, "TRKMETPhi_");
   AddBranch(&TRKMETPSumEt_, "TRKMETPSumEt_");
@@ -212,6 +220,13 @@ patMetTree::Clear(){
   patMetCorrSig_= dummy;
   patMetCorrUnc_.clear();
 
+  patmodifiedMetCorrPt_= dummy;
+  patmodifiedMetCorrPhi_= dummy;
+  patmodifiedMetCorrSumEt_= dummy;
+
+  patmodifiedMetCorrSig_= dummy;
+  patmodifiedMetCorrUnc_.clear();
+
   patMetRawPt_= dummy;
   patMetRawPhi_= dummy;
   patMetRawSumEt_= dummy;
@@ -231,7 +246,7 @@ patMetTree::Clear(){
   TRKMETPt_   = dummy;
   TRKMETPhi_   = dummy;
   TRKMETPSumEt_   = dummy;
-  
+
   puppiMETPt_     = dummy ;
   puppiMETPhi_    = dummy ;
   puppiMETSumEt_  = dummy ;
