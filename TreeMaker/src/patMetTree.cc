@@ -67,6 +67,16 @@ patMetTree::Fill(const edm::Event& iEvent){
   patCaloMETPhi_ = met->caloMETPhi();
   patCaloMETSumEt_ = met->caloMETSumEt();
 
+  // CHS MET 
+  CHSMETPt_     = met->corPt(pat::MET::RawChs);
+  CHSMETPhi_    = met->corPhi(pat::MET::RawChs);
+  CHSMETSumEt_  = met->corSumEt(pat::MET::RawChs);
+  
+  // Track MET 
+  TRKMETPt_     = met->corPt(pat::MET::RawTrk);
+  TRKMETPhi_    = met->corPhi(pat::MET::RawTrk);
+  TRKMETPSumEt_ = met->corSumEt(pat::MET::RawTrk);
+
 
   // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUp));
@@ -173,6 +183,13 @@ patMetTree::SetBranches(){
   AddBranch(&patCaloMETPhi_,    "patCaloMETPhi");
   AddBranch(&patCaloMETSumEt_,  "patCaloMETSumEt");
 
+  AddBranch(&CHSMETPt_, "CHSMETPt_");
+  AddBranch(&CHSMETPhi_, "CHSMETPhi_");
+  AddBranch(&CHSMETSumEt_, "CHSMETSumEt_");
+  
+  AddBranch(&TRKMETPt_, "TRKMETPt_");
+  AddBranch(&TRKMETPhi_, "TRKMETPhi_");
+  AddBranch(&TRKMETPSumEt_, "TRKMETPSumEt_");
 
   AddBranch(&puppiMETPt_,     "puppiMETPt");
   AddBranch(&puppiMETPhi_,    "puppiMETPhi");
@@ -207,6 +224,14 @@ patMetTree::Clear(){
   patCaloMETPhi_   = dummy ;
   patCaloMETSumEt_   = dummy ;
 
+  CHSMETPt_   = dummy;
+  CHSMETPhi_   = dummy;
+  CHSMETSumEt_   = dummy;
+
+  TRKMETPt_   = dummy;
+  TRKMETPhi_   = dummy;
+  TRKMETPSumEt_   = dummy;
+  
   puppiMETPt_     = dummy ;
   puppiMETPhi_    = dummy ;
   puppiMETSumEt_  = dummy ;

@@ -72,7 +72,14 @@ class patMetTree : public baseTree{
   float patMetRawPt_;
   float patMetRawPhi_;
   float patMetRawSumEt_;
+
+  float CHSMETPt_;
+  float CHSMETPhi_;
+  float CHSMETSumEt_;
   
+  float TRKMETPt_;
+  float TRKMETPhi_;
+  float TRKMETPSumEt_;
   
   float puppiMETPt_; 
   float puppiMETPhi_; 
