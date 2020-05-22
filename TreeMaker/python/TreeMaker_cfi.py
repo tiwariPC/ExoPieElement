@@ -16,7 +16,7 @@ tree = cms.EDAnalyzer(
 
     fillJetInfo      = cms.bool(True),
     fillFATJetInfo   = cms.bool(True), ## Default is now AK8Puppi
-    fillAK4PuppiJetInfo = cms.bool(True),
+    fillAK4PuppiJetInfo = cms.bool(False),
     fillAK8PuppiJetInfo = cms.bool(False), ## Only if we need to recluster
     fillCA15PuppiJetInfo = cms.bool(False),
 
