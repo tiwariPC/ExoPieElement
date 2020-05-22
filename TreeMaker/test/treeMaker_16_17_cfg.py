@@ -463,6 +463,11 @@ process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
 
+process.tree.THINJets      = cms.InputTag("patSmearedJets")
+process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
+process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
+process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
+
 if options.runOn2016:
     process.tree.pfType1Met = cms.InputTag("slimmedMETs")
 if options.runOn2017:
@@ -472,11 +477,11 @@ if options.runOn2017:
         process.tree.filterLabel = cms.InputTag("TriggerResults::RECO")
     process.tree.pfType1Met = cms.InputTag("slimmedMETsModifiedMET")
 
-if options.useJECText:
-	process.tree.THINJets      = cms.InputTag("patSmearedJets")
-	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
-	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
-	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
+# if options.useJECText:
+# 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
+# 	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
+# 	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
+# 	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
 
 
 
@@ -564,11 +569,7 @@ if options.runOn2017:
 			process.appliedRegJets+
 			process.fullPatMetSequenceModifiedMET+
 			process.patSmearedJets+
-			process.pfMet+
-			process.jetCorrSequenceAK4+  ## only when using JEC text files
-			process.jetCorrSequenceAK8+  ## only when using JEC text files
-			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
-			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			# process.pfMet+
 			process.tree
 			)
 	else:
@@ -581,7 +582,11 @@ if options.runOn2017:
 			process.appliedRegJets+
 			process.fullPatMetSequenceModifiedMET+
 			process.patSmearedJets+
-			process.pfMet+
+			process.jetCorrSequenceAK4+  ## only when using JEC text files
+			process.jetCorrSequenceAK8+  ## only when using JEC text files
+			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			# process.pfMet+
 			process.tree
 			)
 
@@ -595,11 +600,7 @@ elif options.runOn2016:
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
 			process.patSmearedJets+
-			process.pfMet+
-			process.jetCorrSequenceAK4+  ## only when using JEC text files
-			process.jetCorrSequenceAK8+  ## only when using JEC text files
-			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
-			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			# process.pfMet+
 			process.tree
 			)
 	else:
@@ -611,7 +612,11 @@ elif options.runOn2016:
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
 			process.patSmearedJets+
-			process.pfMet+
+			process.jetCorrSequenceAK4+  ## only when using JEC text files
+			process.jetCorrSequenceAK8+  ## only when using JEC text files
+			process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+			process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+			# process.pfMet+
 			process.tree
 			)
 
