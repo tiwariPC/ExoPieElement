@@ -68,17 +68,19 @@ patMetTree::Fill(const edm::Event& iEvent){
   patCaloMETSumEt_ = met->caloMETSumEt();
 
 
-  // CHS MET 
+  // CHS MET
   CHSMETPt_     = met->corPt(pat::MET::RawChs);
   CHSMETPhi_    = met->corPhi(pat::MET::RawChs);
   CHSMETSumEt_  = met->corSumEt(pat::MET::RawChs);
-  
-  // Track MET 
+
+  // Track MET
   TRKMETPt_     = met->corPt(pat::MET::RawTrk);
   TRKMETPhi_    = met->corPhi(pat::MET::RawTrk);
   TRKMETPSumEt_ = met->corSumEt(pat::MET::RawTrk);
-  
+
   // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
+  patMet_smear_    = met->shiftedPt(pat::MET::NoShift, pat::MET::Type1Smear);
+
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUp));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResDown));
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetEnUp));
@@ -110,6 +112,7 @@ patMetTree::Fill(const edm::Event& iEvent){
   patmodifiedMetCorrSig_   = metmodified->significance() < 1.e10 ? met->significance() : 0;
 
   // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
+  patmodifiedMet_smear_    = metmodified->shiftedPt(pat::MET::NoShift, pat::MET::Type1Smear);
   patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetResUp));
   patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetResDown));
   patmodifiedMetCorrUnc_.push_back(metmodified->shiftedPt(pat::MET::JetEnUp));
@@ -160,11 +163,15 @@ patMetTree::SetBranches(){
   AddBranch(&patMetCorrUnc_, "MetCorrUnc");
   AddBranch(&patMetCorrSig_, "MetCorrSig");
 
+  AddBranch(&patMet_smear_, "patMet_smear");
+  
   AddBranch(&patmodifiedMetCorrPt_, "modifiedMetCorrPt");
   AddBranch(&patmodifiedMetCorrPhi_, "modifiedMetCorrPhi");
   AddBranch(&patmodifiedMetCorrSumEt_, "modifiedMetCorrSumEt");
   AddBranch(&patmodifiedMetCorrSig_, "modifiedMetCorrSig");
   AddBranch(&patmodifiedMetCorrUnc_,"modifiedMetCorrUnc");
+
+  AddBranch(&patmodifiedMet_smear_, "patmodifiedMet_smear");
 
   AddBranch(&patMetRawPt_, "MetRawPt");
   AddBranch(&patMetRawPhi_, "MetRawPhi");
@@ -181,7 +188,7 @@ patMetTree::SetBranches(){
   AddBranch(&CHSMETPt_, "CHSMETPt_");
   AddBranch(&CHSMETPhi_, "CHSMETPhi_");
   AddBranch(&CHSMETSumEt_, "CHSMETSumEt_");
-  
+
   AddBranch(&TRKMETPt_, "TRKMETPt_");
   AddBranch(&TRKMETPhi_, "TRKMETPhi_");
   AddBranch(&TRKMETPSumEt_, "TRKMETPSumEt_");
@@ -207,6 +214,8 @@ patMetTree::Clear(){
   patMetCorrSig_= dummy;
   patMetCorrUnc_.clear();
 
+  patMet_smear_= dummy;
+
   patmodifiedMetCorrPt_= dummy;
   patmodifiedMetCorrPhi_= dummy;
   patmodifiedMetCorrSumEt_= dummy;
@@ -214,6 +223,7 @@ patMetTree::Clear(){
   patmodifiedMetCorrSig_= dummy;
   patmodifiedMetCorrUnc_.clear();
 
+  patmodifiedMet_smear_ =dummy;
   patMetRawPt_= dummy;
   patMetRawPhi_= dummy;
   patMetRawSumEt_= dummy;

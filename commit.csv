@@ -24,3 +24,4 @@ setup_2017_2016_v05 * added the event counter histogrsm to monitor if the total 
 setup_2017_2016_v06 * no extra correction for jets
 		    * no pfMET process which we do not use
 		    * fixed the AK4 jet collection label
+		    * added type1smear branch
