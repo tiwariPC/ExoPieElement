@@ -12,3 +12,4 @@ setup_2017_2016_2018_v02  , removed the duplicity of the pfMET variable
 			  , no extra correction for jets
                           , no pfMET process which we do not use
 			  , fixed the AK4 jet collection label
+			  , added type1smear met
