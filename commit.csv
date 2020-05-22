@@ -20,3 +20,7 @@ setup_2017_2016_v04: * added l1 prefire weights for 2017 and 2016 era using the 
 		     * turned off the 2016 and 2017 switch to FASLE by default, this is necessary for proper functioning of the code. 
 
 setup_2017_2016_v05 * added the event counter histogrsm to monitor if the total data is processed or not. 
+
+setup_2017_2016_v06 * no extra correction for jets
+		    * no pfMET process which we do not use
+		    * fixed the AK4 jet collection label
