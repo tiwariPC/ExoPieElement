@@ -77,7 +77,8 @@ patMetTree::Fill(const edm::Event& iEvent){
   TRKMETPhi_    = met->corPhi(pat::MET::RawTrk);
   TRKMETPSumEt_ = met->corSumEt(pat::MET::RawTrk);
 
-
+  // Type1Smear MET
+  patMet_smear_ = met->shiftedPt(pat::MET::NoShift, pat::MET::Type1Smear);
 
   // met uncertainties, need to be changed when time comes, right now don't have much time to edit this part
   patMetCorrUnc_.push_back(met->shiftedPt(pat::MET::JetResUp));
@@ -199,6 +200,8 @@ patMetTree::SetBranches(){
   AddBranch(&TRKMETPhi_, "TRKMETPhi_");
   AddBranch(&TRKMETPSumEt_, "TRKMETPSumEt_");
 
+  AddBranch(&patMet_smear_, "patMet_smear");
+
   AddBranch(&puppiMETPt_,     "puppiMETPt");
   AddBranch(&puppiMETPhi_,    "puppiMETPhi");
   AddBranch(&puppiMETSumEt_,  "puppiMETSumEt");
@@ -246,6 +249,8 @@ patMetTree::Clear(){
   TRKMETPt_   = dummy;
   TRKMETPhi_   = dummy;
   TRKMETPSumEt_   = dummy;
+
+  patMet_smear_   = dummy;
 
   puppiMETPt_     = dummy ;
   puppiMETPhi_    = dummy ;
