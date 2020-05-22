@@ -129,7 +129,7 @@ testFile=""
 # Input source
 if options.runOn2018:
         if options.runOnMC:
-            testFile='file:/hdfs//store/mc/RunIIAutumn18MiniAOD/ADDMonoJet_MD_9_d_6_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/50000/A29D34C0-8CF0-814E-89A7-0D9DDB326137.root'
+            testFile='root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/WW_TuneCP5_13TeV-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/110000/9238EA05-4391-9D45-BBC0-AC2D891C8F35.root'
             #testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
         else:
             testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
@@ -181,18 +181,6 @@ updateJetCollection(
       'pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD',
       ]
         )
-## This is for modified MET, needed only for 2017 data
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-    process,
-    isData = True, # false for MC
-    fixEE2017 = True,
-    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-    postfix = "ModifiedMET"
-    )
-
-
 ##
 ## This is for Uncorrected MET
 from RecoMET.METProducers.PFMET_cfi import pfMet
@@ -200,9 +188,7 @@ process.pfMet = pfMet.clone(src = "packedPFCandidates")
 process.pfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
 ## Uncorrected MET edns here
 ##
-
 pvSource = 'offlineSlimmedPrimaryVertices'
-
 
 bTagDiscriminators = [
     'pfJetBProbabilityBJetTags'
@@ -405,7 +391,8 @@ process.patSmearedJets = cms.EDProducer("SmearedPATJetProducer",
     debug = cms.untracked.bool(False)
 )
 
-
+process.patSmearedpuppiJets = process.patSmearedJets.clone(
+	src = cms.InputTag("appliedRegpuppiJets"))
 
 
 ## Tau ID embedding
@@ -441,10 +428,7 @@ process.patJetsReapplyJECAK4 = updatedPatJets.clone(
 	jetSource = cms.InputTag("patSmearedJets"),
 	jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJECAK4"))
   )
-
 process.jetCorrSequenceAK4 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK4 + process.patJetsReapplyJECAK4 )
-
-
 
 
 ### For normal AK8 jet energy correction on top of miniAOD
@@ -457,16 +441,13 @@ process.patJetsReapplyJECAK8 = updatedPatJets.clone(
 	jetSource = cms.InputTag("slimmedJetsAK8"),
 	jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJECAK8"))
   )
-
-
 process.jetCorrSequenceAK8 = cms.Sequence( process.patJetCorrFactorsReapplyJECAK8 + process.patJetsReapplyJECAK8 )
-
 
 
 ## For normal AK4Puppi jets jet energy correction on top of miniAOD
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors
 process.patJetCorrFactorsReapplyJECAK4Puppi = updatedPatJetCorrFactors.clone(
-	src = cms.InputTag("slimmedJetsPuppi"),
+	src = cms.InputTag("patSmearedpuppiJets"),
 	levels = jetCorrectionLevelsPuppi,
 	payload = 'AK4PFPuppi' ) # Make sure to choose the appropriate levels and payload here!
 
@@ -493,8 +474,6 @@ process.patJetsReapplyJECForPrunedMass = updatedPatJets.clone(
 process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsReapplyJECForPrunedMass + process.patJetsReapplyJECForPrunedMass )
 
 
-
-
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
 process.tree.useJECText            = cms.bool(options.useJECText)
 process.tree.runOn2018             = cms.bool(options.runOn2018)
@@ -510,23 +489,26 @@ process.tree.AK8PuppijecUncName    = cms.string(AK8PuppiJECUncTextFile)
 process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
+
+process.tree.THINJets      = cms.InputTag("patSmearedJets")
+process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
+process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
+process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
+
 if options.runOnMC:
     process.tree.filterLabel = cms.InputTag("TriggerResults::PAT")
 else:
     process.tree.filterLabel = cms.InputTag("TriggerResults::RECO")
 
-if options.useJECText:
-	process.tree.THINJets      = cms.InputTag("patSmearedJets")
-	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
-	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
-	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
-
-
+# if options.useJECText:
+# 	process.tree.THINJets      = cms.InputTag("patSmearedJets")
+# 	process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
+# 	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
+# 	process.tree.AK4PuppiJets  = cms.InputTag("patSmearedpuppiJets")
 
 
 ## output file name
 process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
-#TrigTag = cms.InputTag("TriggerResults::HLT"),
 
 ##Trigger Filter
 if options.runOn2018:
@@ -589,10 +571,6 @@ elif options.runOn2016:
                                      )
 
 
-
-
-
-
 process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            JetTag=cms.InputTag("slimmedJets"),
                                            rhoFixedGridCollection = cms.InputTag('fixedGridRhoFastjetAll'),
@@ -600,6 +578,7 @@ process.appliedRegJets= cms.EDProducer('bRegressionProducer',
                                            y_mean = cms.untracked.double(1.0454729795455933) ,
                                            y_std = cms.untracked.double( 0.31628304719924927)
                                            )
+process.appliedRegpuppiJets = process.appliedRegJets.clone(JetTag=cms.InputTag("slimmedJetsPuppi"))
 
 if not options.useJECText:
 	process.analysis = cms.Path(
@@ -608,13 +587,10 @@ if not options.useJECText:
 		*process.NewTauIDsEmbedded+
 		process.egammaPostRecoSeq+
 		process.appliedRegJets+
-		process.fullPatMetSequenceModifiedMET+
+        # process.appliedRegpuppiJets+
 		process.patSmearedJets+
-		process.pfMet+
-		process.jetCorrSequenceAK4+  ## only when using JEC text files
-		process.jetCorrSequenceAK8+  ## only when using JEC text files
-		process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
-		process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
+        # process.patSmearedpuppiJets+
+		# process.pfMet+
 		process.tree
 		)
 else:
@@ -624,8 +600,13 @@ else:
 		*process.NewTauIDsEmbedded+
 		process.egammaPostRecoSeq+
 		process.appliedRegJets+
-		process.fullPatMetSequenceModifiedMET+
+        # process.appliedRegpuppiJets+
 		process.patSmearedJets+
+        # process.patSmearedpuppiJets+
+		process.jetCorrSequenceAK4+  ## only when using JEC text files
+		process.jetCorrSequenceAK8+  ## only when using JEC text files
+		process.jetCorrSequenceAK4Puppi+ ## only when using JEC text files
+		process.jetCorrSequenceForPrunedMass+ ## only when using JEC text files
 		process.pfMet+
 		process.tree
 		)

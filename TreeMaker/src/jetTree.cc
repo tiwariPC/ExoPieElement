@@ -415,13 +415,13 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jpumva= jet->userFloat("pileupJetId:fullDiscriminant");
       PUJetID_.push_back(jpumva);
 
-      //  b  jet regrssion correction
-      bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
-      bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
-
       isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
       isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
       isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
+
+      //  b  jet regrssion correction
+      bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
+      bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
     }
 
     if(isTHINJet_){
@@ -993,7 +993,7 @@ jetTree::SetBranches(){
      AddBranch(&jetPassIDLoose_,  "jetPassIDLoose");
   }
 
-  if(isTHINJet_){
+  if(isTHINJet_ ){
     AddBranch(&jetCISVV2_,"jetCISVV2");
     AddBranch(&jetDeepCSV_b_,"jetDeepCSV_b");
     AddBranch(&jetDeepCSV_c_,"jetDeepCSV_c");
