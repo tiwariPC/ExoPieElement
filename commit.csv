@@ -7,5 +7,8 @@ setup_2017_2016_2018_v01: * switched off the CA15 jets,
 			  * updated SDMass (taking from userFloat)
 			  
 setup_2017_2016_2018_v02: * removed the duplicity of the pfMET variable
-			  * added AK4puppiJET branch
-
+			  * added event counter 
+			  * added the CHS met via userfloat and Trk MET
+			  * this is pending for next tag:  AK4puppiJET branch
+			  
+			  
