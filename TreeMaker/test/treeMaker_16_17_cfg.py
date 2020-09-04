@@ -463,7 +463,7 @@ process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
 
-process.tree.THINJets      = cms.InputTag("patSmearedJets")
+process.tree.THINJets = cms.InputTag("appliedRegJets")
 process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
 process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
 process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
@@ -568,7 +568,7 @@ if options.runOn2017:
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
 			process.fullPatMetSequenceModifiedMET+
-			process.patSmearedJets+
+			#process.patSmearedJets+
 			# process.pfMet+
 			process.tree
 			)
@@ -599,7 +599,7 @@ elif options.runOn2016:
 			*process.NewTauIDsEmbedded+
 			process.egammaPostRecoSeq+
 			process.appliedRegJets+
-			process.patSmearedJets+
+			#process.patSmearedJets+
 			# process.pfMet+
 			process.tree
 			)
