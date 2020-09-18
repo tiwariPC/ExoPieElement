@@ -25,3 +25,4 @@ setup_2017_2016_v06 * no extra correction for jets
 		    * no pfMET process which we do not use
 		    * fixed the AK4 jet collection label
 		    * added type1smear branch
+setup_2017_2016_v07 * removed the JER from jet and use type1Corr met
