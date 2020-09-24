@@ -222,7 +222,28 @@ bTagDiscriminators = [
     ,'pfDeepCSVJetTags:probudsg'
     ,'pfDeepCSVJetTags:probbb'
 ]
+## This is for rerunning filter
+if options.runOn2018:
 
+    process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
+    baddetEcallist = cms.vuint32([872439604,872422825,872420274,872423218,
+     872423215,872416066,872435036,872439336,
+     872420273,872436907,872420147,872439731,
+     872436657,872420397,872439732,872439339,
+     872439603,872422436,872439861,872437051,
+     872437052,872420649,872422436,872421950,
+     872437185,872422564,872421566,872421695,
+     872421955,872421567,872437184,872421951,
+     872421694,872437056,872437057,872437313])
+
+    
+    process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter("EcalBadCalibFilter",
+      EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
+      ecalMinEt        = cms.double(50.),
+      baddetEcal    = baddetEcallist, 
+      taggingMode = cms.bool(True),
+      debug = cms.bool(False)
+      )
 
 
 ## Jet energy corrections
@@ -490,7 +511,7 @@ process.tree.CA15PuppijecNames     = cms.vstring(AK8PuppiJECTextFiles)
 process.tree.CA15PuppijecUncName   = cms.string(AK8PuppiJECUncTextFile)
 process.tree.fillCA15PuppiJetInfo  = cms.bool(False)
 
-process.tree.THINJets      = cms.InputTag("patSmearedJets")
+process.tree.THINJets      = cms.InputTag("appliedRegJets")
 process.tree.FATJets       = cms.InputTag("selectedUpdatedPatJets")#("slimmedJetsAK8")
 process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
 process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
@@ -582,6 +603,7 @@ process.appliedRegpuppiJets = process.appliedRegJets.clone(JetTag=cms.InputTag("
 
 if not options.useJECText:
 	process.analysis = cms.Path(
+		process.ecalBadCalibReducedMINIAODFilter*
 		process.trigFilter
 		*process.rerunMvaIsolationSequence
 		*process.NewTauIDsEmbedded+
@@ -595,6 +617,7 @@ if not options.useJECText:
 		)
 else:
 	process.analysis = cms.Path(
+		process.ecalBadCalibReducedMINIAODFilter*
 		process.trigFilter
 		*process.rerunMvaIsolationSequence
 		*process.NewTauIDsEmbedded+

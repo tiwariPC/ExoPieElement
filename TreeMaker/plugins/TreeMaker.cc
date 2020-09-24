@@ -97,6 +97,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
       if (debug__) std::cout<< " fillFilterInfo_"<<std::endl;
       patFilterTree_                          = new patFilters("hlt_",tree_);
       patFilterTree_->filterTrigResultsToken  = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("filterLabel"));
+      patFilterTree_->ecalBadCalibFilterUpdate_token= consumes< bool >(edm::InputTag("ecalBadCalibReducedMINIAODFilter"));
     }
 
   if( fillGenInfo_ )

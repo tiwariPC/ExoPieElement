@@ -13,3 +13,6 @@ setup_2017_2016_2018_v02  , removed the duplicity of the pfMET variable
                           , no pfMET process which we do not use
 			  , fixed the AK4 jet collection label
 			  , added type1smear met
+			  ,
+setup_2017_2016_2018_v03  , removed JER 
+			  , Added ecalBadCalibReducedMINIAODFilter  
