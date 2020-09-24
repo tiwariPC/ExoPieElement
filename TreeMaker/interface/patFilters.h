@@ -28,7 +28,7 @@ class patFilters : public baseTree{
   edm::EDGetTokenT<bool>                            HBHELToken;
   edm::EDGetTokenT<bool>                            HBHEIsoToken;
   edm::EDGetTokenT<edm::TriggerResults>             filterTrigResultsToken;
-
+  edm::EDGetTokenT< bool >ecalBadCalibFilterUpdate_token ;
   edm::EDGetTokenT<bool> BadChCandFilterToken_;
   edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
   edm::EDGetTokenT<bool> BadGlobalMuonFilterToken_;

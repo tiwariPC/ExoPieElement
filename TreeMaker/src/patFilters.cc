@@ -21,7 +21,10 @@ patFilters::Fill(const edm::Event& iEvent)
 {
   Clear();
   using namespace edm;
-  
+
+  edm::Handle< bool > passecalBadCalibFilterUpdate ;
+  iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
+  bool    _passecalBadCalibFilterUpdate =  (*passecalBadCalibFilterUpdate );  
 
   edm::Handle<edm::TriggerResults> trigResults;
   if (not iEvent.getByToken(filterTrigResultsToken, trigResults)) {
@@ -52,7 +55,8 @@ patFilters::Fill(const edm::Event& iEvent)
       filterResult_.push_back(trigResult);
       nfilters_++;
     }
-
+  filterName_.push_back("ecalBadCalibReducedMINIAODFilter");
+  filterResult_.push_back(_passecalBadCalibFilterUpdate);
   
 
 }
