@@ -15,4 +15,6 @@ setup_2017_2016_2018_v02  , removed the duplicity of the pfMET variable
 			  , added type1smear met
 			  ,
 setup_2017_2016_2018_v03  , removed JER 
-			  , Added ecalBadCalibReducedMINIAODFilter  
+			  , Added ecalBadCalibReducedMINIAODFilter 
+			  ,
+setup_2017_2016_2018_v04  , fixed SoftDrop Mass bug 
