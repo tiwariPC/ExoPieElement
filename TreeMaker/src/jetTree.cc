@@ -694,7 +694,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jetTau2_.push_back(jet->userFloat("NjettinessAK8Puppi:tau2"));
       jetTau3_.push_back(jet->userFloat("NjettinessAK8Puppi:tau3"));
       jetTau4_.push_back(jet->userFloat("NjettinessAK8Puppi:tau4"));
-      jetSDmass_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropMass"));
+      //jetSDmass_.push_back(jet->userFloat("ak8PFJetsPuppiSoftDropMass"));
 
       // deep DoubleB tagger
 
