@@ -9,8 +9,9 @@
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/METReco/interface/HcalNoiseSummary.h"
 
-patFilters::patFilters(std::string name,TTree* tree):
+patFilters::patFilters(std::string name,TTree* tree,const edm::ParameterSet& iConfig):
   baseTree(name,tree),
+  runOn2016_(iConfig.getParameter<bool>("runOn2016")),
   nfilters_(0)
 {
   SetBranches();
@@ -21,11 +22,14 @@ patFilters::Fill(const edm::Event& iEvent)
 {
   Clear();
   using namespace edm;
-  
+
+  bool    _passecalBadCalibFilterUpdate = true;//this is for 2017,18
+  if (!runOn2016_){
   edm::Handle< bool > passecalBadCalibFilterUpdate ;
   iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
   bool    _passecalBadCalibFilterUpdate =  (*passecalBadCalibFilterUpdate );  
-  
+  }
+
   edm::Handle<edm::TriggerResults> trigResults;
   if (not iEvent.getByToken(filterTrigResultsToken, trigResults)) {
     std::cout << ">>> TRIGGER collection for filters does not exist !!!\n";
@@ -55,10 +59,10 @@ patFilters::Fill(const edm::Event& iEvent)
       filterResult_.push_back(trigResult);
       nfilters_++;
     }
-
+  if (!runOn2016_){
   filterName_.push_back("ecalBadCalibReducedMINIAODFilter");
   filterResult_.push_back(_passecalBadCalibFilterUpdate);
-
+  }
 }
 
 void patFilters::SetBranches(){

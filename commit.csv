@@ -28,3 +28,5 @@ setup_2017_2016_v06 * no extra correction for jets
 setup_2017_2016_v07 * removed the JER from jet and use type1Corr met
 
 setup_2017_2016_v08 * added ecalBadCalibReducedMINIAODFilter for 2017 and 2018
+		    *
+setup_2017_2016_v09 * fixed ecalBadCalibReducedMINIAODFilter issue for 2016

@@ -21,7 +21,7 @@
 class patFilters : public baseTree{
 
  public:
-  patFilters(std::string name,TTree* tree);
+  patFilters(std::string name,TTree* tree,const edm::ParameterSet& iConfig);
   void Fill(const edm::Event& iEvent);
   void Clear();
   edm::EDGetTokenT<bool>                            HBHETToken;
@@ -35,10 +35,11 @@ class patFilters : public baseTree{
   edm::EDGetTokenT<bool> CloneGlobalMuonFilterToken_;
 
  private:
-
+  
   patFilters(){};
   void SetBranches();
 
+  bool runOn2016_;
   int nfilters_;
   std::vector<bool> filterResult_;
   bool hbhet_;
