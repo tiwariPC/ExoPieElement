@@ -23,7 +23,7 @@ patFilters::Fill(const edm::Event& iEvent)
   Clear();
   using namespace edm;
 
-  bool    _passecalBadCalibFilterUpdate = true;//this is for 2017,18
+  bool    _passecalBadCalibFilterUpdate = false;//this is for 2017,18
   if (!runOn2016_){
   edm::Handle< bool > passecalBadCalibFilterUpdate ;
   iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
