@@ -20,6 +20,7 @@
 #include "ExoPieElement/TreeMaker/interface/hpstauInfo.h"
 #include "ExoPieElement/TreeMaker/interface/photonTree.h"
 #include "ExoPieElement/TreeMaker/interface/jetTree.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
 
 
 #include "TTree.h"
@@ -28,6 +29,8 @@
 class TreeMaker : public edm::EDAnalyzer {
    public:
       explicit TreeMaker(const edm::ParameterSet&);
+      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+      
       ~TreeMaker();
 
 
@@ -36,6 +39,11 @@ class TreeMaker : public edm::EDAnalyzer {
       virtual void beginRun(const edm::Run&, const edm::EventSetup& ) ;
       virtual void analyze(const edm::Event&, const edm::EventSetup& );
       virtual void endRun(const edm::Run&, const edm::EventSetup& );
+      
+      
+      void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+      edm::EDGetTokenT<GenLumiInfoHeader> genLumiHeaderToken_;
+
       virtual void endJob() ;
       TFile* file;
       TTree* tree_;

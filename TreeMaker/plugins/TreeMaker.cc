@@ -15,7 +15,8 @@
 #include "ExoPieElement/TreeMaker/interface/TreeMaker.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
+TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
+  genLumiHeaderToken_(consumes<GenLumiInfoHeader,edm::InLumi>(edm::InputTag("generator")))
 
 {
   fillPUweightInfo_=false;
@@ -296,5 +297,31 @@ void
 TreeMaker::endJob() {
 
 }
+
+
+void TreeMaker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iSetup)
+{
+  edm::Handle<GenLumiInfoHeader> gen_header;
+  iLumi.getByToken(genLumiHeaderToken_, gen_header);
+  std::string scanId_ = gen_header->configDescription();
+  std::cout<<" scanId_ = "<<scanId_<<std::endl;
+  // Up to you to decide how to use the string (should probably be a member variable):
+  // - Add branch to output ntuple
+  // - Make unique ntuple for each signal point
+}
+
+
+// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
+void
+TreeMaker::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+  //The following says we do not know what parameters are allowed so do no validation
+  // Please change this to state exactly what you do use, even if it is no parameters
+  edm::ParameterSetDescription desc;
+  desc.setUnknown();
+  descriptions.addDefault(desc);
+}
+
+
+
 
 DEFINE_FWK_MODULE(TreeMaker);
