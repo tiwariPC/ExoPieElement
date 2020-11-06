@@ -96,7 +96,7 @@ testFile=""
 # Input source
 if options.runOn2017:
     if options.runOnMC:
-        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
+        testFile = '/store/mc/RunIIFall17MiniAODv2/bbDM_2HDMa_LO_5f_TuneCP3_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_rp_94X_mc2017_realistic_v14-v1/120000/00EC94C6-59F9-EA11-A069-000D3AB6FB6B.root'
     else:
         testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
 elif options.runOn2016:

@@ -301,6 +301,7 @@ TreeMaker::endJob() {
 
 void TreeMaker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iSetup)
 {
+  TTree *tree = new TTree("signalTree", "");
   edm::Handle<GenLumiInfoHeader> gen_header;
   iLumi.getByToken(genLumiHeaderToken_, gen_header);
   std::string scanId_ = gen_header->configDescription();
@@ -308,6 +309,7 @@ void TreeMaker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::Eve
   // Up to you to decide how to use the string (should probably be a member variable):
   // - Add branch to output ntuple
   // - Make unique ntuple for each signal point
+  tree->Branch("signalString", &scanId_);
 }
 
 
