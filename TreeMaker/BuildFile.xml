@@ -36,6 +36,7 @@
 <use   name="PhysicsTools/Utilities"/>
 <use   name="RecoMET/METFilters"/>
 <use   name="DataFormats/BTauReco"/>
+<use   name="SimDataFormats/GeneratorProducts"/>
 <use name="fastjet"/>
 <use name="fastjet-contrib"/>
 

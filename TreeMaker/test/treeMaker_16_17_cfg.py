@@ -475,9 +475,6 @@ if options.useJECText:
 	process.tree.FATJetsForPrunedMass       = cms.InputTag("slimmedJetsAK8")
 	process.tree.AK4PuppiJets  = cms.InputTag("slimmedJetsPuppi")
 
-
-
-
 ## output file name
 process.TFileService = cms.Service("TFileService",fileName = cms.string("ExoPieElementTuples.root"))
 

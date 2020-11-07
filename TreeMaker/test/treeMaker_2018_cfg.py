@@ -65,6 +65,12 @@ options.register ('runOn2018DGT',
                   "runOn2018DGT")
 '''
 
+options.register ('runOnSignal',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOnSignal")
+
 options.parseArguments()
 
 
@@ -129,7 +135,10 @@ testFile=""
 # Input source
 if options.runOn2018:
         if options.runOnMC:
-            testFile='root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/WW_TuneCP5_13TeV-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/110000/9238EA05-4391-9D45-BBC0-AC2D891C8F35.root'
+            if options.runOnSignal:
+                 testFile = '/store/mc/RunIIAutumn18MiniAOD/bbDM_2HDMa_LO_5f_TuneCP3_13TeV_madgraph_pythia8/MINIAODSIM/rp_102X_upgrade2018_realistic_v15-v1/130000/136B73D1-35B4-B543-AD5B-027FB363F833.root'
+            else:
+                testFile='root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/WW_TuneCP5_13TeV-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/110000/9238EA05-4391-9D45-BBC0-AC2D891C8F35.root'
             #testFile='/store/mc/RunIIAutumn18MiniAOD/QCD_Pt_600to800_TuneCP5_13TeV_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/FC11B45B-C0E0-0F4B-8A04-E216B0A7C320.root'
         else:
             testFile='/store/data/Run2018A/MET/MINIAOD/17Sep2018-v1/80000/CEDA5E93-263E-B64F-87C0-D060C35AA00A.root'
@@ -496,6 +505,7 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
+process.tree.runOnSignal = cms.bool(options.runOnSignal)
 process.tree.useJECText            = cms.bool(options.useJECText)
 process.tree.runOn2018             = cms.bool(options.runOn2018)
 process.tree.THINjecNames          = cms.vstring(AK4JECTextFiles)

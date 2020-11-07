@@ -18,3 +18,5 @@ setup_2017_2016_2018_v03  , removed JER
 			  , Added ecalBadCalibReducedMINIAODFilter 
 			  ,
 setup_2017_2016_2018_v04  , fixed SoftDrop Mass bug 
+
+setup_2017_2016_2018_v05  , adding support for signal samples produced with randamized parameters

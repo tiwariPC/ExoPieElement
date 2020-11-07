@@ -20,7 +20,7 @@
 #include "ExoPieElement/TreeMaker/interface/hpstauInfo.h"
 #include "ExoPieElement/TreeMaker/interface/photonTree.h"
 #include "ExoPieElement/TreeMaker/interface/jetTree.h"
-
+#include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
 
 #include "TTree.h"
 #include "TFile.h"
@@ -28,6 +28,7 @@
 class TreeMaker : public edm::EDAnalyzer {
    public:
       explicit TreeMaker(const edm::ParameterSet&);
+      static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
       ~TreeMaker();
 
 
@@ -36,11 +37,25 @@ class TreeMaker : public edm::EDAnalyzer {
       virtual void beginRun(const edm::Run&, const edm::EventSetup& ) ;
       virtual void analyze(const edm::Event&, const edm::EventSetup& );
       virtual void endRun(const edm::Run&, const edm::EventSetup& );
+      void beginLuminosityBlock(edm::LuminosityBlock const &, edm::EventSetup const &) override;
+      edm::EDGetTokenT<GenLumiInfoHeader> genLumiHeaderToken_;
+      void tokenize(std::string const &str, const char delim, std::vector<std::string> &out)
+      {
+         std::stringstream ss(str);
+         std::string s;
+         while (std::getline(ss, s, delim))
+         {
+            out.push_back(s);
+         }
+      }
       virtual void endJob() ;
       TFile* file;
       TTree* tree_;
+      bool runOnSignal_;
       std::string outFileName_ ;
-
+      std::string scanId_;
+      int mass_A;
+      int mass_a;
       bool fillPUweightInfo_; 
       bool fillEventInfo_;
       bool fillMetInfo_;
