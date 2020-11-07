@@ -46,6 +46,12 @@ options.register ('runOn2016',
 		  VarParsing.varType.bool,
 		  "runOn2016")
 
+options.register ('runOnSignal',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "runOnSignal")
+
 options.parseArguments()
 
 
@@ -469,6 +475,7 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
+process.tree.runOnSignal           = cms.bool(options.runOnSignal)
 process.tree.useJECText            = cms.bool(options.useJECText)
 process.tree.runOn2017             = cms.bool(options.runOn2017)
 process.tree.runOn2016             = cms.bool(options.runOn2016)
