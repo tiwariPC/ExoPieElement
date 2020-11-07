@@ -11,12 +11,15 @@
 // system include files
 #include <memory>
 #include <string>
+#include <vector>
+#include <sstream>
 
 #include "ExoPieElement/TreeMaker/interface/TreeMaker.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
-
+TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
+  genLumiHeaderToken_(consumes<GenLumiInfoHeader,edm::InLumi>(edm::InputTag("generator"))),
+  runOnSignal_(iConfig.getParameter<bool>("runOnSignal"))
 {
   fillPUweightInfo_=false;
   fillEventInfo_   =false;
@@ -265,7 +268,9 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);
   if( fillAK8PuppiJetInfo_ ) AK8PuppijetTree_->Fill(iEvent, iSetup);
   if( fillCA15PuppiJetInfo_ ) CA15PuppijetTree_->Fill(iEvent, iSetup);
-
+  tree_->Branch("isSignal", &runOnSignal_, "runOnSignal_/O");
+  tree_->Branch("mass_A", &mass_A, "mass_A/I");
+  tree_->Branch("mass_a", &mass_a, "mass_a/I");
   tree_->Fill();
 }
 
@@ -292,6 +297,40 @@ TreeMaker::beginJob(){
 void
 TreeMaker::endJob() {
 
+}
+
+void TreeMaker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iSetup)
+{
+  edm::Handle<GenLumiInfoHeader> gen_header;
+  iLumi.getByToken(genLumiHeaderToken_, gen_header);
+  if (runOnSignal_)
+  {
+    scanId_ = gen_header->configDescription();
+    std::cout << " scanId_ = " << scanId_ << std::endl;
+    //  splitting the scanId_ string to get ma_ and mA_
+    std::vector<std::string> mp_list;
+    const char delim = '_';
+    tokenize(scanId_, delim, mp_list);
+    std::stringstream mass_A_(mp_list[1]);
+    std::stringstream mass_a_(mp_list[3]);
+    mass_A_ >> mass_A;
+    mass_a_ >> mass_a;
+  }
+  else
+  {
+    mass_A = 0;
+    mass_a = 0;
+  }
+}
+
+// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
+void
+TreeMaker::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+  //The following says we do not know what parameters are allowed so do no validation
+  // Please change this to state exactly what you do use, even if it is no parameters
+  edm::ParameterSetDescription desc;
+  desc.setUnknown();
+  descriptions.addDefault(desc);
 }
 
 DEFINE_FWK_MODULE(TreeMaker);

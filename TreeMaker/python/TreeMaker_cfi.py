@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 tree = cms.EDAnalyzer(
     'TreeMaker',
+    runOnSignal      = cms.bool(False),
     fillPUweightInfo = cms.bool(True),
     fillEventInfo    = cms.bool(True),
     fillMetInfo      = cms.bool(True),
