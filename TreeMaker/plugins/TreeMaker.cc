@@ -315,7 +315,11 @@ void TreeMaker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::Eve
     std::vector<std::string> mp_list;
     const char delim = '_';
     tokenize(scanId_, delim, mp_list);
-    std::stringstream mass_A_(mp_list[1]);
+    std::stringstream mass_A_(mp_list[1]); // comment this line for ZpBaryonic
+    // std::vector<std::string> mp_list_;      //UNcomment this line for ZpBaryonic
+    // const char delim_ = 'p';                //UNcomment this line for ZpBaryonic
+    // tokenize(mp_list[2], delim_, mp_list_); //UNcomment this line for ZpBaryonic
+    // std::stringstream mass_A_(mp_list_[1]); //UNcomment this line for ZpBaryonic
     std::stringstream mass_a_(mp_list[3]);
     mass_A_ >> mass_A;
     mass_a_ >> mass_a;
