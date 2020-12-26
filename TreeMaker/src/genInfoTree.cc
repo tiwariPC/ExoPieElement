@@ -333,6 +333,8 @@ genInfoTree::SetBranches(){
   AddBranch(&genParSt_,"genParSt");
   AddBranch(&genMomParId_,"genMomParId");
   AddBranch(&mcWeight_, "mcWeight");
+  AddBranch(&originalLHEweight_, "originalLHEweight");
+  AddBranch(&pdfscaleSysWeights_, "pdfscaleSysWeights");
 
   if (gen_extra){
     AddBranch(&genParIndex_,"genParIndex");
@@ -343,9 +345,7 @@ genInfoTree::SetBranches(){
     AddBranch(&ptHat_, "ptHat");
     AddBranch(&HT_, "HT");
     AddBranch(&pdf_, "pdf");
-    AddBranch(&originalLHEweight_, "originalLHEweight");
-    AddBranch(&pdfscaleSysWeights_, "pdfscaleSysWeights");
-
+    
     AddBranch(&genNMo_,"genNMo");
     AddBranch(&genNDa_,"genNDa");
     AddBranch(&genMo1_,"genMo1");
