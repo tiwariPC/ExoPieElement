@@ -107,9 +107,10 @@ genInfoTree::Fill(const edm::Event& iEvent)
     // get PDF and scale weights
     if(saveLHEWeights_){
       for (unsigned int i=0; i< evt->weights().size(); i++) {
-	float tempMCWeight = genEventInfoHandle->weight() > 0? 1: -1;
-	float sysLHEweight = tempMCWeight* evt->weights()[i].wgt/evt->originalXWGTUP();
-	pdfscaleSysWeights_.push_back( sysLHEweight );
+        float tempMCWeight = genEventInfoHandle->weight() > 0? 1: -1;
+        float sysLHEweight = tempMCWeight* evt->weights()[i].wgt/evt->originalXWGTUP();
+        pdfscaleSysWeights_.push_back( sysLHEweight );
+        pdfscaleSysWgtID_.push_back(evt->weights()[i].id);
       }
     }
 
@@ -334,6 +335,7 @@ genInfoTree::SetBranches(){
   AddBranch(&genMomParId_,"genMomParId");
   AddBranch(&mcWeight_, "mcWeight");
   AddBranch(&originalLHEweight_, "originalLHEweight");
+  AddBranch(&pdfscaleSysWgtID_, "pdfscaleSysWgtID_");
   AddBranch(&pdfscaleSysWeights_, "pdfscaleSysWeights");
 
   if (gen_extra){
@@ -384,6 +386,7 @@ genInfoTree::Clear(){
   pdf_.clear();
   originalLHEweight_ = 1;
   pdfscaleSysWeights_.clear();
+  pdfscaleSysWgtID_.clear();
   nGenPar_ =0;
   //genParP4_->Clear();
   genParPx_.clear();
