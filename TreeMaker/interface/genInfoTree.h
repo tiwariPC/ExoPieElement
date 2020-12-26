@@ -84,7 +84,7 @@ class genInfoTree : public baseTree{
   std::vector<float>       pdf_;
   float                    originalLHEweight_;
   std::vector<float>       pdfscaleSysWeights_;
-  std::vector<float>       pdfscaleSysWgtID_;
+  std::vector<std::string>       pdfscaleSysWgtID_;
 
   int nGenPar_;
   //TClonesArray       *genParP4_;
