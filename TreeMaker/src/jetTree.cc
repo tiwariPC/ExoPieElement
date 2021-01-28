@@ -258,7 +258,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
         JetCorrectionUncertainty *Unc_=0;
         for (int isrc = 0; isrc < nsrc; isrc++) {
             const char *name = srcnames[isrc];
-            JetCorrectorParameters *JetCorPar = new JetCorrectorParameters("../data/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt.txt", name);
+            JetCorrectorParameters *JetCorPar = new JetCorrectorParameters("../data/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt", name);
             Unc_ = new JetCorrectionUncertainty(*JetCorPar);
             jecUncV_.push_back(Unc_);
         }
