@@ -42,7 +42,9 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include <boost/shared_ptr.hpp>
+#include <vector>
 
 
 #include "ExoPieElement/TreeMaker/interface/utils.h"
@@ -119,7 +121,6 @@ class jetTree  : public baseTree{
   std::string              jecUncName_; // for reading text file
 
   jetSelector jet2017ID_;
-
 
   boost::shared_ptr<FactorizedJetCorrector> prunedjecText_;
   boost::shared_ptr<FactorizedJetCorrector> jecText_;

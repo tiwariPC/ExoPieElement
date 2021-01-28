@@ -243,16 +243,37 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
 
   // for jet energy uncertainty, using global tag
-  JetCorrectionUncertainty *jecUnc_=0;
+  //JetCorrectionUncertainty *jecUnc_=0;
+  JetCorrectionUncertainty *Unc_ = 0;
+  const int nsrc = 11;
+  std::vector<JetCorrectionUncertainty *> jecUncV_(nsrc);
   // fat jet uncertainty does not exist yet
   if(!useJECText_){
-    edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-    iSetup.get<JetCorrectionsRecord>().get(jecUncPayLoadName_.data(),JetCorParColl);
-    JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
-    jecUnc_ = new JetCorrectionUncertainty(JetCorPar);
+    // edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+    // iSetup.get<JetCorrectionsRecord>().get(jecUncPayLoadName_.data(),JetCorParColl);
+    // JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+    // jecUnc_ = new JetCorrectionUncertainty(JetCorPar);
+    if (runOn2017_){
+        const char* srcnames[nsrc] = {"Absolute", "Absolute_2017", "BBEC1", "BBEC1_2017", "EC2", "EC2_2017", "FlavorQCD", "HF", "HF_2017", "RelativeBal", "RelativeSample_2017"};
+        JetCorrectionUncertainty *Unc_=0;
+        for (int isrc = 0; isrc < nsrc; isrc++) {
+            const char *name = srcnames[isrc];
+            JetCorrectorParameters *JetCorPar = new JetCorrectorParameters("../data/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt.txt", name);
+            Unc_ = new JetCorrectionUncertainty(*JetCorPar);
+            jecUncV_.push_back(Unc_);
+        }
+      }
+    else if (runOn2016_){
+        const char* srcnames[nsrc] = {"Absolute", "Absolute_2016", "BBEC1", "BBEC1_2016", "EC2", "EC2_2016", "FlavorQCD", "HF", "HF_2016", "RelativeBal", "RelativeSample_2016"};
+        JetCorrectionUncertainty *Unc_=0;
+        for (int isrc = 0; isrc < nsrc; isrc++) {
+            const char *name = srcnames[isrc];
+            JetCorrectorParameters *JetCorPar = new JetCorrectorParameters("../data/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt", name);
+            Unc_ = new JetCorrectionUncertainty(*JetCorPar);
+            jecUncV_.push_back(Unc_);
+        }
+      } 
   }
-
-
 
   // Loop over jet collection based on the jet type flag
   pat::JetCollection jets(*(JetHandle.product()));
@@ -332,91 +353,112 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     */
     jetArea_.push_back(jet->jetArea());
 
-
     // if reading text files, set jet 4-momentum
     // make correction using jecText files
+    // get jet energy scale uncertainty and related input variables
+    // fat jet uncertainty does not exist yet, if using database
+    if (!useJECText_)
+    {
+      // jecUnc_->setJetEta(jet->eta());
+      // jecUnc_->setJetPt(jet->pt());
+      // jetCorrUncUp_.push_back(jecUnc_->getUncertainty(true));
 
-    if(useJECText_){
-      jecText_->setJetEta( uncorrJet.eta() );
-      jecText_->setJetPt ( uncorrJet.pt() );
-      jecText_->setJetE  ( uncorrJet.energy() );
-      jecText_->setJetA  ( jet->jetArea() );
-      jecText_->setRho   ( *(h_rho.product()) );
-      jecText_->setNPV   ( h_pv->size() );
-      Float_t corr_jet = jecText_->getCorrection();
+      // jecUnc_->setJetEta(jet->eta());
+      // jecUnc_->setJetPt(jet->pt());
+      // jetCorrUncDown_.push_back(jecUnc_->getUncertainty(false));
+      const int njecmx = 2 * nsrc + 1;
+      for (int isrc = 0; isrc < njecmx; isrc++)
+      {
+        double sup = 1;
+        if (isrc > 0 && isrc <= nsrc)
+        {
+          JetCorrectionUncertainty *jecUnc = jecUncV_[isrc - 1];
+          jecUnc->setJetEta(jet->eta());
+          jecUnc->setJetPt(jet->pt());
+          sup += jecUnc->getUncertainty(true);
+          jetCorrUncUp_.push_back(jecUnc->getUncertainty(true));
+        }
+        else if (isrc > nsrc)
+        {
+          JetCorrectionUncertainty *jecUnc = jecUncV_[isrc - nsrc - 1];
+          jecUnc->setJetEta(jet->eta());
+          jecUnc->setJetPt(jet->pt());
+          sup -= jecUnc->getUncertainty(false);
+          jetCorrUncDown_.push_back(jecUnc->getUncertainty(false));
+        }
+      }
+      }
 
-      /*
+      if (useJECText_)
+      {
+        jecText_->setJetEta(uncorrJet.eta());
+        jecText_->setJetPt(uncorrJet.pt());
+        jecText_->setJetE(uncorrJet.energy());
+        jecText_->setJetA(jet->jetArea());
+        jecText_->setRho(*(h_rho.product()));
+        jecText_->setNPV(h_pv->size());
+        Float_t corr_jet = jecText_->getCorrection();
+
+        /*
       new( (*jetP4_)[nJet_-1]) TLorentzVector(uncorrJet.px()*corr_jet,
 					      uncorrJet.py()*corr_jet,
 					      uncorrJet.pz()*corr_jet,
 					      uncorrJet.energy()*corr_jet);
       */
-      jetPx_.push_back(uncorrJet.px()*corr_jet);
-      jetPy_.push_back(uncorrJet.py()*corr_jet);
-      jetPz_.push_back(uncorrJet.pz()*corr_jet);
-      jetE_.push_back(uncorrJet.energy()*corr_jet);
+        jetPx_.push_back(uncorrJet.px() * corr_jet);
+        jetPy_.push_back(uncorrJet.py() * corr_jet);
+        jetPz_.push_back(uncorrJet.pz() * corr_jet);
+        jetE_.push_back(uncorrJet.energy() * corr_jet);
 
-      jecUncText_->setJetEta( uncorrJet.eta() );
-      jecUncText_->setJetPt( corr_jet * uncorrJet.pt() );
-      jetCorrUncUp_.push_back(jecUncText_->getUncertainty(true));
+        jecUncText_->setJetEta(uncorrJet.eta());
+        jecUncText_->setJetPt(corr_jet * uncorrJet.pt());
+        jetCorrUncUp_.push_back(jecUncText_->getUncertainty(true));
 
-      jecUncText_->setJetEta( uncorrJet.eta() );
-      jecUncText_->setJetPt( corr_jet * uncorrJet.pt() );
-      jetCorrUncDown_.push_back(jecUncText_->getUncertainty(false));
+        jecUncText_->setJetEta(uncorrJet.eta());
+        jecUncText_->setJetPt(corr_jet * uncorrJet.pt());
+        jetCorrUncDown_.push_back(jecUncText_->getUncertainty(false));
 
-      // add px, py, pz , energy
-      jetPx_.push_back(uncorrJet.px()*corr_jet);
-      jetPy_.push_back(uncorrJet.py()*corr_jet);
-      jetPz_.push_back(uncorrJet.pz()*corr_jet);
-      jetE_.push_back(uncorrJet.energy()*corr_jet);
-
-
-    }
-    else{
-      /*
+        // add px, py, pz , energy
+        jetPx_.push_back(uncorrJet.px() * corr_jet);
+        jetPy_.push_back(uncorrJet.py() * corr_jet);
+        jetPz_.push_back(uncorrJet.pz() * corr_jet);
+        jetE_.push_back(uncorrJet.energy() * corr_jet);
+      }
+      else
+      {
+        /*
       new( (*jetP4_)[nJet_-1]) TLorentzVector(jet->p4().px(),
 					      jet->p4().py(),
 					      jet->p4().pz(),
 					      jet->p4().energy());
       */
-      jetPx_.push_back(jet->p4().px());
-      jetPy_.push_back(jet->p4().py());
-      jetPz_.push_back(jet->p4().pz());
-      jetE_.push_back(jet->p4().energy());
-    }
-    // get jet energy scale uncertainty and related input variables
-    // fat jet uncertainty does not exist yet, if using database
-    if(!useJECText_){
+        jetPx_.push_back(jet->p4().px());
+        jetPy_.push_back(jet->p4().py());
+        jetPz_.push_back(jet->p4().pz());
+        jetE_.push_back(jet->p4().energy());
+      }
 
-      jecUnc_->setJetEta(jet->eta());
-      jecUnc_->setJetPt(jet->pt());
-      jetCorrUncUp_.push_back(jecUnc_->getUncertainty(true));
+      jetCharge_.push_back(jet->charge());
+      jetPartonFlavor_.push_back(jet->partonFlavour());
+      jetHadronFlavor_.push_back(jet->hadronFlavour());
 
-      jecUnc_->setJetEta(jet->eta());
-      jecUnc_->setJetPt(jet->pt());
-      jetCorrUncDown_.push_back(jecUnc_->getUncertainty(false));
-    }
+      if (isTHINJet_)
+      {
+        float jpumva = 0.;
+        jpumva = jet->userFloat("pileupJetId:fullDiscriminant");
+        PUJetID_.push_back(jpumva);
 
+        //  b  jet regrssion correction
+        bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
+        bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
 
-    jetCharge_.push_back(jet->charge());
-    jetPartonFlavor_.push_back(jet->partonFlavour());
-    jetHadronFlavor_.push_back(jet->hadronFlavour());
+        isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
+        isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
+        isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
+      }
 
-    if(isTHINJet_){
-      float jpumva=0.;
-      jpumva= jet->userFloat("pileupJetId:fullDiscriminant");
-      PUJetID_.push_back(jpumva);
-
-      //  b  jet regrssion correction
-      bRegNNCorr_.push_back(jet->userFloat("bRegNNCorr"));
-      bRegNNResolution_.push_back(jet->userFloat("bRegNNResolution"));
-      
-      isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
-      isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
-      isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
-    }
-
-    if(isTHINJet_){
+      if (isTHINJet_)
+      {
         if (runOn2016_){
             jetPassIDLoose_.push_back(bool(jet->userInt("looseJetID_2016")));
         }
@@ -892,14 +934,12 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
 
     }//if is Fat jet  or AK8Puppijet or CA15Puppijet
 
-
-  }//jet loop
-
+    } //jet loop
 
   // fat jet uncertainty does not exist yet
   if(!useJECText_)
-    delete jecUnc_;
-
+    // delete jecUnc_;
+    jecUncV_.clear();
 }
 
 bool jet_extra = false;
