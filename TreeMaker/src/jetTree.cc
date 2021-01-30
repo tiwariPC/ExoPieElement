@@ -32,6 +32,7 @@
 #include "fastjet/contrib/MeasureDefinition.hh"
 #include "fastjet/contrib/EnergyCorrelator.hh"
 
+
 const double DUMMY=-99999.;
 
 
@@ -78,8 +79,9 @@ jetTree::jetTree(std::string desc, TTree* tree, const edm::ParameterSet& iConfig
   //jetCHSP4_    = new TClonesArray("TLorentzVector");
   jetSDRawP4_  = new TClonesArray("TLorentzVector");
 
-  SetBranches();
 
+  SetBranches();
+  
 
   if(isFATJet_)
     {
@@ -240,6 +242,14 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
   else if(isFATJet_ && iEvent.getByToken(prunedMToken,JetHandleForPrunedMass))
     jetsForPrunedMass       = *(JetHandleForPrunedMass.product());
 
+  // JEC Uncertainty sources using txt file
+  const int nsrc = 11;
+  const char* srcnames_2016[nsrc] = {"Absolute", "Absolute_2016", "BBEC1", "BBEC1_2016", "EC2", "EC2_2016", "FlavorQCD", "HF", "HF_2016", "RelativeBal", "RelativeSample_2016"};
+  const char* srcnames_2017[nsrc] = {"Absolute", "Absolute_2017", "BBEC1", "BBEC1_2017", "EC2", "EC2_2017", "FlavorQCD", "HF", "HF_2017", "RelativeBal", "RelativeSample_2017"};
+
+  std::string JecSourceUncFile;
+  std::string cmssw_base = getenv("CMSSW_BASE");
+
 
 
   // for jet energy uncertainty, using global tag
@@ -250,6 +260,7 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
     iSetup.get<JetCorrectionsRecord>().get(jecUncPayLoadName_.data(),JetCorParColl);
     JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
     jecUnc_ = new JetCorrectionUncertainty(JetCorPar);
+
   }
 
 
@@ -395,6 +406,56 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       jecUnc_->setJetEta(jet->eta());
       jecUnc_->setJetPt(jet->pt());
       jetCorrUncDown_.push_back(jecUnc_->getUncertainty(false));
+      
+      // source of JEC Uncertainty
+      std::vector<JetCorrectionUncertainty*> vsrc(nsrc);
+
+       if (runOn2016_){
+	   JecSourceUncFile = cmssw_base+"/src/ExoPieElement/TreeMaker/data/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt";
+           for (int isrc = 0; isrc < nsrc; isrc++) {
+               const char *name = srcnames_2016[isrc];
+               JetCorrectorParameters *p = new JetCorrectorParameters(JecSourceUncFile, name);
+               JetCorrectionUncertainty *unc = new JetCorrectionUncertainty(*p);
+               vsrc[isrc] = unc;
+         };
+       }
+
+       if (runOn2017_){
+	  JecSourceUncFile = cmssw_base+"/src/ExoPieElement/TreeMaker/data/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+           for (int isrc = 0; isrc < nsrc; isrc++) {
+               const char *name = srcnames_2017[isrc];
+               JetCorrectorParameters *p = new JetCorrectorParameters(JecSourceUncFile, name);
+               JetCorrectionUncertainty *unc = new JetCorrectionUncertainty(*p);
+               vsrc[isrc] = unc;
+         };
+       	 
+
+       }
+     JetCorrectionUncertainty *total = new JetCorrectionUncertainty(*(new JetCorrectorParameters(JecSourceUncFile, "Total")));
+
+
+     std::vector<float> temp_uncer;
+     temp_uncer.clear();
+     for (int isrc = 0; isrc < nsrc; isrc++) {
+
+         JetCorrectionUncertainty *unc = vsrc[isrc];
+         unc->setJetPt(jet->pt());
+         unc->setJetEta(jet->eta());
+         float value = unc->getUncertainty(true);
+         temp_uncer.push_back(value);
+	 //unc->setJetPt(jet->pt());
+         //unc->setJetEta(jet->eta());
+	 //float down = unc->getUncertainty(false);
+	 //std::cout << "up  " << value  << "   down " << down << std::endl;
+       };
+
+    total->setJetPt(jet->pt());
+    total->setJetEta(jet->eta());
+    float uncert = total->getUncertainty(true);
+    total_.push_back(uncert);
+
+    uncerSources_.push_back(temp_uncer);
+
     }
 
 
@@ -414,6 +475,8 @@ jetTree::Fill(const edm::Event& iEvent, edm::EventSetup const& iSetup){
       isPUJetIDLoose_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 2)));
       isPUJetIDMedium_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 1)));
       isPUJetIDTight_.push_back(bool(jet->userInt("pileupJetId:fullId") & (1 << 0)));
+
+
     }
 
     if(isTHINJet_){
@@ -916,6 +979,8 @@ jetTree::SetBranches(){
 
   AddBranch(&jetRho_, "jetRho");
   AddBranch(&jetNPV_, "jetNPV");
+  AddBranch(&uncerSources_,"jetUncSources");
+  AddBranch(&total_,"jetUncTotal");
 
   AddBranch(&jetCEmEF_,  "jetCEmEF");
   AddBranch(&jetCHadEF_, "jetCHadEF");
@@ -986,7 +1051,6 @@ jetTree::SetBranches(){
     AddBranch(&isPUJetIDTight_,  "isPUJetIDTight");
     AddBranch(&bRegNNCorr_,"bRegNNCorr");
     AddBranch(&bRegNNResolution_,"bRegNNResolution");
-
   }
 
   if(isFATJet_ || isAK8PuppiJet_ || isCA15PuppiJet_){
@@ -1104,6 +1168,10 @@ jetTree::Clear(){
   jetPy_.clear();
   jetPz_.clear();
   jetE_.clear();
+
+  uncerSources_.clear();
+  total_.clear();
+
 
   jetArea_.clear();
   jetCorrUncUp_.clear();
