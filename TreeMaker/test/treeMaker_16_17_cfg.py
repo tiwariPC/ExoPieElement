@@ -46,11 +46,17 @@ options.register ('runOn2016',
 		  VarParsing.varType.bool,
 		  "runOn2016")
 
-options.register ('runOnSignal',
+options.register ('runOnrp2HDM',
 		  False,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.bool,
-		  "runOnSignal")
+		  "runOnrp2HDM")
+
+options.register ('runOnrpZpB',
+                  False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "runOnrpZpB")
 
 options.parseArguments()
 
@@ -102,7 +108,7 @@ testFile=""
 # Input source
 if options.runOn2017:
     if options.runOnMC:
-        testFile='/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
+        testFile='/store/mc/RunIIFall17MiniAODv2/MonoHTobb_ZpBaryonic_TuneCP2_13TeV_madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_rp_94X_mc2017_realistic_v14-v1/100000/0421C1AF-FAFF-EA11-BA81-0CC47AFF0640.root'#'/store/mc/RunIIFall17MiniAODv2/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/FED523F4-C856-E811-8AA7-0025905A60D6.root'
     else:
         testFile='/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/100000/16963797-0937-E811-ABE2-008CFAE45134.root'
 elif options.runOn2016:
@@ -475,7 +481,8 @@ process.jetCorrSequenceForPrunedMass = cms.Sequence( process.patJetCorrFactorsRe
 
 
 process.load('ExoPieElement.TreeMaker.TreeMaker_cfi')
-process.tree.runOnSignal           = cms.bool(options.runOnSignal)
+process.tree.runOnrp2HDM           = cms.bool(options.runOnrp2HDM)
+process.tree.runOnrpZpB            = cms.bool(options.runOnrpZpB)
 process.tree.useJECText            = cms.bool(options.useJECText)
 process.tree.runOn2017             = cms.bool(options.runOn2017)
 process.tree.runOn2016             = cms.bool(options.runOn2016)
