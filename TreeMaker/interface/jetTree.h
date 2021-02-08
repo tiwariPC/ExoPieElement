@@ -64,6 +64,11 @@
 #include "fastjet/contrib/NjettinessPlugin.hh"
 #include "fastjet/contrib/MeasureDefinition.hh"
 #include "fastjet/contrib/EnergyCorrelator.hh"
+//JEC
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include <vector>
+
 
 using namespace std;
 using namespace edm;
@@ -126,6 +131,17 @@ class jetTree  : public baseTree{
   boost::shared_ptr<JetCorrectionUncertainty> jecUncText_;
 
 
+  // JEC pointer
+ 
+  JetCorrectorParameters *p;
+  JetCorrectionUncertainty *unc;
+  JetCorrectionUncertainty *total;
+  //const int nsrc = 11;
+  //const char* srcnames_2016[nsrc] = {"Absolute", "Absolute_2016", "BBEC1", "BBEC1_2016", "EC2", "EC2_2016", "FlavorQCD", "HF", "HF_2016", "RelativeBal", "RelativeSample_2016"};
+  //const char* srcnames_2017[nsrc] = {"Absolute", "Absolute_2017", "BBEC1", "BBEC1_2017", "EC2", "EC2_2017", "FlavorQCD", "HF", "HF_2017", "RelativeBal", "RelativeSample_2017"};
+
+  std::vector<JetCorrectionUncertainty*> vsrc;
+
   //Branches common to all the jets.
   int nJet_;
   float jetRho_;
@@ -160,8 +176,9 @@ class jetTree  : public baseTree{
   std::vector<float>  jetPy_;
   std::vector<float>  jetPz_;
   std::vector<float>  jetE_;
-
-
+  
+  std::vector<std::vector<float>>  uncerSources_;
+  std::vector<float>  total_;
 
   std::vector<float> jetArea_;
   std::vector<float> jetCorrUncUp_;

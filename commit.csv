@@ -32,3 +32,5 @@ setup_2017_2016_v08 * added ecalBadCalibReducedMINIAODFilter for 2017 and 2018
 setup_2017_2016_v09 * fixed ecalBadCalibReducedMINIAODFilter issue for 2016
 
 setup_2017_2016_v10 * added support for signal samples produced with randamized parameter
+	            *
+setup_2017_2016_v11 * added JEC sources uncertainty for 2016 and 2017
