@@ -55,10 +55,16 @@ class TreeMaker : public edm::EDAnalyzer {
       TFile* file;
       TTree* tree_;
       bool runOnSignal_;
+      bool runOnrp2HDM_;
+      bool runOnrpZpB_;
       std::string outFileName_ ;
       std::string scanId_;
+      std::vector<std::string> mp_list;
+      std::vector<std::string> chi_mass;
+      std::vector<std::string> Zp_mass;
       int mass_A;
       int mass_a;
+      int mass_chi;
       bool fillPUweightInfo_; 
       bool fillEventInfo_;
       bool fillMetInfo_;
