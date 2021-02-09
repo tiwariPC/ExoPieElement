@@ -1,12 +1,12 @@
 tag_name, comments/changes
-syntax for tag name, setup_2017_2016_2018_vXY: only the last two digits XY will change prefix is the branch name 
-setup_2017_2016_2018_v00, this is the base version for setup_2017_2016_2018 branch 
-setup_2017_2016_2018_v01,  switched off the CA15 jets
+syntax for tag name, setup_2018_vXY: only the last two digits XY will change prefix is the branch name
+setup_2018_v00, this is the base version for setup_2017_2016_2018 branch
+setup_2018_v01,  switched off the CA15 jets
 			  , updated b-jet regression weight file for 2018
 			  , modified cfg file for period==D
 			  , updated SDMass (taking from userFloat)
-setup_2017_2016_2018_v02  , removed the duplicity of the pfMET variable
-			  , added event counter 
+setup_2018_v02  , removed the duplicity of the pfMET variable
+			  , added event counter
 			  , added the CHS met via userfloat and Trk MET
 			  , removed AK4puppiJET branch
 			  , no extra correction for jets
@@ -14,9 +14,13 @@ setup_2017_2016_2018_v02  , removed the duplicity of the pfMET variable
 			  , fixed the AK4 jet collection label
 			  , added type1smear met
 			  ,
-setup_2017_2016_2018_v03  , removed JER 
-			  , Added ecalBadCalibReducedMINIAODFilter 
+setup_2018_v03  , removed JER
+			  , Added ecalBadCalibReducedMINIAODFilter
 			  ,
-setup_2017_2016_2018_v04  , fixed SoftDrop Mass bug 
+setup_2018_v04  , fixed SoftDrop Mass bug
 
-setup_2017_2016_2018_v05  , adding support for signal samples produced with randamized parameters
+setup_2018_v05  , adding support for signal samples produced with randamized parameters
+
+setup_2018_v06  , switched pdf and scale uncertainties ON
+
+setup_2018_v07  , adding 11 uncertainties for JEC and fixed the ranmised parameters methow to work faster

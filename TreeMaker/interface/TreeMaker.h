@@ -52,11 +52,17 @@ class TreeMaker : public edm::EDAnalyzer {
       TFile* file;
       TTree* tree_;
       bool runOnSignal_;
+      bool runOnrp2HDM_;
+      bool runOnrpZpB_;
       std::string outFileName_ ;
       std::string scanId_;
+      std::vector<std::string> mp_list;
+      std::vector<std::string> chi_mass;
+      std::vector<std::string> Zp_mass;
       int mass_A;
       int mass_a;
-      bool fillPUweightInfo_; 
+      int mass_chi;
+      bool fillPUweightInfo_;
       bool fillEventInfo_;
       bool fillMetInfo_;
       bool fillTrigInfo_;
@@ -64,7 +70,6 @@ class TreeMaker : public edm::EDAnalyzer {
 
       bool fillGenInfo_;
 
-      
       bool fillElecInfo_;
       bool fillMuonInfo_;
       bool fillTauInfo_;
@@ -76,15 +81,15 @@ class TreeMaker : public edm::EDAnalyzer {
       bool fillAK4PuppiJetInfo_;
       bool fillAK8PuppiJetInfo_;
       bool fillCA15PuppiJetInfo_;
-      
+
       puweight *puweight_;
       eventInfo   *eventInfo_;
       patMetTree  *patMetTree_;
 
-      patHltTree  *patHltTree_;      
+      patHltTree  *patHltTree_;
       patFilters  *patFilterTree_;
-      
-      genInfoTree *genInfoTree_;    
+
+      genInfoTree *genInfoTree_;
 
       patElecTree *patElecTree_;
       patMuonTree *patMuTree_;
@@ -94,11 +99,11 @@ class TreeMaker : public edm::EDAnalyzer {
 
       jetTree     *THINjetTree_;
       jetTree     *FATjetTree_;
-      jetTree     *AK4PuppijetTree_;     
-      jetTree     *AK8PuppijetTree_;     
-      jetTree     *CA15PuppijetTree_;     
- 
-      
+      jetTree     *AK4PuppijetTree_;
+      jetTree     *AK8PuppijetTree_;
+      jetTree     *CA15PuppijetTree_;
+
+
 
 };
 

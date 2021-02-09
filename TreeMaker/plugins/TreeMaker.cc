@@ -19,7 +19,8 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
   genLumiHeaderToken_(consumes<GenLumiInfoHeader,edm::InLumi>(edm::InputTag("generator"))),
-  runOnSignal_(iConfig.getParameter<bool>("runOnSignal"))
+  runOnrp2HDM_(iConfig.getParameter<bool>("runOnrp2HDM")),
+  runOnrpZpB_(iConfig.getParameter<bool>("runOnrpZpB"))
 {
   fillPUweightInfo_=false;
   fillEventInfo_   =false;
@@ -58,7 +59,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
   edm::Service<TFileService> fs;
 
 
-  bool debug__ = false; 
+  bool debug__ = false;
   tree_ = fs->make<TTree>("treeMaker","tree");
   if( fillPUweightInfo_)
     {
@@ -82,7 +83,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
       patMetTree_->pfMETToken     = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("patMet"));
       patMetTree_->pfMETModifiedToken  = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("pfType1Met"));
       patMetTree_->puppimetToken  = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("puppiMET"));
-      
+
     }
 
 
@@ -121,7 +122,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
   if( fillElecInfo_ )
     {
       if (debug__) std::cout<< " fillElecInfo_"<<std::endl;
-      
+
       patElecTree_                              = new patElecTree("",tree_,iConfig);
       patElecTree_->vertexToken                 = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("pvSrc"));
       patElecTree_->rhoForLepToken              = consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
@@ -185,7 +186,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
   if( fillJetInfo_ )
     {
       if (debug__) std::cout<< "fillJetInfo_ "<<std::endl;
-      
+
       std::string desc             = "THIN";
       THINjetTree_                 = new jetTree(desc,tree_,iConfig);
       THINjetTree_->jetToken       = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>(Form("%sJets",desc.data())));
@@ -234,8 +235,10 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig):
       CA15PuppijetTree_->rhoForJetToken = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
     }
 
-
-
+    tree_->Branch("isSignal", &runOnSignal_, "runOnSignal_/O");
+    tree_->Branch("mass_A", &mass_A, "mass_A/I");
+    tree_->Branch("mass_a", &mass_a, "mass_a/I");
+    tree_->Branch("mass_chi", &mass_chi, "mass_chi/I");
 }
 
 
@@ -253,7 +256,7 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillMetInfo_ )      patMetTree_    ->Fill(iEvent);
   if( fillTrigInfo_ )     patHltTree_    ->Fill(iEvent);
   if( fillFilterInfo_ )   patFilterTree_ ->Fill(iEvent);
-  
+
   if( fillGenInfo_ )      genInfoTree_   ->Fill(iEvent);
 
   if( fillElecInfo_ )     patElecTree_   ->Fill(iEvent);
@@ -262,7 +265,7 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillTauInfo_ )      tauTree_       ->Fill(iEvent, iSetup);
 
 
-      
+
   if( fillFATJetInfo_ )   FATjetTree_    ->Fill(iEvent, iSetup);
   if( fillJetInfo_ )      THINjetTree_   ->Fill(iEvent, iSetup);
   if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);
@@ -303,29 +306,39 @@ void TreeMaker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::Eve
 {
   edm::Handle<GenLumiInfoHeader> gen_header;
   iLumi.getByToken(genLumiHeaderToken_, gen_header);
+  runOnSignal_ = runOnrp2HDM_ || runOnrpZpB_;
   if (runOnSignal_)
   {
     scanId_ = gen_header->configDescription();
     std::cout << " scanId_ = " << scanId_ << std::endl;
     //  splitting the scanId_ string to get ma_ and mA_
-    std::vector<std::string> mp_list;
+    mp_list.clear();
+    chi_mass.clear();
+    Zp_mass.clear();
     const char delim = '_';
     tokenize(scanId_, delim, mp_list);
-    std::stringstream mass_A_(mp_list[1]); // comment this line for ZpBaryonic
-    
-    // std::vector<std::string> mp_list_;      //UNcomment this line for ZpBaryonic
-    // const char delim_ = 'p';                //UNcomment this line for ZpBaryonic
-    // tokenize(mp_list[2], delim_, mp_list_); //UNcomment this line for ZpBaryonic
-    // std::stringstream mass_A_(mp_list_[1]); //UNcomment this line for ZpBaryonic
-
-    std::stringstream mass_a_(mp_list[3]);
-    mass_A_ >> mass_A;
-    mass_a_ >> mass_a;
+    if (runOnrpZpB_)
+    {
+      //std::cout << "mp_list  "<<mp_list[2] << mp_list[3]<<std::endl;
+      const char delim2 = 'p';
+      tokenize(mp_list[2], delim2, Zp_mass); //UNcomment this line for ZpBaryonic
+      const char delim3 = 'i';
+      tokenize(mp_list[3], delim3, chi_mass);
+      mass_A = std::stoi(Zp_mass[1]);
+      mass_chi = std::stoi(chi_mass[1]);
+      //std::cout << "mass_A"  << mass_A << "mass_chi" << mass_chi << std::endl;
+    };
+    if (runOnrp2HDM_)
+    {
+      mass_A = std::stoi(mp_list[1]);
+      mass_a = std::stoi(mp_list[3]);
+    };
   }
   else
   {
     mass_A = 0;
     mass_a = 0;
+    mass_chi = 0;
   }
 }
 
