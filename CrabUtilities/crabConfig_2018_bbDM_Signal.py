@@ -1,27 +1,33 @@
+""" In CRAB3 the configuration file is in Python language. It consists of creating a Configuration object imported from the WMCore library: """
 from WMCore.Configuration import Configuration
 config = Configuration()
 
-workname='setup_2018_v07'
-reqname='DYJetsToLL_M_50_HT_400to600_TuneCP5_13TeV_30K' ## this is temporrt, will be changed by the multicrab
-dataset='/DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4/MINIAODSIM' ## this is temporrt, will be changed by the multicrab
-number_of_units=1 ## this is temporrt, will be changed by the multicrab
+"""  Once the Configuration object is created, it is possible to add new sections into it with corresponding parameters."""
+
+workname='setup_2018_v05'
+reqname='scalar_NLO_Mchi-450_Mphi-1000'
+dataset='/BBbarDMJets_scalar_NLO_Mchi-450_Mphi-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
+
+PERIOD='H'
+EPLS=10
+
 
 config.section_("General")
-config.General.requestName = 'XYZ_replacedbyMulticrab'
+config.General.requestName = reqname
 config.General.workArea = 'crab_'+workname
 config.General.transferOutputs = True
 config.General.transferLogs = False
 
-PERIOD="D"
-DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA' ## this is not used at this moment
+#DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'treeMaker_2018_cfg.py'
-config.JobType.pyCfgParams = ['runOnMC=True','runOn2018=True']
+config.JobType.pyCfgParams = ['runOnMC=True','runOn2018=True','runOnrp2HDM=True']
 config.JobType.inputFiles = ['../MetaData/data/DNN_models/model-37.pb',
 '../TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml',
 '../TreeMaker/data/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt']
+
 
 config.JobType.sendExternalFolder = True
 config.JobType.sendPythonFolder = True

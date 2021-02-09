@@ -18,7 +18,7 @@ DATAJEC='Summer16_23Sep2016'+PERIOD+'V3_DATA' ## this is not used at this moment
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'treeMaker_2018_cfg.py'
-config.JobType.pyCfgParams = ['runOnMC=True','runOn2018=True']
+config.JobType.pyCfgParams = ['runOnMC=False','runOn2018=True']
 config.JobType.inputFiles = ['../MetaData/data/DNN_models/model-37.pb',
 '../TreeMaker/data/BoostedSVDoubleCA15_withSubjet_v4.weights.xml',
 '../TreeMaker/data/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt']
