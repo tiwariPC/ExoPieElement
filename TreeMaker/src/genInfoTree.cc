@@ -188,7 +188,7 @@ genInfoTree::Fill(const edm::Event& iEvent)
     genParPy_.push_back(geni->py());
     genParPz_.push_back(geni->pz());
     genParE_.push_back(geni->energy());
-    
+
     genParQ_.push_back(geni->charge());
     genParId_.push_back(geni->pdgId());
     genParSt_.push_back(geni->status());
@@ -284,14 +284,14 @@ genInfoTree::Fill(const edm::Event& iEvent)
 	reco::GenJet gjet = *gjeti;
 	if(gjet.pt()<=15)continue;
 	if(fabs(gjet.eta())>3.0)continue;
-	
+
 	//TLorentzVector thisGJet_l4(gjet.px(),gjet.py(),gjet.pz(),gjet.energy());
 	//new( (*ak4GenJetP4_)[ak4nGenJet_]) TLorentzVector(thisGJet_l4);
 	ak4GenJetPx_.push_back(gjet.px());
 	ak4GenJetPy_.push_back(gjet.py());
 	ak4GenJetPz_.push_back(gjet.pz());
 	ak4GenJetE_.push_back(gjet.energy());
-	
+
 	ak4nGenJet_++;
     }
 
@@ -333,6 +333,8 @@ genInfoTree::SetBranches(){
   AddBranch(&genParSt_,"genParSt");
   AddBranch(&genMomParId_,"genMomParId");
   AddBranch(&mcWeight_, "mcWeight");
+  AddBranch(&originalLHEweight_, "originalLHEweight");
+  AddBranch(&pdfscaleSysWeights_, "pdfscaleSysWeights");
 
   if (gen_extra){
     AddBranch(&genParIndex_,"genParIndex");
@@ -343,8 +345,7 @@ genInfoTree::SetBranches(){
     AddBranch(&ptHat_, "ptHat");
     AddBranch(&HT_, "HT");
     AddBranch(&pdf_, "pdf");
-    AddBranch(&originalLHEweight_, "originalLHEweight");
-    AddBranch(&pdfscaleSysWeights_, "pdfscaleSysWeights");
+
 
     AddBranch(&genNMo_,"genNMo");
     AddBranch(&genNDa_,"genNDa");

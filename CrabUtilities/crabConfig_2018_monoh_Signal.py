@@ -37,7 +37,7 @@ config.JobType.disableAutomaticOutputCollection = True
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-config.Data.outputDatasetTag = reqname
+#config.Data.outputDatasetTag = reqname
 
 #config.Data.splitting = 'Automatic'
 config.Data.splitting = 'FileBased'
