@@ -271,9 +271,7 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if( fillAK4PuppiJetInfo_ ) AK4PuppijetTree_->Fill(iEvent, iSetup);
   if( fillAK8PuppiJetInfo_ ) AK8PuppijetTree_->Fill(iEvent, iSetup);
   if( fillCA15PuppiJetInfo_ ) CA15PuppijetTree_->Fill(iEvent, iSetup);
-  tree_->Branch("isSignal", &runOnSignal_, "runOnSignal_/O");
-  tree_->Branch("mass_A", &mass_A, "mass_A/I");
-  tree_->Branch("mass_a", &mass_a, "mass_a/I");
+
   tree_->Fill();
 }
 
